@@ -1,0 +1,126 @@
+\documentclass[runningheads,a4paper]{llncs}
+% vim: tw=0 wm=0
+
+\setcounter{tocdepth}{3}
+\usepackage{amssymb}
+\usepackage{amsmath}
+%\usepackage{amsthm}
+\usepackage{bbm}
+\usepackage{environ}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{comment}
+\usepackage{placeins}
+\usepackage{mathtools}
+%\usepackage{algorithmic}
+\usepackage{enumitem}
+\usepackage[utf8]{inputenc}
+%\usepackage{enumite}
+%\usepackage{cleveref}
+%\usepackage{parskip}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{array}
+\usepackage[pdfencoding=auto,psdextra]{hyperref}
+\usepackage{booktabs}
+\usepackage{bookmark}% faster updated bookmarks
+\usepackage{hypcap} % fix the links
+\evensidemargin\oddsidemargin
+\usepackage{graphicx}
+\pagestyle{plain}
+\usepackage{xcolor}
+\newcommand\ToDo[1]{\textcolor{red}{#1}}
+%\bibliographystyle{plainnat}
+\usepackage{siunitx}
+\usepackage{color}
+
+\usepackage[draft,nomargin,inline]{fixme}
+\fxsetface{inline}{\itshape}
+\fxsetface{env}{\itshape}
+%\fxuselayouts{margin}
+%\fxuselayouts{inline}
+\fxusetheme{color}
+
+\usepackage{url}
+\urldef{\mailsa}\path|{djukanovic, raidl}@ac.tuwien.ac.at,|
+\urldef{\mailsb}\path|christian.blum@iiia.csic.es|
+\newcommand{\keywords}[1]{\par\aDSvspace\baselineskip
+\noindent\keywordname\enspace\ignorespaces#1}
+
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\definecolor{canaryyellow}{rgb}{1.0, 0.94, 0.0}
+\definecolor{brightgreen}{rgb}{0.4, 1.0, 0.0}
+\definecolor{jazzberryjam}{rgb}{0.65, 0.04, 0.37}
+
+%defining of command
+
+\newcommand\floor[1]{\lfloor#1\rfloor}
+\newcommand\ceil[1]{\lceil#1\rceil}
+\newcommand\str[1]{\texttt{#1}}
+\newcommand\pL[1][]{\ensuremath{p^{\mathrm{L}#1}}}
+\newcommand\pR[1][]{\ensuremath{p^{\mathrm{R}#1}}}
+\newcommand\qL{\ensuremath{q^\mathrm{L}}}
+\newcommand\qR{\ensuremath{q^\mathrm{R}}}
+\newcommand\pLH{\ensuremath{\hat{p}^\mathrm{L}}}
+\newcommand\pRH{\ensuremath{\hat{p}^\mathrm{R}}}
+\newcommand{\Vext}{\ensuremath{V_\mathrm{{ext}}}}
+\newcommand\UB{\ensuremath{\mathrm{UB}}}
+\newcommand\Sigmand{\ensuremath{\Sigma^\mathrm{nd}}}
+\renewcommand{\labelenumii}{\theenumii}
+\renewcommand{\theenumii}{\theenumi.\arabic{enumii}.}
+\setlength{\leftmarginii}{1.8ex}
+\raggedbottom
+\algnewcommand\algorithmicforeach{\textbf{for each}}
+\algdef{S}[FOR]{ForEach}[1]{\algorithmicforeach\ #1\ \algorithmicdo}
+
+% scaling factor for tables
+\newcommand\tabscale{0.8}
+
+\begin{document}
+
+    %\setlength{\parindent}{0pt}  % disallow indentations
+    %\numberwithin{table}{1}
+    \mainmatter  % start of an individual contribution
+
+    % first the title is needed
+    \title{Greedy Heuristics for Solving the Weighted Orthogonal Art Gallery Problem}
+
+    %
+    \author{--}
+    %
+
+    \institute{%$^1$Institute of Logic and Computation, TU Wien,
+    %Vienna, Austria,\\
+    %	       $^2$ Artificial Intelligence Research Institute (IIIA-CSIC),\\ \normalsize Campus UAB, Bellaterra, Spain \\
+    %\institute{Springer-Verlag, Computer Science Editorial,\\
+    %Tiergartenstr. 17, 69121 Heidelberg, Germany\\
+    %\mailsa\\
+    %\mailsb\\
+    %\mailsc\\
+    %\url{http://www.springer.com/lncs}
+    }
+
+    \maketitle
+
+
+    \section{Introduction}\label{sec:introduction}
+     \emph{The Orthogonal Art Gallery Problem} (OAGP) is one of many variants of Art Gallery Problem (AGP). AGP asks for a set of points $G$ of minimal cardinality on some polygon $P$ such that for each point $y \in P$ there is $x \in G$ such that $xy \subset P$.  Set $P$ is called guard set of $P$, and the points from $G$ as guards. The orthogonal AGP consider on arbitrary polygon but whose angles are $90^{\deg}$ and $270^{\deg}$. This problem is stated by Victor  Klee in 1973.~\cite{o1987art}. The problem is motivated from installing the cameras in a building (or gallery) such that a maximal surface is covered (possibly all areas are covered). Orthogonality comes that most of the walls are orthogonal to some other in a building. A variant of the OAGP for which we are interested in this studies allows only that guards are positioned at the edges of polygon $P$. It is known to be NP--hard~\cite{devadoss2011discrete}.
+     
+     Since then, many approaches have been proposed to solve the problem.
+     \fxnote{TODO: work on literature approaches}
+     \section{Preliminaries}
+     
+     \section{Algorithmic Approaches}
+     
+     \section{Computational Results}
+     
+     \section{Conclusions and Future Work}
+     
+     
+  
+    \bibliographystyle{abbrv}
+    \bibliography{bib}
+
+
+\end{document}
