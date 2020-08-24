@@ -134,12 +134,12 @@
      $V(j)$ is a set of all points from $D(P)$ that are visible from vertex $p_j$. Set $Z = \{j \in V\mid x_i=1\}$
      Constraint~(\ref{eq:const-3}) enforces that any point $p_i \in D(P)$ will be visible from at least one guard from $Z$.
      
-     If we want to add weights into the OAGP problem such that all guard have no equal weight (of 1), we obtained the WOAGP problem. This can be augmented that the prices of cameras do not need to be equal.  Let us suppose that for any guard $p_i$ we assign a price $w_i$, $i=1,...,n$. Then, the above model is trivially extended to the weighted version where only the objective function has to be changed to
+     If we want to add weights into the OAGP problem such that all guard have no equal weight (of 1), we obtained the weighted variant of OAGP, that is the WOAGP problem. This can be augmented that the prices of cameras do not need to be equal.  Let us suppose that for any guard $p_i$ we assign a price $w_i$, $i=1,...,n$. Then, the above model is trivially extended to the weighted version where only the objective function has to be changed to
      $$ \sum_{i} x_i w_i,$$
       and all other constraints remain the same.
-      \fxnote{We should think about adding ranges for cameras?}
-     \section{Algorithmic Approaches}
-     
+      \fxnote{We should think about adding ranges for cameras? MDJ: Mislim da ovo ne utice na algoritme, jer bi se u svakom slucaju skupovi $S_i$ dobili u pre-procesing koraku bez obzira postojao ili ne domen vidljivosti kamere. Da li se slazete? }
+     \section{Algorithmic Approaches for WOAGP}
+          
      \section{Computational Results}
      
      \section{Conclusions and Future Work}
