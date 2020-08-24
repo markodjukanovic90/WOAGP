@@ -105,12 +105,39 @@
 
 
     \section{Introduction}\label{sec:introduction}
-     \emph{The Orthogonal Art Gallery Problem} (OAGP) is one of many variants of Art Gallery Problem (AGP). AGP asks for a set of points $G$ of minimal cardinality on some polygon $P$ such that for each point $y \in P$ there is $x \in G$ such that $xy \subset P$.  Set $P$ is called guard set of $P$, and the points from $G$ as guards. The orthogonal AGP consider on arbitrary polygon but whose angles are $90^{\deg}$ and $270^{\deg}$. This problem is stated by Victor  Klee in 1973.~\cite{o1987art}. The problem is motivated from installing the cameras in a building (or gallery) such that a maximal surface is covered (possibly all areas are covered). Orthogonality comes that most of the walls are orthogonal to some other in a building. A variant of the OAGP for which we are interested in this studies allows only that guards are positioned at the edges of polygon $P$. It is known to be NP--hard~\cite{devadoss2011discrete}.
+     \emph{The Orthogonal Art Gallery Problem} (OAGP) is one of many variants of Art Gallery Problem (AGP). AGP asks for a set of points $G$ of minimal cardinality on some polygon $P$ such that for each point $y \in P$ there is $x \in G$ such that $xy \subset P$.  Set $P$ is called guard set of $P$, and the points from $G$ as guards. The orthogonal AGP consider on arbitrary polygon but whose angles are $90^{\deg}$ and $270^{\deg}$. This problem is stated by Victor  Klee in 1973.~\cite{o1987art}. The problem is motivated from installing the cameras in a building (or gallery) such that a maximal surface is covered (possibly all areas are covered). Orthogonality comes that most of the walls are orthogonal to some other in a building. A variant of the OAGP for which we are interested in this studies allows only that guards are positioned at the edges of polygon $P$. It is known to be NP--hard~\cite{devadoss2011discrete}. Let su denote set $V$ as a set of all vertices of polygon $P$.
      
      Since then, many approaches have been proposed to solve the problem.
      \fxnote{TODO: work on literature approaches}
      \section{Preliminaries}
+     Solvers which are able to solve MIP modelf for OAGP problem are one of the most efficient techniques to approach this problem. It is known that the problem is related to the known Minimal-Set-Cover (MSC) problem. 
+
+     Let us suppose we are given a discretization $D(P)$ of the polygon $P$ (with a family of rectangles). Then we relate the OAGP with the known MSC problem.  
+     Family $\mathcal{F}\subseteq D(P)$ of nonempty sets is given as: $S_i \in \mathcal{F}$ iff it includes any point from $D(P)$ which is visible from guard $p_i$. Note that set $S_i$ includes a point $p_i$ but can also include some other guard $p_j$, $i \neq j$. So, the task of OAPG becomes in finding a minimal cardinalty cover $\mathcal{C}\subseteq\{S_1,...,S_n\}$ of set $D(P)$, that is 
+     $$ \bigcup_{c \in \mathcal{C}} c = D(P).$$ Since the Integer Programming model for the Set Cover problem is know, it follows that 
+     \begin{align}
+        &\sum_{i=1}^n x_i \longrightarrow \min \\
+        &\mbox{s.t.} \\
+        &\sum_{j} a_{ij}x_j \geq 1\ (\forall p_i,1,...,n) \label{eq:const-3}\\
+        & x_j \in \{0,1\},  \in V,
+     \end{align}
+     where 
+     $a_{ij} = \begin{cases}
+          1, j \in V(j), \\
+          0, \mbox{otherwise} 
+     \end{cases}$ 
+     and $x_i = \begin{cases}
+     	 1, \mbox{ if } p_i \in \mathcal{C},\\
+     	 0, \mbox{otherwise},
+     \end{cases}$ \\
+      is a MIP model to solve OAGP. 
+     $V(j)$ is a set of all points from $D(P)$ that are visible from vertex $p_j$. Set $Z = \{j \in V\mid x_i=1\}$
+     Constraint~(\ref{eq:const-3}) enforces that any point $p_i \in D(P)$ will be visible from at least one guard from $Z$.
      
+     If we want to add weights into the OAGP problem such that all guard have no equal weight (of 1), we obtained the WOAGP problem. This can be augmented that the prices of cameras do not need to be equal.  Let us suppose that for any guard $p_i$ we assign a price $w_i$, $i=1,...,n$. Then, the above model is trivially extended to the weighted version where only the objective function has to be changed to
+     $$ \sum_{i} x_i w_i,$$
+      and all other constraints remain the same. 
+      
      \section{Algorithmic Approaches}
      
      \section{Computational Results}
