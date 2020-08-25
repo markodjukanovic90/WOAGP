@@ -113,24 +113,24 @@
      Solvers which are able to solve MIP modelf for OAGP problem are one of the most efficient techniques to approach this problem. It is known that the problem is related to the known Minimal-Set-Cover (MSC) problem. 
 
      Let us suppose we are given a discretization $D(P)$ of the polygon $P$ (with a family of rectangles). Then we relate the OAGP with the known MSC problem.  
-     Family $\mathcal{F}\subseteq D(P)$ of nonempty sets is given as: $S_i \in \mathcal{F}$ iff it includes any point from $D(P)$ which is visible from guard $p_i$. Note that set $S_i$ includes a point $p_i$ but can also include some other guard $p_j$, $i \neq j$. So, the task of OAPG becomes in finding a minimal cardinalty cover $\mathcal{C}\subseteq\{S_1,...,S_n\}$ of set $D(P)$, that is 
+     Family $\mathcal{F}\subseteq D(P)$ of nonempty sets is given as: $S_i \in \mathcal{F}$ iff it includes any point from $D(P)$ which is visible from guard $p_i$. Note that set $S_i$ includes a point $p_i$ which can also include some other guard $p_j$, $i \neq j$. So, the task of OAPG becomes finding a minimal cardinalty cover $\mathcal{C}\subseteq\{S_1,...,S_n\}$ of set $D(P)$, that is 
      $$ \bigcup_{c \in \mathcal{C}} c = D(P).$$ Since the Integer Programming model for the Set Cover problem is know, it follows that 
      \begin{align}
         &\sum_{i=1}^n x_i \longrightarrow \min \\
         &\mbox{s.t.} \\
-        &\sum_{j} a_{ij}x_j \geq 1\ (\forall p_i,1,...,n) \label{eq:const-3}\\
-        & x_j \in \{0,1\},  \in V,
+        &\sum_{j\in V} a_{ij}x_j \geq 1\ (\forall p_i\in D(P)) \label{eq:const-3}\\
+        & x_j \in \{0,1\}, j \in V,
      \end{align}
      where 
      $a_{ij} = \begin{cases}
-          1, j \in V(j), \\
+          1, p_i \in V(j), \\
           0, \mbox{otherwise} 
      \end{cases}$ 
      and $x_i = \begin{cases}
-     	 1, \mbox{ if } p_i \in \mathcal{C},\\
+     	 1, \mbox{ if } \mbox{ the point } i \in \mathcal{C},\\
      	 0, \mbox{otherwise},
      \end{cases}$ \\
-      is a MIP model to solve OAGP. 
+      is a MIP model to solve OAGP where $V(j)$ is the set of all points from $D(P)$ that are visible from $j$-th vertex of $P$.
      $V(j)$ is a set of all points from $D(P)$ that are visible from vertex $p_j$. Set $Z = \{j \in V\mid x_i=1\}$
      Constraint~(\ref{eq:const-3}) enforces that any point $p_i \in D(P)$ will be visible from at least one guard from $Z$.
      
