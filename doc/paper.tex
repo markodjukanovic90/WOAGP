@@ -138,8 +138,32 @@
      $$ \sum_{i} x_i w_i,$$
       and all other constraints remain the same.
       \fxnote{We should think about adding ranges for cameras? MDJ: Mislim da ovo ne utice na algoritme, jer bi se u svakom slucaju skupovi $S_i$ dobili u pre-procesing koraku bez obzira postojao ili ne domen vidljivosti kamere. Da li se slazete? }
+      In order to solve this model, we used general purpose solver \textsc{Cplex}. 
      \section{Algorithmic Approaches for WOAGP}
+          Since the WOAGP can be seen as the Weighted Set Cover problem (WSCP) and since the best known heuristics to so solve WSCP is an enhanced greedy heuristic, our idea is to apply greedy algorithms to solve WOAGP. These algorithms produce a solution of reasonable quality within a short interval of time. Efficient of greedy heuristics is related to a greedy criterion utilized to expand current (non-complete, that is partial) solution to complete one. Among all candidates ( solution components for expansion, that is not-yet-considered guards, we choose one with the smallest greedy value etc. until the solution is complete (i.e., cover all regions of the polygon).
+          Pseudocode of Greedy heuristic is given in Algorithm~\ref{alg:greedy}
           
+          \begin{algorithm}[!t] 
+          	\caption{Greedy Heuristic}\label{alg:greedy}
+          	\begin{algorithmic}[1]
+          		\State \textbf{Input:} an instance of a problem
+          		\State \textbf{Output:} A (feasible) non-expandable solution (or reporting that no feasible solution)
+          		\State $s^{P} \gets ()$ \hspace{0.3cm}// partial solution set to empty solution
+          		\While{$\text{Extend}(s^{P}) \neq \emptyset$}
+          		\State Select component $e \in  \text{Extend}(s^{P})$ \hspace{0.3cm}//\,w.r.t.\  some criterion
+          		\State Extend $s^{P}$ by $e$
+          		\EndWhile
+          	\end{algorithmic}
+          \end{algorithm}
+      \subsection{Greedy Heuristic based on Price-per-Unit}
+       Our greedy criterion to expand current partial solution $s^P$  is based on the WOAGP characteristics, that is considering not-yet-covered regions of polygon $P$, that is, its discretisation $D(P)$. For each not yet considered guards $p_i$, we assign the region he is able to see by $S_{p_i}$. As the next candidate to extend $s^P$, we choose not-yet-considered guard $p^*$ which is able to cover his part $S_{p_i}$ by smallest price per unit, among the other not considered guards. More precisely, greedy criterion $g$ is given as:
+       \begin{align}
+            g(s^p, p_i) = \frac{w_{p_i}}{S_{p_i}},
+       \end{align}
+       and $p^*$ that minimizes $g(s^p, p^*)$ value is chosen as an extension of the current partial solution.
+       Afterwards the region $S_{p^*}$ is further then dropped off from $P$, i.e., $P=P \setminus S_{p^*}$, and update $s^p= s^p \cup \{p^*\}$.  These steps are repeated until $s^P$ is complete, which means $P = \emptyset$ (it is covered by the guards from $s^P$).  
+        \subsection{An Alternative Greedy Heuristic}
+        \fxnote{TODO}
      \section{Computational Results}
      
      \section{Conclusions and Future Work}
