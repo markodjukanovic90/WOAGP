@@ -172,7 +172,7 @@
      \section{Computational Results}
        We used the instance of a specific OAGP and assigned the weights to each vertex of polygons. We have generated three kind of benchmarks:
        \begin{itemize}
-       	  \item \emph{random benchmarks}. For each vertex $i$ of polygon $P$ we take a random value $w_i \in \{1, n/8\}$ as its weight;
+       	  \item \emph{random benchmarks}. For each vertex $i$ of polygon $P$ we take a random value $w_i \in \{X_1,...,X_q\}$ \fxnote{da li je domen ovdje OK? } as its weight ($X_i$ are some random values for prices), $q \in \mathbb{N}$. 
        	  \item \emph{topological-type benchmarks}. For each vertex $i$ of polygon $P$ let us denote by $l_i$ and $l_{i+1}$ the lengths of edges that comes out of vertex $i$. Then, $w_i := \frac{l_i + l_{i+1}}{2}$. This can be augmented by the fact that if the the arithmetic length of both edges that comes out of vertex $i$ is longer, it is expected that vertex is a guard can see a larger pieces of polygon $P$. This implies that the range of camera $i$ has to be larger, which again means that it has to be of a higher price. 
        	  \item    ...
        \end{itemize}
