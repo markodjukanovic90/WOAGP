@@ -163,9 +163,14 @@
        and $p^*$ that minimizes $g(s^p, p^*)$ value is chosen as an extension of the current partial solution.
        Afterwards the region $S_{p^*}$ is further then dropped off from $P$, i.e., $P=P \setminus S_{p^*}$, and update $s^p= s^p \cup \{p^*\}$.  These steps are repeated until $s^P$ is complete, which means $P = \emptyset$ (polygon $P$ is covered by the guards from $s^P$).  
         \subsection{An Alternative Greedy Heuristic}
-        \fxnote{TODO}
+        \fxnote{TODO: work in progress...} Greedy criterion: 
+          \begin{itemize}
+          	\item prefer those guards with a smaller cost $w_i$; 
+          	\item If there are more guards with the smallest cost, 
+          	prefer one with the largest $S_{p_i}$.
+          \end{itemize}
      \section{Computational Results}
-     
+     \fxnote{to generate larger instances; practical instances...}
      \section{Conclusions and Future Work}
      
      
