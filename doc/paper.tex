@@ -177,7 +177,7 @@
 			\item let $w_{total}$ be the total sum of all weights among all verteces
 			\item involve the penalty function in the objective function
 				$$obj(s^{ps}; v)  = \sum_{i \in s^{ps} \cup \{v\}} w_i+ incorrect_{total}$$ or
-				$$obj(s^{ps}; v) = \frac{\sum_{i \in s^{ps} \cup \{v\}\}} w_i}{w_{total}}+ incorrect_{total}$$
+				$$obj(s^{ps}; v) = \frac{\sum_{i \in s^{ps} \cup \{v\}\}} w_i}{w_{total}}+ \frac{incorrect_{total}}{|D(P)|}$$\fxnote{moguce i skaliranje ove dvije vrijednosti?}
 			\item start Greedy with empty solution
 			\item in each iteration add such a guard to $s^{ps}$ for which the obj value is minimal
 			\item end when $incorrect_{total}$ becomes 0
