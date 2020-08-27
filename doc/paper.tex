@@ -184,6 +184,10 @@
           \end{itemize}
       \subsection{An improvement of Greedy Solution}
       Local search and Large Neighborhood search \fxnote{TODO...}
+      Local search (LS) technique is a basis of the LS--based metaheuristics. Let us define the structure of neighborhood. We define them over the set of guards. 
+      The first configuration of neighbourhood of some partial solution is operation of swapping; that means from a given partial solution $s^P$, we choose one guard from $s^P$ and then pick another guard from $V \setminus s^p$ w.r.t. value $obj(;)$.
+      
+      Another criterion for the neighbourhood's configuration ($k$-th) would be taking arbitrary $k$ guards $\{p_1,...,p_d\}$ from $s^p$, then drop them from $s^p$. Afterwords, for each $p_i$ which are dropped off, we take the guard which is nearest by distance from $p_i$ and add them into $s^p$. 
      \section{Computational Results}
        We used the instance of a specific OAGP and assigned the weights to each vertex of polygons. We have generated three kind of benchmarks:
        \begin{itemize}
