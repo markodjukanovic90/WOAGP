@@ -172,14 +172,14 @@
 		\fxnote{TODO: work in progress...} Another approach DRAGAN:
            \begin{itemize}
 			\item introduce a penalty function
-          	\item introduce a term ``incorrect vertex''. A vertex is incorrect if it is not covered by any guard.
-			\item let $incorrect_{total}$ be the total number of incorrect vertices
+          	\item introduce a term ``incorrect point''. For a point from D(P) we say that it is incorrect if it is not covered by any guard from a current partial solution $s^{ps}$.
+			\item let $incorrect_{total}$ be the total number of incorrect points from discretisazion $D(P)$
 			\item let $w_{total}$ be the total sum of all weights among all verteces
 			\item involve the penalty function in the objective function
 				$$obj = \sum_{i \in Sol.} w_i+ incorrect_{total}$$ or
 				$$obj = \frac{\sum_{i \in Sol.} w_i}{w_{total}}+ incorrect_{total}$$
 			\item start Greedy with empty solution
-			\item in each iteration add such a vertex for which the obj value is minimal
+			\item in each iteration add such a guard to $s^{ps}$ for which the obj value is minimal
 			\item end when $incorrect_{total}$ becomes 0
           \end{itemize}
       \subsection{An improvement of Greedy Solution}
