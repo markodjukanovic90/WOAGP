@@ -26,6 +26,8 @@
 // the following "include" is necessary for the correct working/compilation of CPLEX. You should adapt this path to your installation of CPLEX
 #include "/home/djukanovic/Desktop/projects/LCAPS_software/cplex-12.5/include/ilcplex/ilocplex.h"
 
+using namespace std; 
+
 ILOSTLBEGIN
 
 // global variables concerning the random number generator
@@ -82,6 +84,106 @@ ILOMIPINFOCALLBACK6(loggingCallback,
     lastIncumbent = nv;
 }
 
+int f(vector<set<int>>& C)
+{
+       std::set<int> d;
+       for(set<int> di : C){
+     
+           for (int dii: di){
+               //cout << "dii" << dii << endl;
+               d.insert(dii);
+           }
+        
+       }
+       //cout <<"D" << d.size() << endl; 
+       //for(int diii: d)
+       //  cout << diii << "\t" <<endl;
+
+       return (int)d.size();
+}
+
+int f_minus(vector<set<int>>& C, set<int>& ss ) // f(C u {s}) - f(S)
+{
+    int count = 0; // ako i \in ss nije niti u jednom od skupova u S, onda count++;
+    if(C.empty())
+       return ss.size();
+
+    for(int i: ss) 
+    {
+        bool presented = false;
+        for(set<int>& di : C){
+            if(di.count(i) > 0){
+               presented = true;
+               break; 
+            }
+        }
+        if(presented) 
+           count++;
+    }
+    return ss.size() - count; 
+}
+
+float greedy_criterion(vector<int>& Cost, vector<set<int>>& S, int i, vector<set<int>>& C) // take s_i from S
+{     
+    set<int> s = S[i];
+    int f_m = f_minus(C, s);  //cout << "f_m: " << f_m << endl;
+    if(f_m == 0)
+       return 100000;
+
+    float val = ((float)Cost[i]) / (f_minus(C, s));     //cout << "val: " << val << endl; 
+    return val;
+}
+
+bool findA(vector<int>& s, int a)
+{
+
+     for(int si : s)
+         if(si == a)
+            return true;
+
+      return false;  
+}
+
+int min_greedy(vector<int>& Cost, vector<set<int>>& S, vector<set<int>>& C, vector<int>& indeks)
+{         //cout << "min_greedy" << endl;
+          float g_m = 10000000; int dodaj;
+          for(int i = 0; i < S.size(); ++i)
+          {  // cout << "i " << i << endl;
+              float g_mi = greedy_criterion(Cost, S, i, C); //cout << "gmi: " << g_mi << endl;
+              if(g_mi < g_m and g_mi != 100000 and !findA(indeks, i)) 
+              { 
+                 dodaj = i;
+                 g_m = g_mi;   
+              }
+          }//cout << "dodati....." << dodaj << endl;
+          return dodaj;
+}
+
+
+float greedy_procedure(vector<set<int>>& S, vector<int>& Cost)
+{
+     vector<set<int>> C; vector<int> indeks;
+     int f_S = f(S); //cout << "f_S: " << f_S << endl;
+     int f_C = 0;
+     while(f_C != f_S) 
+     {
+           int index_set = min_greedy( Cost, S, C, indeks);  
+           
+           if(!findA(indeks, index_set)){ //jos nije dodan
+               C.push_back(S[index_set]);cout << "dodaj----> " << index_set << endl;
+              indeks.push_back(index_set);
+           } 
+           f_C = f(C); 
+           cout << "f_C=" << f_C << " |C|=" << C.size() << endl;
+     }
+     float greedy_val = 0;
+     for(int ix: indeks){
+         greedy_val += Cost[ ix ];
+     }
+     return greedy_val; 
+     //return C.size();
+}
+
 
 void run_cplex(vector<int>& C, vector<set<int>>& S){
 
@@ -96,9 +198,9 @@ void run_cplex(vector<int>& C, vector<set<int>>& S){
    vector<IloNumVar> Z; cout << "S.size() " << S.size() << endl;
    for(int i = 0; i < S.size(); ++i){
 
-             IloNumVar myIntVar(env, 0, 1, ILOINT);
-             Z.push_back(myIntVar); // x_i  \in {0, 1}
-             obj.setLinearCoef(Z[i], C[i]); // sum_i c_i x_i
+       IloNumVar myIntVar(env, 0, 1, ILOINT);
+       Z.push_back(myIntVar); // x_i  \in {0, 1}
+       obj.setLinearCoef(Z[i], C[i]); // sum_i c_i x_i
    }
 
    cout << "#Vars: " << Z.size() << " n=" << n << " " << S.size() << endl;
@@ -112,8 +214,6 @@ void run_cplex(vector<int>& C, vector<set<int>>& S){
                expr_i += Z[j];
                add = true;
            }
-           //else
-           //    expr_i += 0;//Z[j];
        }
        if(add)
           model.add(expr_i >= 1);      
@@ -249,6 +349,13 @@ int main(int argc, char **argv ) {
          run_cplex(C, S); //, myfileOut);
          double end_time = timer.elapsed_time(Timer::VIRTUAL);
          cout << "time: " << (end_time - cur_time ) <<"\n";
+         // greedy procedure:
+         Timer timer_greedy;
+        // generisanje stream-a
+         double cur_time_greedy = timer_greedy.elapsed_time(Timer::VIRTUAL);
+         float greedy_sol = greedy_procedure( S, C); cout <<"GREEDY sol: " << greedy_sol << endl;
+         double end_time_greedy = timer_greedy.elapsed_time(Timer::VIRTUAL);
+         cout <<"GREEDY time: " << (end_time_greedy - cur_time_greedy) << endl;
          //myfileOut << "time: " << (end_time - cur_time ) <<"\n";*/
          //myfileOut.close();
 }
