@@ -2,3 +2,6 @@ http://sites.nlsde.buaa.edu.cn/~kexu/benchmarks/set-benchmarks.htm
 
 Rad za procitati (zajedno sa instancama):
 http://research.sabanciuniv.edu/27187/1/SCP_ValueOfDual.pdf
+
+Gridi za MSC implementirana iz rada:
+http://www.cs.ucr.edu/~neal/Young08SetCover.pdf
