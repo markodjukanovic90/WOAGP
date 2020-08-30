@@ -106,44 +106,44 @@
 
     \section{Introduction}\label{sec:introduction}
      \emph{The Orthogonal Art Gallery Problem} (OAGP) is one of many variants of Art Gallery Problem (AGP). AGP asks for a set of points $G$ of minimal cardinality on some polygon $P$ such that for each point $y \in P$ there is $x \in G$ such that $xy \subset P$.  Set $P$ is called guard set of $P$, and the points from $G$ as guards. The orthogonal AGP consider on arbitrary polygon but whose angles are $90^{\deg}$ and $270^{\deg}$. This problem is stated by Victor  Klee in 1973.~\cite{o1987art}. The problem is motivated from installing the cameras in a building (or gallery) such that the whole surface of the building is covered. Orthogonality comes out from the walls which are orthogonal to some other wall in a building. A variant of the OAGP for which we are interested in this studies allows only that guards are positioned at the edges of polygon $P$. This problem is known to be NP--hard~\cite{devadoss2011discrete}. Let su denote set $V$ as a set of all vertices of polygon $P$.
-     
+
      Since then, many approaches have been proposed to solve the problem.
      \fxnote{TODO: work on literature approaches}
      \section{Preliminaries}
-     Solvers which solves IP model for OAGP problem are one of the most efficient techniques to approach this problem. It is known that the problem is related to the known Minimal-Set-Cover (MSC) problem. 
+     Solvers which solves IP model for OAGP problem are one of the most efficient techniques to approach this problem. It is known that the problem is related to the known Minimal-Set-Cover (MSC) problem.
 
-     Let us suppose we are given a discretization $D(P)$ of the polygon $P$ (with a family of rectangles). Then we relate the OAGP with the known MSC problem.  
-     Family $\mathcal{F}\subseteq D(P)$ of nonempty sets is given as: $S_i \in \mathcal{F}$ iff it includes any point from $D(P)$ which is visible from guard $i\in V$. Note that set $S_i$ includes a point $p_i$ which can also included by some other guard $j\in V$, $i \neq j$. So, the task of OAPG becomes finding a minimal cardinalty cover $\mathcal{C}\subseteq\{S_1,...,S_n\}$ of set $D(P)$, that is 
-     $$ \bigcup_{c \in \mathcal{C}} c = D(P).$$ The Integer Programming model for the Set Cover problem is known, and is as follows: 
+     Let us suppose we are given a discretization $D(P)$ of the polygon $P$ (with a family of rectangles). Then we relate the OAGP with the known MSC problem.
+     Family $\mathcal{F}\subseteq D(P)$ of nonempty sets is given as: $S_i \in \mathcal{F}$ iff it includes any point from $D(P)$ which is visible from guard $i\in V$. Note that set $S_i$ includes a point $p_i$ which can also included by some other guard $j\in V$, $i \neq j$. So, the task of OAPG becomes finding a minimal cardinalty cover $\mathcal{C}\subseteq\{S_1,...,S_n\}$ of set $D(P)$, that is
+     $$ \bigcup_{c \in \mathcal{C}} c = D(P).$$ The Integer Programming model for the Set Cover problem is known, and is as follows:
      \begin{align}
         &\sum_{i=1}^n x_i \longrightarrow \min \\
         &\mbox{s.t.} \\
         &\sum_{j\in V} a_{ij}x_j \geq 1\ (\forall p_i\in D(P)) \label{eq:const-3}\\
         & x_j \in \{0,1\}, j \in V,
      \end{align}
-     where 
+     where
      $a_{ij} = \begin{cases}
           1, p_i \in V(j), \\
-          0, \mbox{otherwise} 
-     \end{cases}$ 
+          0, \mbox{otherwise}
+     \end{cases}$
      and $x_i = \begin{cases}
      	 1, \mbox{ if } \mbox{ the point } i \in \mathcal{C},\\
      	 0, \mbox{otherwise},
      \end{cases}$ \\
       presents a MIP model to solve OAGP where $V(j)$ is the set of all points from $D(P)$ that are visible from $j$-th vertex of $P$.
-     Set $Z = \{j \in V\mid x_i=1\}$ represents a solution of the problem. 
+     Set $Z = \{j \in V\mid x_i=1\}$ represents a solution of the problem.
      Constraint~(\ref{eq:const-3}) enforces that any point $p_i \in D(P)$ will be visible from at least one guard from $Z$.
-     
+
      If we want to add weights into the OAGP problem such that all guard have no equal weight (of 1), we obtained the weighted variant of OAGP, that is the WOAGP problem. This can be augmented that the prices of cameras do not need to be equal and these prices might be different due to the quality (of the range) of the cameras that are installed at some specific corners.  Let us suppose that for any guard $p_i$ we assign a price $w_i$, $i=1,...,n$. Then, the above model is may be extended to its weighted version where the objective function has to be replaced by
      $$ \sum_{i} x_i w_i,$$
       and all other constraints remain the same.
-       
-      In order to solve this model, we propose to use a general purpose solver \textsc{Cplex}. 
+
+      In order to solve this model, we propose to use a general purpose solver \textsc{Cplex}.
      \section{Algorithmic Approaches for WOAGP}
           Since the WOAGP can be seen as the Weighted Set Cover problem (WSCP) and since the best known heuristics to solve WSCP is an enhanced greedy heuristic, our idea is to apply greedy algorithms to solve WOAGP. These algorithms produce a solution of reasonable quality within a short interval of time. Efficient of greedy heuristics is related to a greedy criterion utilized to expand current (non-complete, that is partial) solution to complete one. Among all candidates ( solution components for expansion, that is not-yet-considered guards, we choose one with the smallest greedy value etc. until the solution is complete (i.e., cover all regions of the polygon).
           Pseudocode of Greedy heuristic is given in Algorithm~\ref{alg:greedy}
-          
-          \begin{algorithm}[!t] 
+
+          \begin{algorithm}[!t]
           	\caption{Greedy Heuristic}\label{alg:greedy}
           	\begin{algorithmic}[1]
           		\State \textbf{Input:} an instance of a problem
@@ -161,12 +161,12 @@
             g(s^p, p_i) = \frac{w_{p_i}}{S_{p_i}},
        \end{align}
        and $p^*$ that minimizes $g(s^p, p^*)$ value is chosen as an extension of the current partial solution.
-       Afterwards the region $S_{p^*}$ is further then dropped off from $P$, i.e., $P=P \setminus S_{p^*}$, and update $s^p= s^p \cup \{p^*\}$.  These steps are repeated until $s^P$ is complete, which means $P = \emptyset$ (polygon $P$ is covered by the guards from $s^P$).  
+       Afterwards the region $S_{p^*}$ is further then dropped off from $P$, i.e., $P=P \setminus S_{p^*}$, and update $s^p= s^p \cup \{p^*\}$.  These steps are repeated until $s^P$ is complete, which means $P = \emptyset$ (polygon $P$ is covered by the guards from $s^P$).
         \subsection{An Alternative Greedy Heuristic}
-        \fxnote{TODO: work in progress...} Greedy criterion: 
+        \fxnote{TODO: work in progress...} Greedy criterion:
           \begin{itemize}
-          	\item prefer those guards with a smaller cost $w_i$; 
-          	\item If there are more guards with the smallest cost, 
+          	\item prefer those guards with a smaller cost $w_i$;
+          	\item If there are more guards with the smallest cost,
           	prefer one with the largest $S_{p_i}$.
           \end{itemize}
 		\fxnote{TODO: work in progress...} Another approach DRAGAN:
@@ -184,56 +184,56 @@
           \end{itemize}
       \subsection{An improvement of Greedy Solution}
       Local search and Large Neighborhood search \fxnote{TODO...}
-      Local search (LS) technique is a basis of the LS--based metaheuristics. Let us define the structure of neighborhood. We define them over the set of guards. 
+      Local search (LS) technique is a basis of the LS--based metaheuristics. Let us define the structure of neighborhood. We define them over the set of guards.
       The first configuration of neighbourhood of some partial solution is operation of swapping; that means from a given partial solution $s^P$, we choose one guard from $s^P$ and then pick another guard from $V \setminus s^p$ w.r.t. value $obj(;)$.
-      
-      Another criterion for the neighbourhood's configuration ($k$-th) would be taking arbitrary $k$ guards $\{p_1,...,p_d\}$ from $s^p$, then drop them from $s^p$. Afterwords, for each $p_i$ which are dropped off, we take the guard which is nearest by distance from $p_i$ and add them into $s^p$. 
-      
-       \begin{algorithm}[!t] 
+
+      Another criterion for the neighbourhood's configuration ($k$-th) would be taking arbitrary $k$ guards $\{p_1,...,p_d\}$ from $s^p$, then drop them from $s^p$. Afterwords, for each $p_i$ which are dropped off, we take the guard which is nearest by distance from $p_i$ and add them into $s^p$.
+
+       \begin{algorithm}[!t]
       	\caption{Local Search}\label{alg:local-search}
       	\begin{algorithmic}[1]
-      		\State \textbf{Input:} a (partial) solution $s_{greedy}=\{v_1,...,v_k\}$, $iter_{allow}>0.$
+      		\State \textbf{Input:} a (partial) solution $s_{greedy}=\{v_1,...,v_k\}$, $iter_{allow}>0., $ probability $p$ 
       		\State \textbf{Output:} and improved solution $s$
       		\While{$iter < iter_{allow}$}
       		     \State $D(P)_s$ the number of points covered by $s_{greedy}$
-      		      \If{$|D(P)_s| == |D(P)|$} // a complete solution 
+      		      \If{$|D(P)_s| == |D(P)|$} // a complete solution
       		          \State return $s_{greedy}$
       		      \EndIf
       		     \State choose random vertex $v_{i'}$ from $s_{greedy}$
-      		     \State $v_{i''} \gets$ consider neighbor vertices of vertex  $v_{i'}$ (two are possible) and choose one of them
+      		     \State $v_{i''},v_{i'''} \gets$ two neighbor vertices of vertex  $v_{i'}$
       		     \State $s^1_{greedy} \gets$ $s_{greedy} \cup \{v_{i''} \} \setminus \{v_{i'}\}$
-      		      \If{$s^1_{greedy}$ do not improve  $D(P)_s$}
-      		           \State $v_{i'''} \gets$ take the second neighbor vertex of $v_{i'}$
-      		           \State $s^2_{greedy} \gets$ $s_{greedy} \cup \{v_{i'''} \} \setminus \{v_{i'}\}$
-      		           \If{$s^2_{greedy}$ do not improve $D(P)_s$}
-      		                  \If{$s^1_{greedy} \vee s^2_{greedy}$ cover the same number of points as $D(P)_s$}
-      		                     \State with random probability  0.5, choose the right for a new $s_{greedy}$
-      		                \Else
-      		                
-      		                     \State \emph{goto} line 8
-      		                \EndIf
-      		           \EndIf
+                 \State $s^2_{greedy} \gets$ $s_{greedy} \cup \{v_{i'''} \} \setminus \{v_{i'}\}$
+      		      \If{$|D(P)_{s^1_{greedy}}|>|D(P)_{s_{greedy}}|$ }
+                        \State $s_{greedy} \gets s^1_{greedy}$
+      \EndIf
+                    \If {$|D(P)_{s^1_{greedy}}|==|D(P)_{s_{greedy}}|$ }
+                        \State $s_{greedy} \gets s^1_{greedy}$ with probability $p$
+                    
+      		      \EndIf     
+      		       \If{$|D(P)_{s^2_{greedy}}|>|D(P)_{s_{greedy}}|$ }
+                        \State $s_{greedy} \gets s^2_{greedy}$
       		      \EndIf
-      		    
+                    
+            \If {$|D(P)_{s^2_{greedy}}|==|D(P)_{s_{greedy}}|$ }
+                        \State $s_{greedy} \gets s^2_{greedy}$ with probability $p$
+                    \EndIf
       		     \State $iter \gets iter +1 $
       		\EndWhile
-      		\If{$s_{greedy}$ not complete}
-      		   \State make ti complete w.r.t. some greedy criterion
-      		\EndIf
+      		 \State return $s_{greedy}$
       	\end{algorithmic}
       \end{algorithm}
-      
+
      \section{Computational Results}
        We used the instance of a specific OAGP and assigned the weights to each vertex of polygons. We have generated three kind of benchmarks:
        \begin{itemize}
-       	  \item \emph{random benchmarks}. For each vertex $i$ of polygon $P$ we take a random value $w_i \in \{X_1,...,X_q\}$ \fxnote{da li je domen ovdje OK? } as its weight ($X_i$ are some random values for prices), $q \in \mathbb{N}$. 
-       	  \item \emph{topological-type benchmarks}. For each vertex $i$ of polygon $P$ let us denote by $l_i$ and $l_{i+1}$ the lengths of edges that comes out of vertex $i$. Then, $w_i := \frac{l_i + l_{i+1}}{2}$. This can be augmented by the fact that if the the arithmetic length of both edges that comes out of vertex $i$ is longer, it is expected that vertex is a guard can see a larger pieces of polygon $P$. This implies that the range of camera $i$ has to be larger, which again means that it has to be of a higher price. 
+       	  \item \emph{random benchmarks}. For each vertex $i$ of polygon $P$ we take a random value $w_i \in \{X_1,...,X_q\}$ \fxnote{da li je domen ovdje OK? } as its weight ($X_i$ are some random values for prices), $q \in \mathbb{N}$.
+       	  \item \emph{topological-type benchmarks}. For each vertex $i$ of polygon $P$ let us denote by $l_i$ and $l_{i+1}$ the lengths of edges that comes out of vertex $i$. Then, $w_i := \frac{l_i + l_{i+1}}{2}$. This can be augmented by the fact that if the the arithmetic length of both edges that comes out of vertex $i$ is longer, it is expected that vertex is a guard can see a larger pieces of polygon $P$. This implies that the range of camera $i$ has to be larger, which again means that it has to be of a higher price.
        	  \item    ...
        \end{itemize}
      \section{Conclusions and Future Work}
-     
-     
-  
+
+
+
     \bibliographystyle{abbrv}
     \bibliography{bib}
 
