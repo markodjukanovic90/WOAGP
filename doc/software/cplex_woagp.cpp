@@ -41,6 +41,7 @@ double time_limit = 900.0;
 string outdir="/home/djukanovic/Desktop/projects/rflcsp/MIP-RFLCS-2d/CP-instances/"; // the directory where .out files will be saved
 int m = 0; // number of sets
 int n = 0; // cardnality of X, i.e., |X|
+int alg = 0; // koji algoritam pozivamo 0: CPLEX (WSC); 1: Greedy (WSC)
 
 inline int stoi(string &s) {
 
@@ -59,6 +60,7 @@ void read_parameters(int argc, char **argv) {
     while (iarg < argc) {
         if (strcmp(argv[iarg],"-i")==0) inputFile.push_back(argv[++iarg]);
         else if (strcmp(argv[iarg],"-t")==0) time_limit = atof(argv[++iarg]);
+        else if (strcmp(argv[iarg],"-alg")==0) alg = atof(argv[++iarg]);
         iarg++;
     }
 }
@@ -76,7 +78,7 @@ ILOMIPINFOCALLBACK6(loggingCallback,
     double newTime = timer.elapsed_time(Timer::VIRTUAL);
     double newGap = 100.0*getMIPRelativeGap();
     if (nv < lastIncumbent) {
-        cout << "value " << nv << "\ttime " << newTime <<  "\tgap " << newGap << endl;
+        cout << "CPLEX sol: " << nv << "\ttime " << newTime <<  "\tgap " << newGap << endl;
         results[iter] = nv;
         times[iter] = newTime;
         gaps[iter] = newGap;
@@ -170,7 +172,7 @@ float greedy_procedure(vector<set<int>>& S, vector<int>& Cost)
            int index_set = min_greedy( Cost, S, C, indeks);  
            
            if(!findA(indeks, index_set)){ //jos nije dodan
-               C.push_back(S[index_set]);cout << "dodaj----> " << index_set << endl;
+               C.push_back(S[index_set]);cout << "dodaj ----> " << index_set << endl;
               indeks.push_back(index_set);
            } 
            f_C = f(C); 
@@ -234,7 +236,7 @@ void run_cplex(vector<int>& C, vector<set<int>>& S){
    // tell CPLEX to make use of the function 'loggingCallback' for writing out information to the screen
    //cplex.use(loggingCallback(env, timer, times, results, gaps, iter, lastObjVal));
    cout << "CPLEX pokrenut" << endl;
-   cplex.exportModel("ws.lp");
+   // cplex.exportModel("ws.lp");
    cplex.solve();
   
    if (cplex.getStatus() == IloAlgorithm::Optimal or cplex.getStatus() == IloAlgorithm::Feasible)
@@ -258,7 +260,7 @@ void run_cplex(vector<int>& C, vector<set<int>>& S){
 
        }
        cout << "}" << endl;
-       cout << "\nvalue: " << lastVal << endl;
+       cout << "\n CPLEX sol: " << lastVal << endl;
        //myfileOut << "value: " << lastVal << endl;
    }
    else cout << "Nema rjesenja" << endl;
@@ -344,20 +346,25 @@ int main(int argc, char **argv ) {
          // write the results in the output...
          std::stringstream filenameOut;
          filenameOut << outdir << inputFile[0].c_str() << ".out";
+         if(alg == 0) 
+         { 
+            cout << "Run CPLEX..." << endl;
+            run_cplex(C, S); //, myfileOut);
+            double end_time = timer.elapsed_time(Timer::VIRTUAL);
+            cout << "CPLEX time:" << (end_time - cur_time ) <<"\n";
+            // greedy procedure:
+         }else{
         
-         cout << "Run CPLEX..." << endl;
-         run_cplex(C, S); //, myfileOut);
-         double end_time = timer.elapsed_time(Timer::VIRTUAL);
-         cout << "time: " << (end_time - cur_time ) <<"\n";
-         // greedy procedure:
-         Timer timer_greedy;
-        // generisanje stream-a
-         double cur_time_greedy = timer_greedy.elapsed_time(Timer::VIRTUAL);
-         float greedy_sol = greedy_procedure( S, C); cout <<"GREEDY sol: " << greedy_sol << endl;
-         double end_time_greedy = timer_greedy.elapsed_time(Timer::VIRTUAL);
-         cout <<"GREEDY time: " << (end_time_greedy - cur_time_greedy) << endl;
-         //myfileOut << "time: " << (end_time - cur_time ) <<"\n";*/
-         //myfileOut.close();
+            Timer timer_greedy;
+            // generisanje stream-a
+            double cur_time_greedy = timer_greedy.elapsed_time(Timer::VIRTUAL);
+            float greedy_sol = greedy_procedure( S, C); 
+            cout <<"GREEDY sol: " << greedy_sol << endl;
+            double end_time_greedy = timer_greedy.elapsed_time(Timer::VIRTUAL);
+            cout <<"GREEDY time: " << (end_time_greedy - cur_time_greedy) << endl;
+            //myfileOut << "time: " << (end_time - cur_time ) <<"\n";*/
+            //myfileOut.close();
+         }
 }
 
 
