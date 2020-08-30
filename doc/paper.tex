@@ -202,9 +202,9 @@
       		     \State choose random vertex $v_{i'}$ from $s_{greedy}$
       		     \State $v_{i''} \gets$ consider neighbor vertices of vertex  $v_{i'}$ (two are possible) and choose one of them
       		     \State $s^1_{greedy} \gets$ $s_{greedy} \cup \{v_{i''} \} \setminus \{v_{i'}\}$
-      		      \If{$s_{greedy}$ do not improve  $D(P)_s$}
+      		      \If{$s^1_{greedy}$ do not improve  $D(P)_s$}
       		           \State $v_{i'''} \gets$ take the second neighbor vertex of $v_{i'}$
-      		           \State $s^2_{greedy} \gets$ swap $v_{i'''}$ with  $v_{v'}$ in  $s_{greedy}$
+      		           \State $s^2_{greedy} \gets$ $s_{greedy} \cup \{v_{i'''} \} \setminus \{v_{i'}\}$
       		           \If{$s^2_{greedy}$ do not improve $D(P)_s$}
       		                  \If{$s^1_{greedy} \vee s^2_{greedy}$ cover the same number of points as $D(P)_s$}
       		                     \State with random probability  0.5, choose the right for a new $s_{greedy}$
