@@ -188,6 +188,38 @@
       The first configuration of neighbourhood of some partial solution is operation of swapping; that means from a given partial solution $s^P$, we choose one guard from $s^P$ and then pick another guard from $V \setminus s^p$ w.r.t. value $obj(;)$.
       
       Another criterion for the neighbourhood's configuration ($k$-th) would be taking arbitrary $k$ guards $\{p_1,...,p_d\}$ from $s^p$, then drop them from $s^p$. Afterwords, for each $p_i$ which are dropped off, we take the guard which is nearest by distance from $p_i$ and add them into $s^p$. 
+      
+       \begin{algorithm}[!t] 
+      	\caption{Local Search}\label{alg:local-search}
+      	\begin{algorithmic}[1]
+      		\State \textbf{Input:} a (partial) solution $s_{greedy}=\{v_1,...,v_k\}$, $iter_{allow}>0.$
+      		\State \textbf{Output:} and improved solution $s$
+      		\While{$iter < iter_{allow}$}
+      		     \State $D(P)_s$ the number of points covered by $s_{greedy}$
+      		      \If{$|D(P)_s| == |D(P)|$} // a complete solution 
+      		          \State return $s_{greedy}$
+      		      \EndIf
+      		     \State choose random vertex $v_{i'}$ from $s_{greedy}$
+      		     \State $v_{i''} \gets$ consider neighbor vertices of vertex  $v_{i'}$ (two are possible) and choose one of them
+      		     \State $s^1_{greedy} \gets$ $s_{greedy} \cup \{v_{i''} \} \setminus \{v_{i'}\}$
+      		      \If{$s_{greedy}$ do not improve  $D(P)_s$}
+      		           \State $v_{i'''} \gets$ take the second neighbor vertex of $v_{i'}$
+      		           \State $s^2_{greedy} \gets$ swap $v_{i'''}$ with  $v_{v'}$ in  $s_{greedy}$
+      		           \If{$s^2_{greedy}$ do not improve $D(P)_s$}
+      		                  \If{$s^1_{greedy} \vee s^2_{greedy}$ cover the same number of points as $D(P)_s$}
+      		                     \State with random probability  0.5, choose the right for a new $s_{greedy}$
+      		                \Else
+      		                
+      		                     \State \emph{goto} line 4
+      		                \EndIf
+      		           \EndIf
+      		      \EndIf
+      		    
+      		     \State $iter \gets iter +1 $
+      		\EndWhile
+      	\end{algorithmic}
+      \end{algorithm}
+      
      \section{Computational Results}
        We used the instance of a specific OAGP and assigned the weights to each vertex of polygons. We have generated three kind of benchmarks:
        \begin{itemize}
