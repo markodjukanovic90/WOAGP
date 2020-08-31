@@ -196,11 +196,11 @@
         \begin{algorithm}[!t]
        	\caption{Local Search + Greedy}\label{alg:hybrid-ls-greedy}
        	\begin{algorithmic}
-       		   	\State \textbf{Input:} and Instance of the problem; $pct$:percentage
+       		   	\State \textbf{Input:} and Instance of the problem; $pct\in (0,1)$:percentage
        		    \State \textbf{Output:} a complete solution $s$
        		    \State $s_{greedy} \gets \emptyset$
        		    \While{ $s_{greedy}$ is not complete}
-       		        \State $s^P \gets$ call Greedy to expend $s_{greedy}$ for (up to) $\lfloor n \cdot p \rfloor$ guards 
+       		        \State $s^P \gets$ call Greedy to expend $s_{greedy}$ for (up to) $\lfloor n \cdot pct \rfloor$ guards 
        		        \State $s_{greedy} \gets$ LS($s^P$)
        		    \EndWhile
        \end{algorithmic}
