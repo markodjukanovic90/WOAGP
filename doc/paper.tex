@@ -187,8 +187,25 @@
       Local search (LS) technique is a basis of the LS--based metaheuristics. Let us define the structure of neighborhood. We define them over the set of guards.
       The first configuration of neighbourhood of some partial solution is operation of swapping; that means from a given partial solution $s^P$, we choose one guard from $s^P$ and then pick another guard from $V \setminus s^p$ w.r.t. value $obj(;)$.
 
-      Another criterion for the neighbourhood's configuration ($k$-th) would be taking arbitrary $k$ guards $\{p_1,...,p_d\}$ from $s^p$, then drop them from $s^p$. Afterwords, for each $p_i$ which are dropped off, we take the guard which is nearest by distance from $p_i$ and add them into $s^p$.
+      Another criterion for the neighbourhood's configuration ($k$-th) would be taking arbitrary $k$ guards $\{p_1,...,p_d\}$ from $s^p$, then drop them from $s^p$. Afterwords, for each $p_i$ which are dropped off, we take the guard which is the nearest by distance from $p_i$ and add them into $s^p$.
+      
+      \subsection{Hybrid of the Greed Heuristic and Local Search}
 
+       In order to improve the results of the Greedy heuristic, we propose a hybridization with the LS method. 
+       The pseudocode is given in Algorithm~\ref{alg: hybrid-ls-greedy}.
+        \begin{algorithm}[!t]
+       	\caption{Local Search}\label{alg:hybrid-ls-greedy}
+       	\begin{algorithmic}
+       		   	\State \textbf{Input:} and Instance of the problem; $pct$:percentage
+       		    \State \textbf{Output:} a complete solution $s$
+       		    \State $s_{greedy} \gets \emptyset$
+       		    \While{ $s_{greedy}$ is not complete}
+       		        \State $s^P \gets$ call Greedy to expend $s_{greedy}$ for (up to) $\lfloor n \cdot p \rfloor$ guards 
+       		        \State $s_{greedy} \gets$ LS($s^P$)
+       		    \EndWhile
+       \end{algorithmic}
+       \end{algorithm}	
+         
        \begin{algorithm}[!t]
       	\caption{Local Search}\label{alg:local-search}
       	\begin{algorithmic}[1]
