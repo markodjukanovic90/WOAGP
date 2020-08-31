@@ -162,6 +162,12 @@
        \end{align}
        and $p^*$ that minimizes $g(s^p, p^*)$ value is chosen as an extension of the current partial solution.
        Afterwards the region $S_{p^*}$ is further then dropped off from $P$, i.e., $P=P \setminus S_{p^*}$, and update $s^p= s^p \cup \{p^*\}$.  These steps are repeated until $s^P$ is complete, which means $P = \emptyset$ (polygon $P$ is covered by the guards from $s^P$).
+       
+       The best WSC problem greedy heuristic known from the literature was based on the following greedy heuristic:
+       \begin{align}
+          g(s^p, p_i) = \frac{w_{p_i}}{ f(s^p \cup \{p_i\})  - f(s^p)},
+       \end{align} 
+      where $f(s^p) = |\bigcup_{s \in s^p} s |$.
         \subsection{An Alternative Greedy Heuristic}
         \fxnote{TODO: work in progress...} Greedy criterion:
           \begin{itemize}
@@ -192,7 +198,7 @@
       \subsection{Hybrid of the Greed Heuristic and Local Search}
 
        In order to improve the results of the Greedy heuristic, we propose a hybridization with the LS method. 
-       The pseudocode is given in Algorithm~\ref{alg: hybrid-ls-greedy}.
+       The pseudocode is given in Algorithm~\ref{alg:hybrid-ls-greedy}.
         \begin{algorithm}[!t]
        	\caption{Local Search + Greedy}\label{alg:hybrid-ls-greedy}
        	\begin{algorithmic}
@@ -200,8 +206,8 @@
        		    \State \textbf{Output:} a complete solution $s$
        		    \State $s_{greedy} \gets \emptyset$
        		    \While{ $s_{greedy}$ is not complete}
-       		        \State $s^P \gets$ call Greedy to expend $s_{greedy}$ for (up to) $\lfloor n \cdot pct \rfloor$ guards 
-       		        \State $s_{greedy} \gets$ LS($s^P$)
+       		        \State $s_{greedy} \gets$ call Greedy to expend $s_{greedy}$ for (up to) $\lfloor n \cdot pct \rfloor$ guards 
+       		        \State $s_{greedy} \gets$ LS($s_{greedy}$)
        		    \EndWhile
        \end{algorithmic}
        \end{algorithm}	
