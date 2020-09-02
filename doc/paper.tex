@@ -186,6 +186,15 @@ More detailed overview of the results on art gallery problems is out the scope o
           g(s^p, p_i) = \frac{w_{p_i}}{ f(s^p \cup \{p_i\})  - f(s^p)},
        \end{align}
       where $f(s^p) = |\bigcup_{s \in s^p} s |$.
+      
+      One additional criterion can be given as a measure of intersection between one set  $S_{p_i}$ and 
+      and the other sets $S_{p_j}$, $j \neq i$ as follow:
+      \begin{align}\label{eq:intersection-heuristic}
+      	   g(s^P,p_i) = \frac{\sum_{p_j \in V \setminus s^P: p_i \neq p_j}|S_{p_i} \cap S_{p_j}|}{|V|-|s^P|-1}, p_i \in V \setminus s^P,
+      \end{align}
+      where $|S_{p_i} \cap S_{p_j}|$ denotes the measure of surface (in some unit) of the intersection for the two 
+      visible regions. If some set $S_{p_i}$ has less intersection with the  visible regions of other candidate guards it is more likely that $p_i$ will be a good candidate for a guard. So, based on it, we try to always add a vertex $p_j$ to $s^P$ which has the smallest $g$ value acc. to formula~(\ref{eq:intersection-heuristic}) 
+      
         \subsection{An Alternative Greedy Heuristic}
         \fxnote{TODO: work in progress...} Greedy criterion:
           \begin{itemize}
@@ -264,6 +273,9 @@ More detailed overview of the results on art gallery problems is out the scope o
       	\end{algorithmic}
       \end{algorithm}
 
+     \subsection{Beam Search (BS)}
+        BS is an incomplete BFS heuristic search algorithm. 
+        
      \section{Computational Results}
        We used the instance of a specific OAGP and assigned the weights to each vertex of polygons. We have generated three kind of benchmarks:
        \begin{itemize}
