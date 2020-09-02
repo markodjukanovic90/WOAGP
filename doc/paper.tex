@@ -105,9 +105,27 @@
 
 
     \section{Introduction}\label{sec:introduction}
-     \emph{The Orthogonal Art Gallery Problem} (OAGP) is one of many variants of Art Gallery Problem (AGP). AGP asks for a set of points $G$ of minimal cardinality on some polygon $P$ such that for each point $y \in P$ there is $x \in G$ such that $xy \subset P$.  Set $P$ is called guard set of $P$, and the points from $G$ as guards. The orthogonal AGP consider on arbitrary polygon but whose angles are $90^{\deg}$ and $270^{\deg}$. This problem is stated by Victor  Klee in 1973.~\cite{o1987art}. The problem is motivated from installing the cameras in a building (or gallery) such that the whole surface of the building is covered. Orthogonality comes out from the walls which are orthogonal to some other wall in a building. A variant of the OAGP for which we are interested in this studies allows only that guards are positioned at the edges of polygon $P$. This problem is known to be NP--hard~\cite{devadoss2011discrete}. Let su denote set $V$ as a set of all vertices of polygon $P$.
+     \emph{The Orthogonal Art Gallery Problem} (OAGP) is one of many variants of Art Gallery Problem (AGP). AGP asks for a set of points $G$ of minimal cardinality on some polygon $P$ such that for each point $y \in P$ there is $x \in G$ such that $xy \subset P$.  Set $G$ is called guard set of $P$ and the points from $G$ as guards. The orthogonal AGP consider on arbitrary polygon but whose angles are $90^{\circ}$ and $270^{\circ}$. This problem was stated by Victor  Klee in 1973.~\cite{o1987art}. The problem is motivated from installing the cameras in a building (or gallery) such that the whole surface of the building is covered. Orthogonality constraint naturally comes out from the orthogonality of the walls in a building.
+     
+     Kahn et al. in ~\cite{kahn1983traditional} formulated and proofed that 	$\lfloor \frac{n}{4} \rfloor$ guards are  sufficient to cover an orthogonal polygon with $n$ vertices.  A variant of the OAGP for which we are interested in this study allows only that guards are positioned at the vertices of polygon $P$. Actually, we are looking for minimum vertex guards needed to cover an orthogonal polygon. This problem is known to be NP- hard in ~\cite{schuchardt1995two,katz2008guarding}.
+     
+     By discretization $D(P)$ the set of points of the polygon $P$, the art gallery problem can be reduced to the well-known Min Set Cover Problem. For each vertex of the polygon $P$, a set of points of visibility is determined. On that way, the problem of determining the minimum number of guards covering the entire polygon is reduced to determining the minimum number of subsets of points, such that each point from $D(P)$ is included in at least one of the chosen subsets.
+     
+     
+        
+     In ~\cite{ghosh2010approximation} an approximate solution of the minimum vertex guard problem, which can be computed in $O(n^4)$ time and the size of the solution is at most $O(\log n)$ times the optimal, is presented for simple polygon with $n$ vertices. Firstly, this algorithm partition the polygonal region into convex components and construct sets consisting of these convex components. After that, on these constructed sets Johnson’s approximation algorithm ~\cite{johnson1974approximation} for the Minimum set-covering problem (MSC) is applied to get solution.
+     
+     An anytime algorithm to compute successively better approximations of the optimum to Minimum Vertex Guard is proposed in ~\cite{tomas2003approximation}.  A major idea of this approach is exploring dominance of visibility regions to first detect pieces that are
+more difficult to guard. The same problem is solved   in ~\cite{tomas2006visibility} by applying successive approximations from  ~\cite{tomas2003approximation}.
 
-     Since then, many approaches have been proposed to solve the problem.
+Tozoni et a. ~\cite{tozoni2013practical,tozoni2016algorithm}  presented an exact Integer linear programming  (ILP)-based  algorithm, which iteratively generates upper and lower bounds through the resolution of discretized space of the AGP.
+
+More detailed overview of the results on art gallery problems is out the scope of this paper and can be found in a survey paper  ~\cite{ghosh2010approximation2}.
+
+ 
+    Couto et al. presented an exact and efficient algorithm for the Orthogonal Art Gallery Problem in ~\cite{couto2007exact}. The algorithm is divided into two phases. In the preprocessing phase an initial discretization is constructed and the Integer Programming model for solving MSC is applied.  In the solution phase, the discretized instance is iteratively refined and solved, until the solution becomes viable.
+
+     
      \fxnote{TODO: work on literature approaches}
      \section{Preliminaries}
      Solvers which solves IP model for OAGP problem are one of the most efficient techniques to approach this problem. It is known that the problem is related to the known Minimal-Set-Cover (MSC) problem.
@@ -162,11 +180,11 @@
        \end{align}
        and $p^*$ that minimizes $g(s^p, p^*)$ value is chosen as an extension of the current partial solution.
        Afterwards the region $S_{p^*}$ is further then dropped off from $P$, i.e., $P=P \setminus S_{p^*}$, and update $s^p= s^p \cup \{p^*\}$.  These steps are repeated until $s^P$ is complete, which means $P = \emptyset$ (polygon $P$ is covered by the guards from $s^P$).
-       
+
        The best WSC problem greedy heuristic known from the literature was based on the following greedy heuristic:
        \begin{align}
           g(s^p, p_i) = \frac{w_{p_i}}{ f(s^p \cup \{p_i\})  - f(s^p)},
-       \end{align} 
+       \end{align}
       where $f(s^p) = |\bigcup_{s \in s^p} s |$.
         \subsection{An Alternative Greedy Heuristic}
         \fxnote{TODO: work in progress...} Greedy criterion:
@@ -194,10 +212,10 @@
       The first configuration of neighbourhood of some partial solution is operation of swapping; that means from a given partial solution $s^P$, we choose one guard from $s^P$ and then pick another guard from $V \setminus s^p$ w.r.t. value $obj(;)$.
 
       Another criterion for the neighbourhood's configuration ($k$-th) would be taking arbitrary $k$ guards $\{p_1,...,p_d\}$ from $s^p$, then drop them from $s^p$. Afterwords, for each $p_i$ which are dropped off, we take the guard which is the nearest by distance from $p_i$ and add them into $s^p$.
-      
+
       \subsection{Hybrid of the Greed Heuristic and Local Search}
 
-       In order to improve the results of the Greedy heuristic, we propose a hybridization with the LS method. 
+       In order to improve the results of the Greedy heuristic, we propose a hybridization with the LS method.
        The pseudocode is given in Algorithm~\ref{alg:hybrid-ls-greedy}.
         \begin{algorithm}[!t]
        	\caption{Local Search + Greedy}\label{alg:hybrid-ls-greedy}
@@ -206,16 +224,16 @@
        		    \State \textbf{Output:} a complete solution $s$
        		    \State $s_{greedy} \gets \emptyset$
        		    \While{ $s_{greedy}$ is not complete}
-       		        \State $s_{greedy} \gets$ call Greedy to expend $s_{greedy}$ for (up to) $\lfloor n \cdot pct \rfloor$ guards 
+       		        \State $s_{greedy} \gets$ call Greedy to expend $s_{greedy}$ for (up to) $\lfloor n \cdot pct \rfloor$ guards
        		        \State $s_{greedy} \gets$ LS($s_{greedy}$)
        		    \EndWhile
        \end{algorithmic}
        \end{algorithm}	
-         
+
        \begin{algorithm}[!t]
       	\caption{Local Search}\label{alg:local-search}
       	\begin{algorithmic}[1]
-      		\State \textbf{Input:} a (partial) solution $s_{greedy}=\{v_1,...,v_k\}$, $iter_{allow}>0., $ probability $p$ 
+      		\State \textbf{Input:} a (partial) solution $s_{greedy}=\{v_1,...,v_k\}$, $iter_{allow}>0., $ probability $p$
       		\State \textbf{Output:} and improved solution $s$
       		\While{$iter < iter_{allow}$}
       		     \State $D(P)_s$ the number of points covered by $s_{greedy}$
@@ -231,12 +249,12 @@
       \EndIf
                     \If {$|D(P)_{s^1_{greedy}}|==|D(P)_{s_{greedy}}|$ }
                         \State $s_{greedy} \gets s^1_{greedy}$ with probability $p$
-                    
-      		      \EndIf     
+
+      		      \EndIf
       		       \If{$|D(P)_{s^2_{greedy}}|>|D(P)_{s_{greedy}}|$ }
                         \State $s_{greedy} \gets s^2_{greedy}$
       		      \EndIf
-                    
+
             \If {$|D(P)_{s^2_{greedy}}|==|D(P)_{s_{greedy}}|$ }
                         \State $s_{greedy} \gets s^2_{greedy}$ with probability $p$
                     \EndIf
