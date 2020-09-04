@@ -274,7 +274,8 @@ More detailed overview of the results on art gallery problems is out the scope o
       \end{algorithm}
 
      \subsection{Beam Search (BS)}
-        BS is an incomplete BFS heuristic search algorithm. 
+        Beam Searxh is an incomplete BFS heuristic search algorithm. At each level of the search, the best $\beta>0$ nodes i kept in the structure called \emph{beam} $B$. all nodes are then expanded in all possible ways. Among the expansions, again, $\beta$ bst nodes is taken for the beam of the next level. 
+        The search is processed in the same manner until $B$ is empty. The main question concerns of the criterion of choosing the nodes for a beam. This is done by means of a heuristic evaluation of the nodes. The heuristic is a problem-specific aspect of each problem that has to be solved. \fxnote{work in progress...}
         
      \section{Computational Results}
        We used the instance of a specific OAGP and assigned the weights to each vertex of polygons. We have generated three kind of benchmarks:
