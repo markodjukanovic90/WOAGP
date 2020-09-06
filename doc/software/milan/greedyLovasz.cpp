@@ -51,7 +51,7 @@ using namespace std::chrono;
 vector<float> Surface;
 vector<int> Cost;
 vector<vector<float>>Intersection;
-#define INFEASIBLE 100000;
+#define INFEASIBLE 100000
 
 /** kraj pomocnih str. za gridi metode **/
 
@@ -449,7 +449,7 @@ float greedy_procedure(vector<set<Point_2>> &S)
 
 int main(int argc, char const *argv[])
 {
-  for(int file_number=8; file_number<=200; file_number+=2) // start = 8
+  for(int file_number=50; file_number<=200; file_number+=2) // start = 8
   for(int file_order=1; file_order<=1; file_order++) // file_order<=file_number
   {
     const string category = "small";
