@@ -44,6 +44,12 @@ typedef CGAL::Triangular_expansion_visibility_2<Arrangement_2>          TEV;
 CGAL::Cartesian_converter<Kernel,K> converter; 
 CGAL::Cartesian_converter<K, Kernel> converter2; 
 
+/** pomocne strukture za gridi metod **/
+vector<float> Surface;
+vector<int> Cost;
+vector<vector<float>>Intersection;
+/** kraj pomocnih str. za gridi metode **/
+
 using namespace std;
 using namespace std::chrono;
 
@@ -300,7 +306,41 @@ int f_minus(vector<set<Point_2>>& C, set<Point_2>& ss ) // f(C u {s}) - f(S)
     return ss.size() - count; 
 }
 
-float greedy_criterion(vector<int>& Cost, vector<set<Point_2>>& S, int i, vector<set<Point_2>>& C) // take s_i from S
+/** 
+ parametar 
+ @i: Za i-tog cuvara (tacku poligona koja je ideksirana u preprocesingu), vraca povrsinu poligona koju ovaj poligon vidi 
+ 
+ TODO: Milane, za ovo je potrebno da mi pripremis je za i-ti cvor poligona povrsina koju on vidi, to mi vrati u vektor Surface[i] 
+*/
+float greedy_criterion1(int i)
+{
+
+    return Cost[i] / Surface[i];
+
+}
+
+/**   Gridi funkcija (6)  prema indeksiranju u radu
+TODO: Milane, Za svaka dva cuvara i,j, potrebna mi je struktura koja racuna povrsinu poligona koji je presjek poligona vidljivosti cvora i te poligona vidljivosti cvora j
+--> cuvaj ih po mogucnosti u nekoj matricnoj strukturi Intersection[i][j]
+
+Param:
+@i: indeks cvora za koji se racuna gridi vrijednost 
+@S: trenutni parcijalni skup 
+@n: broj tjemena
+ **/
+float greedy_criterion2(vector<set<Point_2>>& S, int i, int n)
+{
+      float num = 0.0;
+      int den = n - S.size();
+      for(int j = 0; j < n; ++j) {
+          if(S[j] != S[i]){
+             num += Intersection[ i ][ j ];
+          }
+      }
+      return num / den;
+}
+
+float greedy_criterion(vector<set<Point_2>>& S, int i, vector<set<Point_2>>& C) // take s_i from S
 {     
     set<Point_2> s = S[i];
     int f_m = f_minus(C, s);  //cout << "f_m: " << f_m << endl;
@@ -321,12 +361,12 @@ bool findA(vector<int>& s, int a)
       return false;  
 }
 
-int min_greedy(vector<int>& Cost, vector<set<Point_2>>& S, vector<set<Point_2>>& C, vector<int>& indeks)
+int min_greedy(vector<set<Point_2>>& S, vector<set<Point_2>>& C, vector<int>& indeks)
 {         //cout << "min_greedy" << endl;
           float g_m = 10000000; int dodaj;
           for(int i = 0; i < S.size(); ++i)
           {  // cout << "i " << i << endl;
-              float g_mi = greedy_criterion(Cost, S, i, C); //cout << "gmi: " << g_mi << endl;
+              float g_mi = greedy_criterion(S, i, C); //cout << "gmi: " << g_mi << endl;
               if(g_mi < g_m and g_mi != 100000 and !findA(indeks, i)) 
               { 
                  dodaj = i;
@@ -336,7 +376,7 @@ int min_greedy(vector<int>& Cost, vector<set<Point_2>>& S, vector<set<Point_2>>&
           return dodaj;
 }
 
-float greedy_procedure(vector<set<Point_2>> &S, vector<int> &Cost)
+float greedy_procedure(vector<set<Point_2>> &S)
 {
      vector<set<Point_2>> C;
      vector<int> indeks;
@@ -346,14 +386,14 @@ float greedy_procedure(vector<set<Point_2>> &S, vector<int> &Cost)
 
      while(f_C != f_S) 
      {
-       cout<<"-----------rosao------"<<endl; 
-           int index_set = min_greedy( Cost, S, C, indeks);
+           // cout<<"-----------rosao------"<<endl; 
+           int index_set = min_greedy(S, C, indeks);
            
            if(!findA(indeks, index_set)){ //jos nije dodan
            
-               C.push_back(S[index_set]);cout << "dodaj ----> " << index_set << endl;
-               cout<<"-----------rosao2------"<<endl; 
-              indeks.push_back(index_set);
+               C.push_back(S[index_set]);//cout << "dodaj ----> " << index_set << endl;
+               //cout<<"-----------rosao2------"<<endl; 
+               indeks.push_back(index_set);
            } 
            
            f_C = f(C); 
@@ -391,17 +431,17 @@ int main(int argc, char const *argv[])
     cout<<"Created polygon "<<filename<<endl;
 
     // --------------------------read visibility set----------------------------
-    cout<<"Creating diskretization for visibility polygons..................."<<endl;
+    cout<<"Creating discretization for visibility polygons..................."<<endl;
     vector<set<Point_2>> pvD(n);
     read_visibility_set(predprocesing, pvD, n);
 
     // ---------------------------------greedy------------------------------------
-    vector<int> cost;
+   // vector<int> cost;
     for (size_t i = 0; i < n; i++)
-      cost.push_back(1);
+         Cost.push_back(1);
 
     auto start = high_resolution_clock::now();
-    float s = greedy_procedure(pvD, cost);
+    float s = greedy_procedure(pvD);
     auto stop = high_resolution_clock::now();
     // ------------------------------greedy - end------------------------------------
 

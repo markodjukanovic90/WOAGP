@@ -272,17 +272,18 @@ More detailed overview of the results on art gallery problems is out the scope o
       		 \State return $s_{greedy}$
       	\end{algorithmic}
       \end{algorithm}
-
+    \begin{comment}
+    
      \subsection{Beam Search (BS)}
         Beam Searxh is an incomplete BFS heuristic search algorithm. At each level of the search, the best $\beta>0$ nodes i kept in the structure called \emph{beam} $B$. all nodes are then expanded in all possible ways. Among the expansions, again, $\beta$ bst nodes is taken for the beam of the next level. 
-        The search is processed in the same manner until $B$ is empty. The main question concerns of the criterion of choosing the nodes for a beam. This is done by means of a heuristic evaluation of the nodes. The heuristic is a problem-specific aspect of each problem that has to be solved. \fxnote{work in progress...}
-        
+        The search is processed in the same manner until $B$ is empty. The main question concerns of the criterion of choosing the nodes for a beam. This is done by means of a heuristic evaluation of the nodes. The heuristic is a problem-specific aspect of each problem that is considered for solving. \fxnote{work in progress...}
+    \end{comment}   
      \section{Computational Results}
        We used the instance of a specific OAGP and assigned the weights to each vertex of polygons. We have generated three kind of benchmarks:
        \begin{itemize}
        	  \item \emph{random benchmarks}. For each vertex $i$ of polygon $P$ we take a random value $w_i \in \{X_1,...,X_q\}$ \fxnote{da li je domen ovdje OK? } as its weight ($X_i$ are some random values for prices), $q \in \mathbb{N}$.
-       	  \item \emph{topological-type benchmarks}. For each vertex $i$ of polygon $P$ let us denote by $l_i$ and $l_{i+1}$ the lengths of edges that comes out of vertex $i$. Then, $w_i := \frac{l_i + l_{i+1}}{2}$. This can be augmented by the fact that if the the arithmetic length of both edges that comes out of vertex $i$ is longer, it is expected that vertex is a guard can see a larger pieces of polygon $P$. This implies that the range of camera $i$ has to be larger, which again means that it has to be of a higher price.
-       	  \item    ...
+       	  \item \emph{topologically-based benchmarks}. For each vertex $i$ of polygon $P$ let us denote by $l_i$ and $l_{i+1}$ the lengths of edges that comes out of vertex $i$. Then, $w_i := \frac{l_i + l_{i+1}}{2}$. This can be augmented by the fact that if the the arithmetic length of both edges that comes out of vertex $i$ is longer, it is expected that vertex is a guard can see a larger pieces of polygon $P$. This implies that the range of camera $i$ has to be larger, which again means that it has to be of a higher price.
+       	 \item \emph{distance-based benchmarks:} For each vertex $i$, a weight is assigned to $i$ by making use of the information about the distance from that point to the point in the polygon which is at the longest distance but visible from $i$ (among all other points in polygon).  
        \end{itemize}
      \section{Conclusions and Future Work}
 
