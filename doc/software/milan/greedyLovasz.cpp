@@ -363,7 +363,8 @@ float greedy_criterion2(vector<set<Point_2>>& S, vector<int>& indeks, int i)   /
       float num = 0.0;
       int den = S.size() - indeks.size();
       for(int j = 0; j < S.size(); ++j) {
-          if( S[j] != S[i] and  std::find(indeks.begin(), indeks.end(), j) == indeks.end()) ){ // S_j ne smije biti u vec dodanom parcijalnom skupu 
+          if(S[j] != S[i] &&  std::find(indeks.begin(), indeks.end(), j) == indeks.end())
+          { // S_j ne smije biti u vec dodanom parcijalnom skupu 
               num += Intersection[i][j];
           } 
       }
