@@ -51,6 +51,8 @@ using namespace std::chrono;
 vector<float> Surface;
 vector<int> Cost;
 vector<vector<float>>Intersection;
+#define INFEASIBLE 100000;
+
 /** kraj pomocnih str. za gridi metode **/
 
 vector<string> split(const string& str, const string& delim)
@@ -355,6 +357,9 @@ Param:
 
 float greedy_criterion2(vector<set<Point_2>>& S, vector<int>& indeks, int i)   //vector<set<Point_2>>& C, int i)
 {
+      if(std::find(indeks.begin(), indeks.end(), i) != indeks.end() ) // i vec u skupu indeks koji odg. parcijalnom rjesenju...
+         return INFEASIBLE;
+ 
       float num = 0.0;
       int den = S.size() - indeks.size();
       for(int j = 0; j < S.size(); ++j) {
@@ -375,7 +380,7 @@ float greedy_criterion(vector<set<Point_2>>& S, int i, vector<set<Point_2>>& C) 
     set<Point_2> s = S[i];
     int f_m = f_minus(C, s);  //cout << "f_m: " << f_m << endl;
     if(f_m == 0)
-       return 100000;
+       return INFEASIBLE;
 
     float val = ((float)Cost[i]) / (f_minus(C, s));     //cout << "val: " << val << endl; 
     return val;
@@ -399,7 +404,7 @@ int min_greedy(vector<set<Point_2>>& S, vector<set<Point_2>>& C, vector<int>& in
               //float g_mi = greedy_criterion(S, i, C); //cout << "gmi: " << g_mi << endl;
               //float g_mi = greedy_criterion1(i);
               float g_mi = greedy_criterion2(S, indeks, i);
-              if(g_mi < g_m and g_mi != 100000 and !findA(indeks, i)) 
+              if(g_mi < g_m and g_mi != INFEASIBLE and !findA(indeks, i)) 
               { 
                  dodaj = i;
                  g_m = g_mi;   
