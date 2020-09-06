@@ -44,14 +44,14 @@ typedef CGAL::Triangular_expansion_visibility_2<Arrangement_2>          TEV;
 CGAL::Cartesian_converter<Kernel,K> converter; 
 CGAL::Cartesian_converter<K, Kernel> converter2; 
 
+using namespace std;
+using namespace std::chrono;
+
 /** pomocne strukture za gridi metod **/
 vector<float> Surface;
 vector<int> Cost;
 vector<vector<float>>Intersection;
 /** kraj pomocnih str. za gridi metode **/
-
-using namespace std;
-using namespace std::chrono;
 
 vector<string> split(const string& str, const string& delim)
 {
@@ -265,6 +265,37 @@ void write_test(const string &filename, string &tekst)
   outfile << tekst; 
 }
 
+template<class Kernel, class Container>
+Traits_2::FT area_polygon_with_holes(const CGAL::Polygon_with_holes_2<Kernel, Container> & pwh)
+{
+  Traits_2::FT res = 0;
+  if (! pwh.is_unbounded()) {
+    res = pwh.outer_boundary().area();
+  } else
+    return res;
+
+  typename CGAL::Polygon_with_holes_2<Kernel,Container>::Hole_const_iterator hit;
+  unsigned int k = 1;
+  for (hit = pwh.holes_begin(); hit != pwh.holes_end(); ++hit, ++k) 
+    res -= (*hit).area();
+
+  return res;
+}
+
+Traits_2::FT area_set_polygons(Polygon_set_2 S)
+{
+  Traits_2::FT povrsina = 0;
+
+  std::list<Polygon_with_holes_2> res;
+  S.polygons_with_holes (std::back_inserter (res));
+
+  Pwh_list_2::const_iterator it_res;
+  for (it_res = res.begin(); it_res != res.end(); ++it_res) 
+    povrsina += area_polygon_with_holes(*it_res);
+      
+  return povrsina;
+}
+
 // Markove funkcije  -  malo modifikovano
 
 int f(vector<set<Point_2>> &C)
@@ -285,7 +316,7 @@ int f(vector<set<Point_2>> &C)
        return (int)d.size();
 }
 
-int f_minus(vector<set<Point_2>>& C, set<Point_2>& ss ) // f(C u {s}) - f(S)
+int f_minus(vector<set<Point_2>>& C, set<Point_2>& ss) // f(C u {s}) - f(S)
 {
     int count = 0; // ako i \in ss nije niti u jednom od skupova u S, onda count++;
     if(C.empty())
@@ -306,15 +337,8 @@ int f_minus(vector<set<Point_2>>& C, set<Point_2>& ss ) // f(C u {s}) - f(S)
     return ss.size() - count; 
 }
 
-/** 
- parametar 
- @i: Za i-tog cuvara (tacku poligona koja je ideksirana u preprocesingu), vraca povrsinu poligona koju ovaj poligon vidi 
- 
- TODO: Milane, za ovo je potrebno da mi pripremis je za i-ti cvor poligona povrsina koju on vidi, to mi vrati u vektor Surface[i] 
-*/
 float greedy_criterion1(int i)
 {
-
     return Cost[i] / Surface[i];
 
 }
@@ -328,13 +352,14 @@ Param:
 @S: trenutni parcijalni skup 
 @n: broj tjemena
  **/
+
 float greedy_criterion2(vector<set<Point_2>>& S, int i, int n)
 {
       float num = 0.0;
-      int den = n - S.size();
+      int den = n;// - S.size();
       for(int j = 0; j < n; ++j) {
           if(S[j] != S[i]){
-             num += Intersection[ i ][ j ];
+             num += Intersection[i][j];
           }
       }
       return num / den;
@@ -366,7 +391,9 @@ int min_greedy(vector<set<Point_2>>& S, vector<set<Point_2>>& C, vector<int>& in
           float g_m = 10000000; int dodaj;
           for(int i = 0; i < S.size(); ++i)
           {  // cout << "i " << i << endl;
-              float g_mi = greedy_criterion(S, i, C); //cout << "gmi: " << g_mi << endl;
+              //float g_mi = greedy_criterion(S, i, C); //cout << "gmi: " << g_mi << endl;
+              //float g_mi = greedy_criterion1(i);
+              float g_mi = greedy_criterion2(S,i,S.size());
               if(g_mi < g_m and g_mi != 100000 and !findA(indeks, i)) 
               { 
                  dodaj = i;
@@ -385,14 +412,12 @@ float greedy_procedure(vector<set<Point_2>> &S)
      int f_C = 0;
 
      while(f_C != f_S) 
-     {
-           // cout<<"-----------rosao------"<<endl; 
+     { 
            int index_set = min_greedy(S, C, indeks);
            
            if(!findA(indeks, index_set)){ //jos nije dodan
            
                C.push_back(S[index_set]);//cout << "dodaj ----> " << index_set << endl;
-               //cout<<"-----------rosao2------"<<endl; 
                indeks.push_back(index_set);
            } 
            
@@ -411,14 +436,13 @@ float greedy_procedure(vector<set<Point_2>> &S)
      //return C.size();
 }
 
-
 int main(int argc, char const *argv[])
 {
   for(int file_number=8; file_number<=200; file_number+=2) // start = 8
   for(int file_order=1; file_order<=1; file_order++) // file_order<=file_number
   {
     const string category = "small";
-    const string result_location = "test-small-new.txt";
+    const string result_location = "test-small-greedy-criterion2.txt";
 
     string filename = "min-" + std::to_string(file_number) + "-" + std::to_string(file_order) + ".pol";
     string location = "instance/" + category + "/" + filename;
@@ -430,13 +454,52 @@ int main(int argc, char const *argv[])
     Polygon_2 p = Polygon_2(points, points+n);
     cout<<"Created polygon "<<filename<<endl;
 
+    // -------------------------visibility points------------------------------
+    cout<<"Creating visibility polygons...................";
+    vector<Polygon_2> pv = visibility_polygon(points, n);
+    // sve tacke ce biti orjentisane surotno kazaljki na satu
+    for(size_t i = 0; i < n; i++)
+      if(pv[i].orientation()==-1)
+        pv[i].reverse_orientation();
+    // kraj promjene orjentacije
+    cout<<"end!!!"<<endl;
+
+    //-------------------------------- area of poligons -------------------------
+    cout<<"Calculating area of polygon...................";
+    for (size_t i = 0; i < n; i++)
+      Surface.push_back((float)converter(pv[i].area()));
+    cout<<"end!!!"<<endl;
+    
+    //-------------------------------- area of intersection poligons -------------------------
+    cout<<"Calculating area of digerence polygon...................";
+    for (size_t i = 0; i < n; i++)
+    {
+      vector<float> area_row(n);
+      Polygon_set_2 pvs(pv[i]);
+    
+      for (size_t j = 0; j < n; j++)
+        if(i==j)
+          area_row[j] = Surface[i];
+        else
+        {
+          Polygon_set_2 pvs(pv[i]);
+          pvs.intersection(pv[j]);
+          area_row[j] = (float)converter(area_set_polygons(pvs));
+        }
+        Intersection.push_back(area_row);
+    }
+    cout<<"end!!!"<<endl;
+
+
+
     // --------------------------read visibility set----------------------------
     cout<<"Creating discretization for visibility polygons..................."<<endl;
     vector<set<Point_2>> pvD(n);
     read_visibility_set(predprocesing, pvD, n);
+    cout<<"end!!!"<<endl;
 
     // ---------------------------------greedy------------------------------------
-   // vector<int> cost;
+    // vector<int> cost;
     for (size_t i = 0; i < n; i++)
          Cost.push_back(1);
 
@@ -450,7 +513,7 @@ int main(int argc, char const *argv[])
     string result_write = std::to_string(file_number) + "-" + std::to_string(file_order) + ";" + std::to_string((int)s) + ";" + std::to_string(duration.count()) + "\n";
     write_test(result_location, result_write);
     cout<<"Dovoljan broj cuvara je: "<<s<<endl;
+  
   }
-
   return EXIT_SUCCESS;
 }
