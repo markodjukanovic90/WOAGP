@@ -349,22 +349,27 @@ TODO: Milane, Za svaka dva cuvara i,j, potrebna mi je struktura koja racuna povr
 
 Param:
 @i: indeks cvora za koji se racuna gridi vrijednost 
-@S: trenutni parcijalni skup 
-@n: broj tjemena
+@indeks: trenutni parcijalni skup  --> samo indeksi skupova uzeti radi optimizacije
+@S: skup svih tjemena
  **/
 
-float greedy_criterion2(vector<set<Point_2>>& S, int i, int n)
+float greedy_criterion2(vector<set<Point_2>>& S, vector<int>& indeks, int i)   //vector<set<Point_2>>& C, int i)
 {
       float num = 0.0;
-      int den = n;// - S.size();
-      for(int j = 0; j < n; ++j) {
-          if(S[j] != S[i]){
-             num += Intersection[i][j];
-          }
+      int den = S.size() - indeks.size();
+      for(int j = 0; j < S.size(); ++j) {
+          if( S[j] != S[i] and  std::find(indeks.begin(), indeks.end(), j) == indeks.end()) ){ // S_j ne smije biti u vec dodanom parcijalnom skupu 
+              num += Intersection[i][j];
+          } 
       }
       return num / den;
 }
-
+/**
+param:
+@S: skup svih skupova (instance) 
+@C: parcijalno rjesenje (trenutno) 
+@i: index skupa S_i koji se razmatra za dodavanje u parcijalni skup @C
+**/
 float greedy_criterion(vector<set<Point_2>>& S, int i, vector<set<Point_2>>& C) // take s_i from S
 {     
     set<Point_2> s = S[i];
@@ -393,7 +398,7 @@ int min_greedy(vector<set<Point_2>>& S, vector<set<Point_2>>& C, vector<int>& in
           {  // cout << "i " << i << endl;
               //float g_mi = greedy_criterion(S, i, C); //cout << "gmi: " << g_mi << endl;
               //float g_mi = greedy_criterion1(i);
-              float g_mi = greedy_criterion2(S,i,S.size());
+              float g_mi = greedy_criterion2(S, indeks, i);
               if(g_mi < g_m and g_mi != 100000 and !findA(indeks, i)) 
               { 
                  dodaj = i;
