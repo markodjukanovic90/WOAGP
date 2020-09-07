@@ -52,6 +52,7 @@ vector<float> Surface;
 vector<int> Cost;
 vector<vector<float>>Intersection;
 #define INFEASIBLE 100000
+int cardinalityD;
 
 /** kraj pomocnih str. za gridi metode **/
 
@@ -298,7 +299,37 @@ Traits_2::FT area_set_polygons(Polygon_set_2 S)
   return povrsina;
 }
 
+
+// unija skupova iz @S sa indeksima iz @index
+/**
+param:
+@index: skup indeksa cije vrijednosti treba sojiti uniom
+@S: Skuovi tacaka vidljivosti za odgovarajuce strazare
+**/
+set<Point_2> union_by_index(vector<int> &index, vector<set<Point_2>> &S)
+{
+  set<Point_2> result;
+  for (size_t i = 0; i < index.size(); i++)
+    for(Point_2 p : S[i])
+      result.insert(p);
+  
+  return result;
+}
+
+// kardinalnost skupa tacaka koje su pokrivene sa tjemenima ciji su indeksi dati sa @indeks
+/**
+param:
+@index: skup indeksa cije vrijednosti treba sojiti uniom
+@S: Skuovi tacaka vidljivosti za odgovarajuce strazare
+**/
+int cardinality_by_index(vector<int> &index, vector<set<Point_2>> &S)
+{
+  return union_by_index(index, S).size();
+}
+
 // Markove funkcije  -  malo modifikovano
+
+
 
 int f(vector<set<Point_2>> &C)
 {
@@ -399,13 +430,13 @@ bool findA(vector<int>& s, int a)
 
 int min_greedy(vector<set<Point_2>>& S, vector<set<Point_2>>& C, vector<int>& indeks)
 {         //cout << "min_greedy" << endl;
-          float g_m = 10000000; int dodaj;
+          float g_m = -1; int dodaj;
           for(int i = 0; i < S.size(); ++i)
           {  // cout << "i " << i << endl;
               //float g_mi = greedy_criterion(S, i, C); //cout << "gmi: " << g_mi << endl;
               //float g_mi = greedy_criterion1(i);
               float g_mi = greedy_criterion2(S, indeks, i);
-              if(g_mi < g_m and g_mi != INFEASIBLE and !findA(indeks, i)) 
+              if(g_mi > g_m and g_mi != INFEASIBLE and !findA(indeks, i)) 
               { 
                  dodaj = i;
                  g_m = g_mi;   
@@ -414,7 +445,7 @@ int min_greedy(vector<set<Point_2>>& S, vector<set<Point_2>>& C, vector<int>& in
           return dodaj;
 }
 
-float greedy_procedure(vector<set<Point_2>> &S)
+float greedy_procedure(vector<set<Point_2>> &S, Polygon_2 &pol)
 {
      vector<set<Point_2>> C;
      vector<int> indeks;
@@ -425,6 +456,9 @@ float greedy_procedure(vector<set<Point_2>> &S)
      while(f_C != f_S) 
      { 
            int index_set = min_greedy(S, C, indeks);
+           cout<<pol[index_set]<<endl;
+           cout<<index_set<<endl;
+
            
            if(!findA(indeks, index_set)){ //jos nije dodan
            
@@ -449,7 +483,7 @@ float greedy_procedure(vector<set<Point_2>> &S)
 
 int main(int argc, char const *argv[])
 {
-  for(int file_number=50; file_number<=200; file_number+=2) // start = 8
+  for(int file_number=14; file_number<=14; file_number+=2) // start = 8
   for(int file_order=1; file_order<=1; file_order++) // file_order<=file_number
   {
     const string category = "small";
@@ -482,7 +516,7 @@ int main(int argc, char const *argv[])
     cout<<"end!!!"<<endl;
     
     //-------------------------------- area of intersection poligons -------------------------
-    cout<<"Calculating area of digerence polygon...................";
+    cout<<"Calculating area of digerence polygon..................."<<endl;
     for (size_t i = 0; i < n; i++)
     {
       vector<float> area_row(n);
@@ -497,7 +531,13 @@ int main(int argc, char const *argv[])
           pvs.intersection(pv[j]);
           area_row[j] = (float)converter(area_set_polygons(pvs));
         }
-        Intersection.push_back(area_row);
+      for (size_t j = 0; j < n; j++)
+      {
+        cout<<area_row[j]<<" - ";
+      }
+      cout<<endl;
+      
+      Intersection.push_back(area_row);
     }
     cout<<"end!!!"<<endl;
 
@@ -508,6 +548,7 @@ int main(int argc, char const *argv[])
     vector<set<Point_2>> pvD(n);
     read_visibility_set(predprocesing, pvD, n);
     cout<<"end!!!"<<endl;
+    cardinalityD = f(pvD);
 
     // ---------------------------------greedy------------------------------------
     // vector<int> cost;
@@ -515,7 +556,7 @@ int main(int argc, char const *argv[])
          Cost.push_back(1);
 
     auto start = high_resolution_clock::now();
-    float s = greedy_procedure(pvD);
+    float s = greedy_procedure(pvD, p);
     auto stop = high_resolution_clock::now();
     // ------------------------------greedy - end------------------------------------
 
