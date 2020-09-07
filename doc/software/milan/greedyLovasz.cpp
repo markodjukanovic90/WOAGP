@@ -53,6 +53,7 @@ vector<int> Cost;
 vector<vector<float>>Intersection;
 #define INFEASIBLE 100000
 int cardinalityD;
+int wTotal = 0;
 
 /** kraj pomocnih str. za gridi metode **/
 
@@ -319,7 +320,7 @@ set<Point_2> union_by_index(vector<int> &index, vector<set<Point_2>> &S)
 // kardinalnost skupa tacaka koje su pokrivene sa tjemenima ciji su indeksi dati sa @indeks
 /**
 param:
-@index: skup indeksa cije vrijednosti treba sojiti uniom
+@index: skup indeksa cije vrijednosti treba spojiti uniom
 @S: Skuovi tacaka vidljivosti za odgovarajuce strazare
 **/
 int cardinality_by_index(vector<int> &index, vector<set<Point_2>> &S)
@@ -403,9 +404,11 @@ float greedy_criterion2(vector<set<Point_2>>& S, vector<int>& indeks, int i)   /
 }
 /**
 param:
+
 @S: skup svih skupova (instance) 
 @C: parcijalno rjesenje (trenutno) 
 @i: index skupa S_i koji se razmatra za dodavanje u parcijalni skup @C
+
 **/
 float greedy_criterion(vector<set<Point_2>>& S, int i, vector<set<Point_2>>& C) // take s_i from S
 {     
@@ -427,6 +430,38 @@ bool findA(vector<int>& s, int a)
 
       return false;  
 }
+/**
+param: 
+@indeks: indeks svih skupova koji su u trenutnom parcijalnom rjesenju;
+@i: ineks skupa za koji racunamo gridi vrijednost.
+
+**/
+float gridi_cirterion_dragan(vector<int> &index, int i)
+{
+      if(std::find(index.begin(), index.end(), i) != index.end())
+          return INFEASIBLE;
+      index.push_back(i); // trebalo bi ovo optimizovati 
+
+      int correct_total = cardinality_by_index(index, S);  // broj pokrivenih tacaka diskretizacije
+      int incorrect_total =  cardinalityD - correct_total;
+      
+      int wPartial = 0; 
+      for(int i: index)
+      {
+          wPartial += Cost[ i ]; 
+      }
+
+      double obj1part = ((double) wPartial) / wTotal;
+      double obj2part = (float) incorrect_total / cardinalityD;
+      double obj = obj1part + obj2part;
+      
+      // drop vertex i from indeks 
+      vector<int>::iterator it = std::find(indeks.begin(), indeks.end(), i); 
+      indeks.erase(it);
+
+      return obj;
+}
+
 
 int min_greedy(vector<set<Point_2>>& S, vector<set<Point_2>>& C, vector<int>& indeks)
 {         //cout << "min_greedy" << endl;
@@ -552,8 +587,11 @@ int main(int argc, char const *argv[])
 
     // ---------------------------------greedy------------------------------------
     // vector<int> cost;
-    for (size_t i = 0; i < n; i++)
+    for (size_t i = 0; i < n; i++){
+         //wTotal += 1;
          Cost.push_back(1);
+    }
+    wTotal = n; // ovo ce biti promijenjeno kada se tezine budu generisale (kao zbir svih tezina); 
 
     auto start = high_resolution_clock::now();
     float s = greedy_procedure(pvD, p);
