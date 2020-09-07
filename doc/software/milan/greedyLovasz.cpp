@@ -436,7 +436,7 @@ param:
 @i: ineks skupa za koji racunamo gridi vrijednost.
 
 **/
-float gridi_cirterion_dragan(vector<int> &index, int i)
+float gridi_cirterion_dragan(vector<set<Point_2>>& S, vector<int> &index, int i)
 {
       if(std::find(index.begin(), index.end(), i) != index.end())
           return INFEASIBLE;
@@ -456,8 +456,8 @@ float gridi_cirterion_dragan(vector<int> &index, int i)
       double obj = obj1part + obj2part;
       
       // drop vertex i from indeks 
-      vector<int>::iterator it = std::find(indeks.begin(), indeks.end(), i); 
-      indeks.erase(it);
+      vector<int>::iterator it = std::find(index.begin(), index.end(), i); 
+      index.erase(it);
 
       return obj;
 }
@@ -470,7 +470,8 @@ int min_greedy(vector<set<Point_2>>& S, vector<set<Point_2>>& C, vector<int>& in
           {  // cout << "i " << i << endl;
               //float g_mi = greedy_criterion(S, i, C); //cout << "gmi: " << g_mi << endl;
               //float g_mi = greedy_criterion1(i);
-              float g_mi = greedy_criterion2(S, indeks, i);
+              //float g_mi = greedy_criterion2(S, indeks, i);
+              float g_mi = gridi_cirterion_dragan(S, indeks, i);
               if(g_mi > g_m and g_mi != INFEASIBLE and !findA(indeks, i)) 
               { 
                  dodaj = i;
@@ -518,11 +519,11 @@ float greedy_procedure(vector<set<Point_2>> &S, Polygon_2 &pol)
 
 int main(int argc, char const *argv[])
 {
-  for(int file_number=14; file_number<=14; file_number+=2) // start = 8
+  for(int file_number=8; file_number<=200; file_number+=2) // start = 8
   for(int file_order=1; file_order<=1; file_order++) // file_order<=file_number
   {
     const string category = "small";
-    const string result_location = "test-small-greedy-criterion2.txt";
+    const string result_location = "test-small-greedy-criterion-dragan.txt";
 
     string filename = "min-" + std::to_string(file_number) + "-" + std::to_string(file_order) + ".pol";
     string location = "instance/" + category + "/" + filename;
@@ -551,7 +552,7 @@ int main(int argc, char const *argv[])
     cout<<"end!!!"<<endl;
     
     //-------------------------------- area of intersection poligons -------------------------
-    cout<<"Calculating area of digerence polygon..................."<<endl;
+    /*cout<<"Calculating area of digerence polygon..................."<<endl;
     for (size_t i = 0; i < n; i++)
     {
       vector<float> area_row(n);
@@ -576,7 +577,7 @@ int main(int argc, char const *argv[])
     }
     cout<<"end!!!"<<endl;
 
-
+*/
 
     // --------------------------read visibility set----------------------------
     cout<<"Creating discretization for visibility polygons..................."<<endl;
