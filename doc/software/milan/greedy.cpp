@@ -13,6 +13,7 @@ using namespace std::chrono;
 
 typedef pair<float, float> Point_2;
 
+
 /** pomocne strukture za gridi metod **/
 
 vector<float> Surface; // for a vertex indexed by i, we return the surface of V(i)
@@ -23,6 +24,7 @@ vector<set<Point_2>> S; // i-th position of S is a set of all points that are vi
 int cardinalityD; // |D(P)|
 int wTotal = 0; // total weight 
 int t_lim = 0; // time limit
+int greedy = 0; // tip gridija => 0: Lovasz; 1: price-per-unit; 2: intersection-based; 3: Greedy by Dragan
 std::string path;
 /** kraj pomocnih str. za gridi metode **/
 
@@ -42,6 +44,7 @@ void read_parameters(int argc, char **argv) {
      int iarg=1;
      if (strcmp(argv[iarg],"-f") == 0) path = (argv[++iarg]);
      else if(strcmp(argv[iarg],"-t") == 0) t_lim = atoi(argv[++iarg]);
+     else if(strcmp(argv[iarg],"-greedy") == 0) greedy = atoi(argv[++iarg]);
      else ++iarg;
 }
 
@@ -202,11 +205,14 @@ int min_greedy(vector<set<Point_2>>& C, vector<int>& indeks)
 {         //cout << "min_greedy" << endl;
           float g_m = -1; int dodaj;
           for(int i = 0; i < S.size(); ++i)
-          {  // cout << "i " << i << endl;
-              float g_mi = greedy_criterion(i, C); //cout << "gmi: " << g_mi << endl;
-              //float g_mi = greedy_criterion1(i);
-              //float g_mi = greedy_criterion2(S, indeks, i);
-              //float g_mi = gridi_criterion_dragan(S, indeks, i);
+          { 
+              float g_mi;
+              switch(greedy){
+                  case 0: g_mi = greedy_criterion(i, C); break;
+                  case 1: g_mi = greedy_criterion_1(i); break;
+                  case 2: g_mi = greedy_criterion_2(indeks, i); break;
+                  default: g_mi = gridi_criterion_dragan(indeks, i);
+              }
               if(g_mi <= g_m and g_mi != INFEASIBLE and !findA(indeks, i)) 
               { 
                  dodaj = i;
@@ -261,8 +267,8 @@ int main( int argc, char **argv ) {
     // ------------------------------greedy - end------------------------------------
 
     auto duration = duration_cast<microseconds>(stop - start); 
-    cout << "Time Execution>: " << duration.count() << " microseconds" << endl;
-    cout<<"Dovoljan broj cuvara je: "<<s<<endl;
+    cout << "Time Execution: " << duration.count() << " microseconds" << endl;
+    cout << "Dovoljan broj cuvara je: " << s << endl;
     
     return EXIT_SUCCESS;
 }
