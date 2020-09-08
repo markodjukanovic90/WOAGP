@@ -312,12 +312,53 @@ void print_polygon_with_holes(const CGAL::Polygon_with_holes_2<Kernel, Container
   }
 }
 
-void write_test(string filename, string tekst)
+void print_set_poligon(Polygon_set_2 S)
+{
+  std::list<Polygon_with_holes_2> res;
+  S.polygons_with_holes (std::back_inserter (res));
+
+  Pwh_list_2::const_iterator it_res;
+  for (it_res = res.begin(); it_res != res.end(); ++it_res) 
+    print_polygon_with_holes(*it_res);
+}
+
+void write_test(string location, string tekst)
 {
   std::ofstream outfile;
 
-  outfile.open("predprocesing/small/"+filename, std::ios_base::app); // append instead of overwrite
-  outfile << tekst; 
+  outfile.open(location, std::ios_base::app); // append instead of overwrite
+  outfile << tekst;
+}
+
+template<class Kernel, class Container>
+Traits_2::FT area_polygon_with_holes(const CGAL::Polygon_with_holes_2<Kernel, Container> & pwh)
+{
+  Traits_2::FT res = 0;
+  if (! pwh.is_unbounded()) {
+    res = abs(pwh.outer_boundary().area());
+  } else
+    return res;
+/*
+  typename CGAL::Polygon_with_holes_2<Kernel,Container>::Hole_const_iterator hit;
+  unsigned int k = 1;
+  for (hit = pwh.holes_begin(); hit != pwh.holes_end(); ++hit, ++k) 
+    res -= abs((*hit).area());
+*/
+  return res;
+}
+
+Traits_2::FT area_set_polygons(Polygon_set_2 S)
+{
+  Traits_2::FT povrsina = 0;
+
+  std::list<Polygon_with_holes_2> res;
+  S.polygons_with_holes (std::back_inserter (res));
+
+  Pwh_list_2::const_iterator it_res;
+  for (it_res = res.begin(); it_res != res.end(); ++it_res) 
+    povrsina += area_polygon_with_holes(*it_res);
+      
+  return povrsina;
 }
 
 int main(int argc, char const *argv[])
@@ -325,16 +366,20 @@ int main(int argc, char const *argv[])
   for(int file_number=8; file_number<201; file_number+=2) // start = 8
   for(int file_order=1; file_order<=1; file_order++) // file_order<=file_number
   {
-    string filename = "min-" + std::to_string(file_number) + "-" + std::to_string(file_order) + ".pol";
-    string location = "instance/small area polygons/" + filename;
+    const string category = "small";
+    string filename = "min-" + std::to_string(file_number) + "-" + std::to_string(file_order);
+    
+    string location = "instance/" + category + "/" + filename + + ".pol";
+    string output = "preprocessing/" + category + "/" + filename + "_D1.txt";
+    string timeexecution = "executiontime-" + category + "_D1.txt";
 
     // ----------------------------read polygon---------------------------------
+    auto start = high_resolution_clock::now();
     int n;
     Point_2* points = read_point_of_polygon(location, &n);
     Polygon_2 p = Polygon_2(points, points+n);
     cout<<"Created polygon "<<filename<<endl;
 
-    auto start = high_resolution_clock::now();
     // -------------------------visibility polygons------------------------------
     cout<<"Creating visibility polygons...................";
     vector<Polygon_2> pv = visibility_polygon(points, n);
@@ -351,32 +396,74 @@ int main(int argc, char const *argv[])
     cout<<"end!!!"<<endl;
 
     // -----------------------diskretization visibility polygons-------------------
-    cout<<"Creating diskretization for visibility polygons..................."<<endl;
+    cout<<"Creating diskretization for visibility polygons...................";
     vector<set<Point_2>> pvD(p.size());
     for (size_t i = 0; i < pv.size(); i++)
-    {
-        cout<<i+1<<". Create visibility set for guard "<< p[i]<<endl;
         discratePVI(D, pv[i], pvD[i]);
-    }
-    auto stop = high_resolution_clock::now();
 
+    //-------------------------------- area of poligons -------------------------
+    vector<float> Surface;
+    cout<<"Calculating area of polygon...................";
+    for (size_t i = 0; i < n; i++)
+      Surface.push_back((float)converter(pv[i].area()));
+    cout<<"end!!!"<<endl;
+    
+    //-------------------------------- area of intersection poligons -------------------------
+    cout<<"Calculating area of digerence polygon..................."<<endl;
+    vector<vector<float>>Intersection(n);
+    for (size_t i = 0; i < n; i++)
+      for (size_t j = i+1; j < n; j++)
+        {
+          Polygon_set_2 pvs(pv[i]);
+          pvs.intersection(Polygon_set_2(pv[j]));
+          //print_set_poligon(pvs);
+          //cout<<p[i]<<p[j]<<"="<<(float)converter(area_set_polygons(pvs))<<endl;
+          Intersection[i].push_back( (float)converter(area_set_polygons(pvs)) );
+        }
+  
+    cout<<"end!!!"<<endl;
+
+    auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start); 
     cout << "Time Execution>: " << duration.count() << " microseconds" << endl;
-
+    write_test(timeexecution, filename + ";" + std::to_string(duration.count()) + "\n");
     // ------------------------------------outut----------------------------------
     cout<<"Write output..................."<<endl;
-    for (size_t i = 0; i < pv.size(); i++)
+    write_test(output, std::to_string(n) + "\n");
+    for (size_t i = 0; i < n; i++)
     {
-        string tjeme = std::to_string((int)(converter(p[i]).x())) + "," + 
-          std::to_string((int)(converter(p[i]).y()));
+        string tjeme = "(" + std::to_string((int)(converter(p[i]).x())) + "," + 
+          std::to_string((int)(converter(p[i]).y())) + ")";
         
         string vidljivost = "";
         for (Point_2 xy : pvD[i])
-          vidljivost += std::to_string((int)(converter(xy).x())) + "," + 
-            std::to_string((int)(converter(xy).y())) + ";";
+          vidljivost += "(" + std::to_string((int)(converter(xy).x())) + "," + 
+            std::to_string((int)(converter(xy).y())) + ")\t";
         
-        write_test(filename, tjeme + "\n" + vidljivost + "\n");
+        write_test(output, tjeme + ":" + vidljivost + "\n");
     }
+    for (size_t i = 0; i < n; i++)
+    {
+        string tjeme = "(" + std::to_string((int)(converter(p[i]).x())) + "," + 
+          std::to_string((int)(converter(p[i]).y())) + ")";
+        
+        write_test(output, tjeme + ":" + std::to_string(Surface[i]) + "\n");
+    }
+
+    for (size_t i = 0; i < n; i++)
+    {
+      for (size_t j = i+1; j < n; j++)
+      {
+        string tjemeI = "(" + std::to_string((int)(converter(p[i]).x())) + "," + 
+          std::to_string((int)(converter(p[i]).y())) + ")";
+        
+        string tjemeJ = "(" + std::to_string((int)(converter(p[j]).x())) + "," + 
+          std::to_string((int)(converter(p[j]).y())) + ")";
+        
+        write_test(output, tjemeI + "," + tjemeJ + ":" + std::to_string(Intersection[i][j-i-1]) + "\n");
+      }
+    }
+    cout<<"end!!!"<<endl;
   }
 
   return EXIT_SUCCESS;
