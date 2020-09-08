@@ -49,7 +49,7 @@ using namespace std::chrono;
 
 /** pomocne strukture za gridi metod **/
 vector<float> Surface;
-vector<int> Cost;
+vector<float> Cost;
 vector<vector<float>>Intersection;
 #define INFEASIBLE 100000
 int cardinalityD;
@@ -587,12 +587,15 @@ int main(int argc, char const *argv[])
     cardinalityD = f(pvD);
 
     // ---------------------------------greedy------------------------------------
-    // vector<int> cost;
+    
+    // ----------------------- dodjela tezina (proporcionalno broju pokrivenih tacaka iz D(P) ------------------------------------
+ 
     for (size_t i = 0; i < n; i++){
-         //wTotal += 1;
-         Cost.push_back(1);
+         float w_i = n * n * ( ((float) pvD[i].size()) / cardinalityD );
+         wTotal += w_i;
+         Cost.push_back(w_i);
     }
-    wTotal = n; // ovo ce biti promijenjeno kada se tezine budu generisale (kao zbir svih tezina); 
+    //wTotal = n; // ovo ce biti promijenjeno kada se tezine budu generisale (kao zbir svih tezina); 
 
     auto start = high_resolution_clock::now();
     float s = greedy_procedure(pvD, p);
