@@ -591,7 +591,7 @@ int main(int argc, char const *argv[])
     // ----------------------- dodjela tezina (proporcionalno broju pokrivenih tacaka iz D(P) ------------------------------------
  
     for (size_t i = 0; i < n; i++){
-         float w_i = n * n * ( ((float)S[i].size()) / cardinalityD );
+         float w_i = n * n * ( ((float) pvD[i].size()) / cardinalityD );
          wTotal += w_i;
          Cost.push_back(w_i);
     }
