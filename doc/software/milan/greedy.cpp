@@ -8,6 +8,7 @@
 #include <bits/stdc++.h>
 #include <utility>
 #include <string>
+#include <math.h>       /* sqrt */
 
 using namespace std;
 using namespace std::chrono;
@@ -417,6 +418,12 @@ vector<string> split(const string& str, const string& delim)
     return tokens;
 }
 
+float dist(int i, int j)
+{
+     return sqrt( pow( Vertices[i].first - Vertices[j].first, 2) + pow( Vertices[ i ].second - Vertices[ j ].second, 2) );
+
+}
+
 void write_test(string tekst)
 {
   std::ofstream outfile;
@@ -432,14 +439,14 @@ int main( int argc, char **argv ) {
     cout << S.size() << " " << S[0].size() << " " << Surface[0] <<  endl;
     n = Surface.size();
 
-    for(set<Point_2>& s: S)
+    /*for(set<Point_2>& s: S)
     {
         for(Point_2 sx: s){
            cout << "(" << sx.first << ", " << sx.second << ")" << " ";
         }
         cout << endl;
 
-    }
+    }*/
 
     // ----------------------- dodjela tezina (proporcionalno broju pokrivenih tacaka iz D(P) ------------------------------------
     switch(w_type){
@@ -449,10 +456,18 @@ int main( int argc, char **argv ) {
                       cardinalityD += X.size();
                   }
                   for (size_t i = 0; i < n; i++){
-                      float w_i = n * n * ( ((float) S[i].size()) / cardinalityD );
+                      float w_i = n * ( ((float) S[i].size()) / cardinalityD );
                       wTotal += w_i;
                       Cost.push_back(w_i);
                   }; break;}
+          case 1: {     
+                  float dist0  = (dist(0, n-1) + dist(0,1) ) / 2; 
+                  Cost.push_back(dist0); 
+                   for(int i = 1; i < n; ++i){
+                      Cost.push_back( ( (0.0 + dist(i-1, i) + dist(i, i+1) ) / 2 ) );
+                      cout << "w_i= " << Cost[i] << endl;
+                   }
+                     break;}
           default: {
                     for(size_t i = 0; i < n; i++) // non-weighted version of the problem
                        Cost.push_back(1);
