@@ -179,7 +179,6 @@ void read_from_file(std:: string path)
     }
 }
 
-
 // unija skupova iz @S sa indeksima iz @index
 /**
 param:
@@ -189,10 +188,10 @@ param:
 set<Point_2> union_by_index(vector<int> &index)
 {
   set<Point_2> result;
-  for (size_t i = 0; i < index.size(); i++)
+  for (int i: index){
     for(Point_2 p : S[i])
        result.insert(p);
-  
+  }
   return result;
 }
 
@@ -211,11 +210,10 @@ int f(vector<int> &C)
 {
       std::set<Point_2> d;
       for(int ix: C){
-     
-           for (Point_2 dii: S[ix]){
+          for (Point_2 dii: S[ix]){
               // cout << "dii" << dii.first << endl;
                d.insert(dii);
-           }
+          }
       }
       return (int)d.size();
 }
@@ -308,8 +306,10 @@ param:
 **/
 float gridi_criterion_dragan(vector<int> &index, int i)
 {
-      if(std::find(index.begin(), index.end(), i) != index.end())
-          return INFEASIBLE;
+
+      if(index.size() > 0 and std::find( index.begin(), index.end(), i)  != index.end() )
+         return INFEASIBLE;
+          
       index.push_back(i); // trebalo bi ovo optimizovati 
 
       int correct_total = cardinality_by_index(index);  // broj pokrivenih tacaka diskretizacije
@@ -328,7 +328,7 @@ float gridi_criterion_dragan(vector<int> &index, int i)
       // drop vertex i from indeks 
       vector<int>::iterator it = std::find(index.begin(), index.end(), i); 
       index.erase(it);
-
+      cout << "obj: " << obj << endl;
       return obj;
 }
 
@@ -340,7 +340,7 @@ int min_greedy(vector<int>& indeks)
           if(greedy == 2) 
              g_m *= -1; 
 
-          int dodaj;
+          int dodaj = -1;
           for(int i = 0; i < S.size(); ++i)
           { 
               float g_mi;
@@ -352,14 +352,14 @@ int min_greedy(vector<int>& indeks)
               }
               bool us = g_mi <= g_m; 
               if(greedy == 2)  // reverse order here
-                 us = !us; 
+                 us = !us && (g_mi == g_m); 
 
               if(us and g_mi != INFEASIBLE and !findA(indeks, i)) 
               { 
                  dodaj = i;
                  g_m = g_mi;   
               }
-          }//cout << "dodati....." << dodaj << endl;
+          } // cout << "dodati....." << dodaj << endl;
           return dodaj;
 }
 
@@ -462,10 +462,12 @@ int main( int argc, char **argv ) {
                   }; break;}
           case 1: {     
                   float dist0  = (dist(0, n-1) + dist(0,1) ) / 2; 
-                  Cost.push_back(dist0); 
-                   for(int i = 1; i < n; ++i){
-                      Cost.push_back( ( (0.0 + dist(i-1, i) + dist(i, i+1) ) / 2 ) );
-                      cout << "w_i= " << Cost[i] << endl;
+                  Cost.push_back(dist0); wTotal += dist0;
+                   for(int i = 1; i < n; ++i){ 
+                      float w_i = ( (0.0 + dist(i-1, i) + dist(i, i+1) ) / 2 );
+                      Cost.push_back( w_i );
+                      wTotal += w_i;
+                      //cout << "w_i= " << Cost[i] << endl;
                    }
                      break;}
           default: {
