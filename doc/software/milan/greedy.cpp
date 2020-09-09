@@ -262,13 +262,14 @@ float greedy_criterion_2(vector<int>& indeks, int i)
          return INFEASIBLE;
  
       float num = 0.0;
-      int den = S.size() - indeks.size();
+      int den = S.size() - indeks.size(); cout<< "den: " << den <<" " <<  S.size()  << endl; 
       for(int j = 0; j < S.size(); ++j) {
           if( std::find(indeks.begin(), indeks.end(), j) == indeks.end() and i < j)
           { // S_j ne smije biti u vec dodanom parcijalnom skupu 
              cout << i << " " << j << endl;   num += Intersection[i][j];
           } 
       }
+      cout << "obj: " << num /den << endl;
       return num / den;
 }
 /**
@@ -337,9 +338,6 @@ int min_greedy(vector<int>& indeks)
 {        
           cout << "min_greedy" << endl;
           float g_m = INFEASIBLE; 
-          if(greedy == 2) 
-             g_m *= -1; 
-
           int dodaj = -1;
           for(int i = 0; i < S.size(); ++i)
           { 
@@ -347,19 +345,18 @@ int min_greedy(vector<int>& indeks)
               switch(greedy){
                   case 0: g_mi = greedy_criterion(indeks, i); break;
                   case 1: g_mi = greedy_criterion_1(i); break;
-                  case 2: g_mi = greedy_criterion_2(indeks, i) * (-1) ; break;
+                  case 2: g_mi = greedy_criterion_2(indeks, i) ; break;
                   default: g_mi = gridi_criterion_dragan(indeks, i);
               }
               bool us = g_mi <= g_m; 
-              if(greedy == 2)  // reverse order here
-                 us = !us && (g_mi == g_m); 
+              bool us1 = g_mi != INFEASIBLE;
 
-              if(us and g_mi != INFEASIBLE and !findA(indeks, i)) 
+              if(us and us1 and !findA(indeks, i)) 
               { 
                  dodaj = i;
                  g_m = g_mi;   
               }
-          } // cout << "dodati....." << dodaj << endl;
+          } cout << "dodati....." << dodaj << endl;
           return dodaj;
 }
 
@@ -367,7 +364,7 @@ float greedy_procedure()
 {  
      vector<int> C;
      vector<int> indeks;
-     vector<int> Sx; 
+     vector<int> Sx; cout << "n: "<< n << endl;
      for(int i=0; i < n; ++i)
          Sx.push_back(i);
      cout << Sx.size() << endl;
@@ -376,7 +373,7 @@ float greedy_procedure()
 
      while(f_C != f_S) 
      { 
-           int index_set = min_greedy(indeks); cout <<"index: " << index_set << endl;
+           int index_set = min_greedy(indeks); cout <<"index--------------> " << index_set << endl;
            //cout<<pol[index_set]<<endl;
            cout<<"index set: " << index_set<<endl;
            if(!findA(indeks, index_set)){ //jos nije dodan
@@ -476,7 +473,7 @@ int main( int argc, char **argv ) {
                    }
    }
     // ---------------------------------greedy------------------------------------
-    cout << "Run Greedy" << " with type " <<  greedy << endl;
+    cout << "Run Greedy" << " with type: " <<  greedy << endl;
     auto start = high_resolution_clock::now();
     float s = greedy_procedure();
     auto stop = high_resolution_clock::now();
