@@ -7,6 +7,7 @@
 #include <chrono>
 #include <bits/stdc++.h>
 #include <utility>
+#include <string>
 
 using namespace std;
 using namespace std::chrono;
@@ -54,7 +55,130 @@ void read_parameters(int argc, char **argv) {
 void read_from_file(std:: string path)
 {
      // TODO: read from file
+     std::ifstream infile(path);
+     std::string line;
+     std::getline(infile, line);
+     int n = stoi(line); // number of vertices
+
+    int temp = 0;
+
+    while(temp<n){
+        std::getline(infile, line);
+
+        std::string delim1 = ":";
+         auto start = 0U;
+         auto end = line.find(delim1);
+
+         //izdvajanje koordinata tjemena (vrha) poligona
+         std:: string  vrh =  line.substr(start, end - start);
+
+         std::string delim2 = ",";
+
+         auto start1 = 0U;
+         auto end1 = vrh.find(delim2);
+
+         std:: string  vrh1 =  vrh.substr(start1+1, end1 - start1-1);
+         std:: string  vrh2 =  vrh.substr(end1+1, vrh.length()-end1-2);
+
+
+         Point_2 vertex;
+         vertex.first = stof(vrh1);
+         vertex.second = stof(vrh2);
+
+         Vertices.push_back(vertex);
+
+        //izdvjanje skupa tacaka koje se vide iz tog vrha
+
+        std:: string ostatak = line.substr(end+1, line.length() - end);
+
+        std::string delimiter = "\t";
+
+        size_t pos = 0;
+        std::string token;
+        set<Point_2> vertexSet;
+
+        while ((pos = ostatak.find(delimiter)) != std::string::npos) {
+            token = ostatak.substr(0, pos);
+            std::cout << token << std::endl;
+
+            //obrada svakog tokena da bi se dobile koordinate tacaka
+
+
+         std::string delim3 = ",";
+
+         auto start3 = 0U;
+         auto end3 = vrh.find(delim3);
+
+         std:: string  x =  token.substr(start3+1, end3 - start3-1);
+         std:: string  y =  token.substr(end3+1, token.length()-end3-2);
+
+         Point_2 tacka;
+         tacka.first = stof(x);
+         tacka.second = stof(y);
+
+        vertexSet.insert(tacka);
+
+          ostatak.erase(0, pos + delimiter.length());
+    }
+
+
+    //izdvajanje povrsina
+    temp = 0;
+    while(temp<n){
+        std::getline(infile, line);
+
+        std::string delim1 = ":";
+         auto start = 0U;
+         auto end = line.find(delim1);
+
+        std:: string ostatak = line.substr(end+1, line.length() - end);
+
+        float povrsina = stof(ostatak);
+         Surface.push_back(povrsina);
+        temp++;
+
+    }
+
+
+   //izdvjanje presjeka
+
+   temp = 1;
+   vector<float> tempVect;
+    while(std::getline(infile, line))
+    {
+
+         std::string delim1 = ":";
+         auto start = 0U;
+         auto end = line.find(delim1);
+
+          std:: string  vrhovi =  line.substr(start, end - start);
+          std:: string ostatak = line.substr(end+1, line.length() - end);
+
+
+
+        float povrsinaPresjeka = stof(ostatak);
+
+
+        if(temp<n){
+            tempVect.push_back(povrsinaPresjeka);
+            temp++;
+        }
+
+        if(temp==n){
+            Intersection.push_back(tempVect);
+            tempVect.clear();
+            temp=1;
+            n--;
+        }
+
+
+    }
+
+
+    }
+
 }
+
 
 // unija skupova iz @S sa indeksima iz @index
 /**
