@@ -26,6 +26,8 @@ int wTotal = 0; // total weight
 int t_lim = 0; // time limit
 int greedy = 0; // tip gridija => 0: Lovasz; 1: price-per-unit; 2: intersection-based; 3: Greedy by Dragan
 std::string path;
+int n = 0; // |V(P)|
+int w_type = 0; // ti ptezine koju pozivamo; 0: tezina proporcionalna velicini vidljivosti svakog vrha; 1: --; 2: --
 /** kraj pomocnih str. za gridi metode **/
 
 
@@ -45,6 +47,7 @@ void read_parameters(int argc, char **argv) {
      if (strcmp(argv[iarg],"-f") == 0) path = (argv[++iarg]);
      else if(strcmp(argv[iarg],"-t") == 0) t_lim = atoi(argv[++iarg]);
      else if(strcmp(argv[iarg],"-greedy") == 0) greedy = atoi(argv[++iarg]);
+     else if(strcmp(argv[iarg],"-w_type") == 0) w_type = atoi(argv[++iarg]);
      else ++iarg;
 }
 
@@ -260,6 +263,24 @@ int main( int argc, char **argv ) {
 
     read_parameters(argc, argv);
     read_from_file(path); // fill Cost, Intersection and Surface
+
+    // ----------------------- dodjela tezina (proporcionalno broju pokrivenih tacaka iz D(P) ------------------------------------
+    switch(w_type){
+ 
+          case 0: { // tezina proporcionalna sa velicinom skupa S[i]
+                  for(auto& X: S){
+                      cardinalityD += X.size();
+                  }
+                  for (size_t i = 0; i < n; i++){
+                      float w_i = n * n * ( ((float) S[i].size()) / cardinalityD );
+                      wTotal += w_i;
+                      Cost.push_back(w_i);
+                  }; break;}
+          default: {
+                    for(size_t i = 0; i < n; i++) // non-weighted version of the problem
+                       Cost.push_back(1);
+                   }
+   }
     // ---------------------------------greedy------------------------------------
     auto start = high_resolution_clock::now();
     float s = greedy_procedure();
