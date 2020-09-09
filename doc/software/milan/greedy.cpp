@@ -488,7 +488,7 @@ int main( int argc, char **argv ) {
 
     if(output.compare("") != 0){
         string name_polygon = split(split(path, "/")[2], "_")[0];
-        cout<<name_polygon<<"---"<<output<<endl;
+        //cout<<name_polygon<<"---"<<output<<endl;
         write_test(name_polygon + ";" + std::to_string(s) + ";" + std::to_string(duration.count()) + "\n");
     }
     
