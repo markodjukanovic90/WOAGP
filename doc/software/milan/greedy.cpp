@@ -28,6 +28,7 @@ int wTotal = 0; // total weight
 int t_lim = 0; // time limit
 int greedy = 0; // tip gridija => 0: Lovasz; 1: price-per-unit; 2: intersection-based; 3: Greedy by Dragan
 std::string path;
+std::string output = "";
 int n = 0; // |V(P)|
 int w_type = 0; // ti ptezine koju pozivamo; 0: tezina proporcionalna velicini vidljivosti svakog vrha; 1: --; 2: --
 /** kraj pomocnih str. za gridi metode **/
@@ -51,6 +52,7 @@ void read_parameters(int argc, char **argv) {
      else if(strcmp(argv[iarg],"-t") == 0) t_lim = atoi(argv[++iarg]);
      else if(strcmp(argv[iarg],"-greedy") == 0) greedy = atoi(argv[++iarg]);
      else if(strcmp(argv[iarg],"-w_type") == 0) w_type = atoi(argv[++iarg]);
+     else if(strcmp(argv[iarg],"-l") == 0) output = argv[++iarg];
      else ++iarg;
    }
 }
@@ -398,6 +400,31 @@ float greedy_procedure()
      //return C.size();
 }
 
+vector<string> split(const string& str, const string& delim)
+{
+    vector<string> tokens;
+    size_t prev = 0, pos = 0;
+    do
+    {
+        pos = str.find(delim, prev);
+        if (pos == string::npos) pos = str.length();
+        string token = str.substr(prev, pos-prev);
+        if (!token.empty()) tokens.push_back(token);
+        prev = pos + delim.length();
+    }
+    while (pos < str.length() && prev < str.length());
+
+    return tokens;
+}
+
+void write_test(string tekst)
+{
+  std::ofstream outfile;
+
+  outfile.open(output, std::ios_base::app); // append instead of overwrite
+  outfile << tekst;
+}
+
 int main( int argc, char **argv ) {
 
     read_parameters(argc, argv);
@@ -441,6 +468,13 @@ int main( int argc, char **argv ) {
     auto duration = duration_cast<microseconds>(stop - start); 
     cout << "Time Execution: " << duration.count() << " microseconds" << endl;
     cout << "Result: " << s << endl;
+
+    if(output.compare("") != 0){
+        string name_polygon = split(split(path, "/")[2], "_")[0];
+        cout<<name_polygon<<"---"<<output<<endl;
+        write_test(name_polygon + ";" + std::to_string(s) + ";" + std::to_string(duration.count()) + "\n");
+    }
+    
     
     return EXIT_SUCCESS;
 }

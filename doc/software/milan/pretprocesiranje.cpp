@@ -363,15 +363,15 @@ Traits_2::FT area_set_polygons(Polygon_set_2 S)
 
 int main(int argc, char const *argv[])
 {
-  for(int file_number=8; file_number<201; file_number+=2) // start = 8
-  for(int file_order=1; file_order<=1; file_order++) // file_order<=file_number
+  for(int file_number=100; file_number<150; file_number+=2) // start = 8
+  for(int file_order=1; file_order<=file_number; file_order++) // file_order<=file_number
   {
-    const string category = "small";
-    string filename = "min-" + std::to_string(file_number) + "-" + std::to_string(file_order);
+    const string category = "random";
+    string filename = "rand-" + std::to_string(file_number) + "-" + std::to_string(file_order);
     
     string location = "instance/" + category + "/" + filename + + ".pol";
     string output = "preprocessing/" + category + "/" + filename + "_D1.txt";
-    string timeexecution = "executiontime-" + category + "_D1.txt";
+    string timeexecution = "executiontime-" + category + "_D1 - 2.txt";
 
     // ----------------------------read polygon---------------------------------
     auto start = high_resolution_clock::now();
@@ -389,27 +389,37 @@ int main(int argc, char const *argv[])
         pv[i].reverse_orientation();
     // kraj promjene orjentacije
     cout<<"end!!!"<<endl;
+     
 
     // -----------------------diskretization polygon------------------------------
     cout<<"Creating diskretization polygon P..............";
     vector<Point_2> D = discrate(p);
+    auto stop = high_resolution_clock::now();
+    auto duration1 = duration_cast<microseconds>(stop - start);
     cout<<"end!!!"<<endl;
 
     // -----------------------diskretization visibility polygons-------------------
     cout<<"Creating diskretization for visibility polygons...................";
+    start = high_resolution_clock::now();
     vector<set<Point_2>> pvD(p.size());
     for (size_t i = 0; i < pv.size(); i++)
         discratePVI(D, pv[i], pvD[i]);
+    stop = high_resolution_clock::now();
+    auto duration2 = duration_cast<microseconds>(stop - start);
 
     //-------------------------------- area of poligons -------------------------
-    vector<float> Surface;
     cout<<"Calculating area of polygon...................";
+    start = high_resolution_clock::now();
+    vector<float> Surface;
     for (size_t i = 0; i < n; i++)
       Surface.push_back((float)converter(pv[i].area()));
+    stop = high_resolution_clock::now();
+    auto duration3 = duration_cast<microseconds>(stop - start);
     cout<<"end!!!"<<endl;
     
     //-------------------------------- area of intersection poligons -------------------------
     cout<<"Calculating area of digerence polygon..................."<<endl;
+    start = high_resolution_clock::now();
     vector<vector<float>>Intersection(n);
     for (size_t i = 0; i < n; i++)
       for (size_t j = i+1; j < n; j++)
@@ -420,13 +430,15 @@ int main(int argc, char const *argv[])
           //cout<<p[i]<<p[j]<<"="<<(float)converter(area_set_polygons(pvs))<<endl;
           Intersection[i].push_back( (float)converter(area_set_polygons(pvs)) );
         }
-  
+    stop = high_resolution_clock::now();
+    auto duration4 = duration_cast<microseconds>(stop - start);
     cout<<"end!!!"<<endl;
 
-    auto stop = high_resolution_clock::now();
-    auto duration = duration_cast<microseconds>(stop - start); 
-    cout << "Time Execution>: " << duration.count() << " microseconds" << endl;
-    write_test(timeexecution, filename + ";" + std::to_string(duration.count()) + "\n");
+    cout << "Time Execution>: " << duration1.count()+duration2.count()+duration3.count()+duration4.count() << " microseconds" << endl;
+    write_test(
+      timeexecution, 
+      filename + ";" + std::to_string(duration1.count()) + ";" + std::to_string(duration2.count()) + ";" + std::to_string(duration3.count()) + ";" + std::to_string(duration4.count()) + "\n"
+      );
     // ------------------------------------outut----------------------------------
     cout<<"Write output..................."<<endl;
     write_test(output, std::to_string(n) + "\n");
