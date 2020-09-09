@@ -46,11 +46,13 @@ inline double stof(string &s) {
 void read_parameters(int argc, char **argv) {
 
      int iarg=1;
+     while (iarg < argc) {
      if (strcmp(argv[iarg],"-f") == 0) path = (argv[++iarg]);
      else if(strcmp(argv[iarg],"-t") == 0) t_lim = atoi(argv[++iarg]);
      else if(strcmp(argv[iarg],"-greedy") == 0) greedy = atoi(argv[++iarg]);
      else if(strcmp(argv[iarg],"-w_type") == 0) w_type = atoi(argv[++iarg]);
      else ++iarg;
+   }
 }
 
 void read_from_file(std:: string path)
@@ -202,38 +204,42 @@ int cardinality_by_index(vector<int> &index)
   return union_by_index(index).size();
 }
 
-int f(vector<set<Point_2>> &C)
+int f(vector<int> &C)
 {
-  std::set<Point_2> d;
-       for(set<Point_2> di : C){
+      std::set<Point_2> d;
+      for(int ix: C){
      
-           for (Point_2 dii: di){
-               //cout << "dii" << dii << endl;
+           for (Point_2 dii: S[ix]){
+              // cout << "dii" << dii.first << endl;
                d.insert(dii);
            }
-       }
-       return (int)d.size();
+      }
+      return (int)d.size();
 }
 
-int f_minus(vector<set<Point_2>>& C, set<Point_2>& ss) // f(C u {s}) - f(S)
+int f_minus(vector<int>& C, int i) // f(C u {S_i}) - f(S)
 {
+    //cout <<" f_minus" << C.size() << " - " << ss.size() << endl;
     int count = 0; // ako i \in ss nije niti u jednom od skupova u S, onda count++;
-    if(C.empty())
-       return ss.size();
-
-    for(Point_2 i: ss) 
+    if(C.size() == 0 ){
+       //cout << "before " << S[i].size() - count;
+       return S[i].size();
+    }
+    // cout << "continue" << endl;
+    for(auto ix: S[i]) 
     {
+        //cout << ix.first << " " << ix.second << endl;
         bool presented = false;
-        for(set<Point_2>& di : C){
-            if(di.count(i) > 0){
+        for(int id : C){
+            if(S[id].count(ix) > 0){
                presented = true;
                break; 
             }
         }
         if(presented) 
            count++;
-    }
-    return ss.size() - count; 
+    } 
+    return S[i].size() - count; 
 }
 
 float greedy_criterion_1(int i)
@@ -257,9 +263,9 @@ float greedy_criterion_2(vector<int>& indeks, int i)
       float num = 0.0;
       int den = S.size() - indeks.size();
       for(int j = 0; j < S.size(); ++j) {
-          if(S[j] != S[i] &&  std::find(indeks.begin(), indeks.end(), j) == indeks.end())
+          if( std::find(indeks.begin(), indeks.end(), j) == indeks.end() and i < j)
           { // S_j ne smije biti u vec dodanom parcijalnom skupu 
-              num += Intersection[i][j];
+             cout << i << " " << j << endl;   num += Intersection[i][j];
           } 
       }
       return num / den;
@@ -270,14 +276,15 @@ param:
 @C: parcijalno rjesenje (trenutno) 
 @i: index skupa S_i koji se razmatra za dodavanje u parcijalni skup @C
 **/
-float greedy_criterion(int i, vector<set<Point_2>>& C) // take s_i from S
-{     
-    set<Point_2> s = S[i];
-    int f_m = f_minus(C, s);  //cout << "f_m: " << f_m << endl;
+float greedy_criterion(vector<int>& C, int i) // take s_i from S
+{   //cout << "greedy_criterion " << endl;
+    //set<Point_2> s;
+    //s = S[i]; cout << s.size() << endl;
+    int f_m = f_minus(C, i);  //cout << "f_m: " << f_m << endl;
     if(f_m == 0)
        return INFEASIBLE;
 
-    float val = ((float)Cost[i]) / (f_minus(C, s));     //cout << "val: " << val << endl; 
+    float val = ((float)Cost[i]) / (f_minus(C, i));     //cout << "val: " << val << endl; 
     return val;
 }
 
@@ -323,19 +330,28 @@ float gridi_criterion_dragan(vector<int> &index, int i)
 }
 
 
-int min_greedy(vector<set<Point_2>>& C, vector<int>& indeks)
-{         //cout << "min_greedy" << endl;
-          float g_m = -1; int dodaj;
+int min_greedy(vector<int>& indeks)
+{        
+          cout << "min_greedy" << endl;
+          float g_m = INFEASIBLE; 
+          if(greedy == 2) 
+             g_m *= -1; 
+
+          int dodaj;
           for(int i = 0; i < S.size(); ++i)
           { 
               float g_mi;
               switch(greedy){
-                  case 0: g_mi = greedy_criterion(i, C); break;
+                  case 0: g_mi = greedy_criterion(indeks, i); break;
                   case 1: g_mi = greedy_criterion_1(i); break;
-                  case 2: g_mi = greedy_criterion_2(indeks, i); break;
+                  case 2: g_mi = greedy_criterion_2(indeks, i) * (-1) ; break;
                   default: g_mi = gridi_criterion_dragan(indeks, i);
               }
-              if(g_mi <= g_m and g_mi != INFEASIBLE and !findA(indeks, i)) 
+              bool us = g_mi <= g_m; 
+              if(greedy == 2)  // reverse order here
+                 us = !us; 
+
+              if(us and g_mi != INFEASIBLE and !findA(indeks, i)) 
               { 
                  dodaj = i;
                  g_m = g_mi;   
@@ -345,27 +361,30 @@ int min_greedy(vector<set<Point_2>>& C, vector<int>& indeks)
 }
 
 float greedy_procedure()
-{
-     vector<set<Point_2>> C;
+{  
+     vector<int> C;
      vector<int> indeks;
-
-     int f_S = f(S); //cout << "f_S: " << f_S << endl;
+     vector<int> Sx; 
+     for(int i=0; i < n; ++i)
+         Sx.push_back(i);
+     cout << Sx.size() << endl;
+     int f_S = f(Sx); cout << "f_S: " << f_S << endl;
      int f_C = 0;
 
      while(f_C != f_S) 
      { 
-           int index_set = min_greedy(C, indeks);
+           int index_set = min_greedy(indeks); cout <<"index: " << index_set << endl;
            //cout<<pol[index_set]<<endl;
-           //cout<<index_set<<endl;
+           cout<<"index set: " << index_set<<endl;
            if(!findA(indeks, index_set)){ //jos nije dodan
            
-               C.push_back(S[index_set]);//cout << "dodaj ----> " << index_set << endl;
+               //C.push_back((set<int>) S[index_set] );//cout << "dodaj ----> " << index_set << endl;
                indeks.push_back(index_set);
            } 
            
-           f_C = f(C); 
+           f_C = f(indeks); 
             
-           cout << "f_C=" << f_C << " |C|=" << C.size() << endl;
+           cout << "f_C--------------->" << f_C << " |C|=" << C.size() << endl;
      }
 
      float greedy_val = 0;
@@ -374,6 +393,7 @@ float greedy_procedure()
         greedy_val += Cost[ ix ];
         
      }
+     cout << "number of guards: " << indeks.size() << endl;
      return greedy_val; 
      //return C.size();
 }
@@ -382,7 +402,17 @@ int main( int argc, char **argv ) {
 
     read_parameters(argc, argv);
     read_from_file(path); // fill Cost, Intersection and Surface
-    cout << S.size() << " " << S[0].size() << " " << Surface[0] << endl;
+    cout << S.size() << " " << S[0].size() << " " << Surface[0] <<  endl;
+    n = Surface.size();
+
+    for(set<Point_2>& s: S)
+    {
+        for(Point_2 sx: s){
+           cout << "(" << sx.first << ", " << sx.second << ")" << " ";
+        }
+        cout << endl;
+
+    }
 
     // ----------------------- dodjela tezina (proporcionalno broju pokrivenih tacaka iz D(P) ------------------------------------
     switch(w_type){
@@ -402,6 +432,7 @@ int main( int argc, char **argv ) {
                    }
    }
     // ---------------------------------greedy------------------------------------
+    cout << "Run Greedy" << " with type " <<  greedy << endl;
     auto start = high_resolution_clock::now();
     float s = greedy_procedure();
     auto stop = high_resolution_clock::now();
@@ -409,7 +440,7 @@ int main( int argc, char **argv ) {
 
     auto duration = duration_cast<microseconds>(stop - start); 
     cout << "Time Execution: " << duration.count() << " microseconds" << endl;
-    cout << "Dovoljan broj cuvara je: " << s << endl;
+    cout << "Result: " << s << endl;
     
     return EXIT_SUCCESS;
 }
