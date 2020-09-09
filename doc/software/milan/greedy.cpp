@@ -21,6 +21,7 @@ vector<float> Surface; // for a vertex indexed by i, we return the surface of V(
 vector<float> Cost; // at index i --> w_i
 vector<vector<float>>Intersection; // Intersection[i][j] = Volume of V(i) intersected by V(j)
 vector<set<Point_2>> S; // i-th position of S is a set of all points that are visible from vertex i
+vector<Point_2> Vertices; // vector of vertices
 #define INFEASIBLE 1000000
 int cardinalityD; // |D(P)|
 int wTotal = 0; // total weight 
@@ -117,11 +118,11 @@ void read_from_file(std:: string path)
          tacka.second = stof(y);
 
         vertexSet.insert(tacka);
-
-          ostatak.erase(0, pos + delimiter.length());
+        ostatak.erase(0, pos + delimiter.length());
     }
-
-
+    S.push_back(vertexSet);
+    temp++;
+   }
     //izdvajanje povrsina
     temp = 0;
     while(temp<n){
@@ -170,13 +171,7 @@ void read_from_file(std:: string path)
             temp=1;
             n--;
         }
-
-
     }
-
-
-    }
-
 }
 
 
@@ -387,6 +382,7 @@ int main( int argc, char **argv ) {
 
     read_parameters(argc, argv);
     read_from_file(path); // fill Cost, Intersection and Surface
+    cout << S.size() << " " << S[0].size() << " " << Surface[0] << endl;
 
     // ----------------------- dodjela tezina (proporcionalno broju pokrivenih tacaka iz D(P) ------------------------------------
     switch(w_type){
