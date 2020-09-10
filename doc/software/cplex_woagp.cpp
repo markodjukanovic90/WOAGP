@@ -22,6 +22,8 @@
 #include <limits>
 #include <unordered_map>
 #include <map>
+#include <ilcp/cp.h>
+
 
 // the following "include" is necessary for the correct working/compilation of CPLEX. You should adapt this path to your installation of CPLEX
 #include "/home/djukanovic/Desktop/projects/LCAPS_software/cplex-12.5/include/ilcplex/ilocplex.h"
@@ -271,6 +273,73 @@ catch(IloException& e) {
 env.end();
 }
 
+
+
+int run_cp(vector<int>& C, vector<set<int>>& S){
+
+  IloEnv env; cout << "Run CP" << endl;
+  env.setOut(env.getNullStream());
+  try
+  {
+   // define the LCIS problem model...
+   IloModel model(env);
+   IloObjective obj = IloMinimize(env);
+   // defining the set of binary variables Z
+   vector<IloNumVar> Z; cout << "S.size() " << S.size() << endl;
+   for(int i = 0; i < S.size(); ++i){
+
+       IloNumVar myIntVar(env, 0, 1, ILOINT);
+       Z.push_back(myIntVar); // x_i  \in {0, 1}
+       obj.setLinearCoef(Z[i], C[i]); // sum_i c_i x_i
+   }
+
+   cout << "#Vars: " << Z.size() << " n=" << n << " " << S.size() << endl;
+   // constraints 
+   for(int i = 0; i < n; ++i) 
+   {
+       IloExpr expr_i(env); bool add = false;
+       for(int j = 0; j < S.size(); ++j)   
+       {
+           if( S[j].count(i+1) ){ // item i se nalazi u skupu j
+               expr_i += Z[j];
+               add = true;
+           }
+       }
+       if(add)
+          model.add(expr_i >= 1);      
+       
+   }  
+   model.add(obj);
+   IloCP cp(model);
+   cp.setParameter(IloCP::FailLimit, 30000);
+   // the following two parameters should always be set in the way as shown
+
+   if (cp.solve())
+   {
+       double lastVal = double(cp.getObjValue());
+       // print the objective point
+       cout << "Sets in the solution: {" <<endl;
+       bool first = true;  
+       for(int i = 0; i < Z.size(); ++i){
+           IloNum xval = cp.getValue(Z[i]);
+           // the reason for 'xval > 0.9' instead of 'xval == 1.0' will be explained in class
+           if (xval > 0.9) {
+               cout << "S_" << ( i + 1 ) << ", ";
+               //myfileOut << (*it).first;
+           }
+
+       }
+       cout << "}" << endl;
+   return lastVal;
+   }
+   return -1;
+ }catch(IloException& e) {
+        cerr  << " ERROR: " << e << endl;
+}
+env.end();
+}
+
+
 	
 /**********
 Main function
@@ -358,10 +427,10 @@ int main(int argc, char **argv ) {
             Timer timer_greedy;
             // generisanje stream-a
             double cur_time_greedy = timer_greedy.elapsed_time(Timer::VIRTUAL);
-            float greedy_sol = greedy_procedure( S, C); 
-            cout <<"GREEDY sol: " << greedy_sol << endl;
+            float greedy_sol = run_cp(C, S); 
+            cout <<"sol: " << greedy_sol << endl;
             double end_time_greedy = timer_greedy.elapsed_time(Timer::VIRTUAL);
-            cout <<"GREEDY time: " << (end_time_greedy - cur_time_greedy) << endl;
+            cout <<"time: " << (end_time_greedy - cur_time_greedy) << endl;
             //myfileOut << "time: " << (end_time - cur_time ) <<"\n";*/
             //myfileOut.close();
          }
