@@ -23,9 +23,10 @@ vector<float> Cost; // at index i --> w_i
 vector<vector<float>>Intersection; // Intersection[i][j] = Volume of V(i) intersected by V(j)
 vector<set<Point_2>> S; // i-th position of S is a set of all points that are visible from vertex i
 vector<Point_2> Vertices; // vector of vertices
+vector<float> avg_visi; // average visibility vertex
 #define INFEASIBLE 1000000
 int cardinalityD; // |D(P)|
-int wTotal = 0; // total weight 
+float wTotal = 0; // total weight 
 int t_lim = 0; // time limit
 int greedy = 0; // tip gridija => 0: Lovasz; 1: price-per-unit; 2: intersection-based; 3: Greedy by Dragan
 std::string path;
@@ -418,7 +419,42 @@ vector<string> split(const string& str, const string& delim)
 float dist(int i, int j)
 {
      return sqrt( pow( Vertices[i].first - Vertices[j].first, 2) + pow( Vertices[ i ].second - Vertices[ j ].second, 2) );
+}
 
+float distP(Point_2 x, Point_2 y)
+{
+     return sqrt( pow( x.first - y.first, 2) + pow( x.second - y.second, 2) );
+}
+
+bool equalP(Point_2 x, Point_2 y)
+{
+    if(x.first==y.first and x.second==y.second)
+        return true;
+
+    return false;
+}
+
+void avg_visi_vertex()
+{
+    for (size_t i = 0; i < Vertices.size(); i++)
+    {
+        int n = S[i].size()-1;
+        float dists[n];
+        size_t ind = 0;
+
+        for(Point_2 point : S[i])
+            if(!equalP(Vertices[i], point))
+            {
+                dists[ind] = distP(Vertices[i], point);
+                ind++;
+            }
+
+        float avg = 0.0;
+        for (size_t j = 0; j < n; j++)
+            avg += dists[j];
+         
+        avg_visi.push_back(avg/n);
+    }
 }
 
 void write_test(string tekst)
@@ -435,6 +471,7 @@ int main( int argc, char **argv ) {
     read_from_file(path); // fill Cost, Intersection and Surface
     cout << S.size() << " " << S[0].size() << " " << Surface[0] <<  endl;
     n = Surface.size();
+    avg_visi_vertex(); //********************************* create average visibility vertex**************************************
 
     /*for(set<Point_2>& s: S)
     {
@@ -467,6 +504,15 @@ int main( int argc, char **argv ) {
                       //cout << "w_i= " << Cost[i] << endl;
                    }
                      break;}
+          case 2: {
+                    avg_visi_vertex();
+                    for(float c :avg_visi)
+                    {
+                        Cost.push_back(c); 
+                        wTotal += c;
+                    } 
+                    break;
+                  }
           default: {
                     for(size_t i = 0; i < n; i++) // non-weighted version of the problem
                        Cost.push_back(1);
