@@ -363,7 +363,7 @@ Traits_2::FT area_set_polygons(Polygon_set_2 S)
 
 int main(int argc, char const *argv[])
 {
-  for(int file_number=126; file_number<201; file_number+=2) // start = 8
+  for(int file_number=200; file_number<201; file_number+=2) // start = 8
   for(int file_order=1; file_order<=1; file_order++) // file_order<=file_number
   {
     const string category = "large";

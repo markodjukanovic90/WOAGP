@@ -26,7 +26,7 @@ vector<Point_2> Vertices; // vector of vertices
 vector<float> avg_visi; // average visibility vertex
 #define INFEASIBLE 1000000
 int cardinalityD; // |D(P)|
-int wTotal = 0; // total weight 
+float wTotal = 0; // total weight 
 int t_lim = 0; // time limit
 int greedy = 0; // tip gridija => 0: Lovasz; 1: price-per-unit; 2: intersection-based; 3: Greedy by Dragan
 std::string path;
@@ -504,6 +504,15 @@ int main( int argc, char **argv ) {
                       //cout << "w_i= " << Cost[i] << endl;
                    }
                      break;}
+          case 2: {
+                    avg_visi_vertex();
+                    for(float c :avg_visi)
+                    {
+                        Cost.push_back(c); 
+                        wTotal += c;
+                    } 
+                    break;
+                  }
           default: {
                     for(size_t i = 0; i < n; i++) // non-weighted version of the problem
                        Cost.push_back(1);
