@@ -12,7 +12,7 @@
 #include <CGAL/Gps_segment_traits_2.h>
 #include <CGAL/centroid.h>
 #include <list>
-#include <minisat/core/Solver.h>
+// #include <minisat/core/Solver.h>
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -468,11 +468,11 @@ int min_greedy(vector<set<Point_2>>& S, vector<set<Point_2>>& C, vector<int>& in
           float g_m = -1; int dodaj;
           for(int i = 0; i < S.size(); ++i)
           {  // cout << "i " << i << endl;
-              //float g_mi = greedy_criterion(S, i, C); //cout << "gmi: " << g_mi << endl;
+              float g_mi = greedy_criterion(S, i, C); //cout << "gmi: " << g_mi << endl;
               //float g_mi = greedy_criterion1(i);
               //float g_mi = greedy_criterion2(S, indeks, i);
-              float g_mi = gridi_cirterion_dragan(S, indeks, i);
-              if(g_mi > g_m and g_mi != INFEASIBLE and !findA(indeks, i)) 
+              //float g_mi = gridi_cirterion_dragan(S, indeks, i);
+              if(g_mi <= g_m and g_mi != INFEASIBLE and !findA(indeks, i)) 
               { 
                  dodaj = i;
                  g_m = g_mi;   
