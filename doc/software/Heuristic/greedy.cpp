@@ -325,7 +325,7 @@ float gridi_criterion_dragan(vector<int> &index, int i)
 
       double obj1part = ((double) wPartial) / wTotal;
       double obj2part = (float) incorrect_total / cardinalityD;
-      double obj = obj1part + obj2part;
+      double obj = obj1part + obj2part;  
       
       // drop vertex i from indeks 
       vector<int>::iterator it = std::find(index.begin(), index.end(), i); 
@@ -516,6 +516,7 @@ int main( int argc, char **argv ) {
           default: {
                     for(size_t i = 0; i < n; i++) // non-weighted version of the problem
                        Cost.push_back(1);
+                    cardinalityD = Cost.size(); wTotal = Cost.size();
                    }
    }
     // ---------------------------------greedy------------------------------------
