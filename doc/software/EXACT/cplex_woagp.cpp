@@ -196,7 +196,7 @@ void read_from_file(std:: string path)
             n--;
         }
     }
-    cout << S.size() << " n: " << n << " Surface " << Surface.size() << endl;
+    //cout << S.size() << " n: " << n << " Surface " << Surface.size() << endl;
 }
 
 
@@ -246,7 +246,7 @@ void run_cplex(vector<set<Point_2>>& S, set<Point_2>& D_P, int n){
    // defining the set of binary variables Z
    vector<IloNumVar> Z; cout << "S.size() ----> " << S.size() << n << endl;
    for(int i = 0; i < n; ++i){
-       cout << "cost i " << Cost[i] << endl;
+       //cout << "cost i " << Cost[i] << endl;
        IloNumVar myIntVar(env, 0, 1, ILOINT);
        Z.push_back(myIntVar); // x_i  \in {0, 1}
        obj.setLinearCoef(Z[i], Cost[i]); // sum_i c_i x_i
@@ -331,7 +331,7 @@ int run_cp(vector<set<Point_2>>& S, set<Point_2>& D_P, int n){
    IloModel model(env);
    IloObjective obj = IloMinimize(env);
    // defining the set of binary variables Z
-   vector<IloNumVar> Z; cout << "S.size() " << S.size() << endl;
+   vector<IloNumVar> Z; // cout << "S.size() " << S.size() << endl;
    for(int i = 0; i < n; ++i){
        //cout << "w_i: " << Cost[i] << endl;
        IloNumVar myIntVar(env, 0, 1, ILOINT);
@@ -408,7 +408,7 @@ void fill_cost()
                       float w_i = ( (0.0 + dist(i-1, i) + dist(i, i+1) ) / 2 );
                       Cost.push_back( w_i );
                       wTotal += w_i;
-                      cout << "w_i= " << Cost[i] << endl;
+                      //cout << "w_i= " << Cost[i] << endl;
                    }
                      break;}
           default: {
@@ -444,7 +444,6 @@ int main(int argc, char **argv ) {
         // opening the corresponding input file and reading the problem data
         read_parameters(argc, argv);
         read_from_file(inputFile); n = S.size();// fill Cost, Intersection and Surface
-        read_from_file(inputFile); cout << "s" << S.size() << "n: " << n << endl;
         fill_cost(); cout << "cost--->" << Cost.size() << " n: " << n << endl;
         if(alg == 0) 
         { 
