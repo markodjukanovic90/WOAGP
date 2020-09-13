@@ -170,22 +170,22 @@ bool LS(float * obj){
 	int i = 0;
 	while(i<copy.size()){
 		int vertex = copy[i];
-		cout<<"Cvor: "<<vertex<<endl;
+		// cout<<"Cvor: "<<vertex<<endl;
 		int neigh1 = (vertex+1)%n;
 		int neigh2 = (vertex-1)%n;
 		if(!findA(copy,neigh1))//neigh1 is not in the solution
 			{
-				cout<<"Test1: "<<neigh1<<":  "<<CoveredPoints2.size()<<endl;
+				// cout<<"Test1: "<<neigh1<<":  "<<CoveredPoints2.size()<<endl;
 				//cin.get();
 				updateCoveredPointsRemove(CoveredPoints2,numberOfGuards2,vertex);
 				
-				cout<<"Test2: "<<CoveredPoints2.size()<<endl;
+				//cout<<"Test2: "<<CoveredPoints2.size()<<endl;
 				//cin.get();
 				updateCoveredPointsAdd(CoveredPoints2,numberOfGuards2,neigh1);
-				cout<<"Test3: "<<CoveredPoints2.size()<<endl;
+				//cout<<"Test3: "<<CoveredPoints2.size()<<endl;
 				if(CoveredPoints2.size()>CoveredPoints.size()){
 					//prelazimo odmah u novo rjesenje
-					cout<<"uspjelo"<<endl;
+					//cout<<"uspjelo"<<endl;
 					cin.get();
 					//prelazimo odmah u to rjesenje
 					//indeks.erase(indeks.begin()+i);
@@ -274,7 +274,7 @@ void read_from_file(std:: string path)
 
         while ((pos = ostatak.find(delimiter)) != std::string::npos) {
             token = ostatak.substr(0, pos);
-            std::cout << token << std::endl;
+            // std::cout << token << std::endl;
 
             //obrada svakog tokena da bi se dobile koordinate tacaka
 
@@ -434,8 +434,9 @@ float greedy_criterion_2(vector<int>& indeks, int i)
       int den = S.size() - indeks.size(); cout<< "den: " << den <<" " <<  S.size()  << endl; 
       for(int j = 0; j < S.size(); ++j) {
           if( std::find(indeks.begin(), indeks.end(), j) == indeks.end() and i < j)
-          { // S_j ne smije biti u vec dodanom parcijalnom skupu 
-             cout << i << " " << j << endl;   num += Intersection[i][j];
+          {   // S_j ne smije biti u vec dodanom parcijalnom skupu 
+              // cout << i << " " << j << endl;
+              num += Intersection[i][j];
           } 
       }
       cout << "obj: " << num /den << endl;
@@ -503,6 +504,7 @@ int min_greedy(vector<int>& indeks)
           { 
               float g_mi;
               switch(greedy){
+
                   case 0: g_mi = greedy_criterion(indeks, i); break;
                   case 1: g_mi = greedy_criterion_1(i); break;
                   case 2: g_mi = greedy_criterion_2(indeks, i) ; break;
@@ -600,9 +602,7 @@ float greedy_LS()
            		cout<<"LS succeeded"<<endl;
            		//break;
 			   }
-		   }
-
-			
+		   }	
      }
 	/*provjera*/
     float check1 = 0;
