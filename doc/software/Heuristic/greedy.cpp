@@ -15,6 +15,13 @@ using namespace std::chrono;
 
 typedef pair<float, float> Point_2;
 
+int temp = 0;
+/** pomocne strukture za gridi metod **/
+map<Point_2,vector<Point_2>> Visibility;//for each point, we provide the list od Guards which see that point
+map<Point_2,int> numberOfGuards;//for each point we keep the number of Guards in solution which see that point
+set<Point_2> CoveredPoints;//set of points covered by the solution
+vector<int> indeks; //solution
+int ls = 0; // if ls = 1: we execute a Greedy+LS procedure
 
 /** pomocne strukture za gridi metod **/
 
@@ -46,6 +53,164 @@ inline double stof(string &s) {
      return atof(s.c_str());
 }
 
+
+ostream& operator<<(ostream&ostr, Point_2 p){
+	ostr<<"("<<p.first<<","<<p.second<<")";
+	return ostr;
+}
+
+bool findA(vector<int>& s, int a)
+{
+
+     for(int si : s)
+         if(si == a)
+            return true;
+
+      return false;  
+}
+
+void updateCoveredPointsAdd(set<Point_2>& CovPoints,map<Point_2,int> & noOfG, int v){//we add all points which are covered by v, when v is added to solution
+    for(Point_2 p : S[v]){
+    	
+       CovPoints.insert(p);
+        if (noOfG.find(p) == noOfG.end()){
+       		noOfG.insert(std::make_pair(p,1));//first guard which cover point p
+       		//cout<<++temp<<"  First time: "<<p<<endl;
+       	}
+       	else{
+       			//p was already covered
+			   noOfG.find(p)->second++;
+       		
+       	}
+       	
+       
+   }
+
+}
+void updateCoveredPointsRemove(set<Point_2>& CovPoints,map<Point_2,int> & noOfG, int v){//we remove all points which are covered by v, when v is removed from solution
+    for(Point_2 p : S[v]){
+    	
+        if (noOfG.find(p) == noOfG.end()){
+        	cout<<"------------------ERROR:"<<p<<"  "<<noOfG.find(p)->second<<endl;
+        	cin.get();
+        	return;
+        }
+       // cout<<"Tacka "<<p<<" pokrivena sa: "<< noOfG.find(p)->second<<endl;
+        if(noOfG.find(p)->second == 1)
+        {
+        		//only the guard v see p in the solution
+        		//remove from CovPoints and remove from noOfGuards
+        		CovPoints.erase(p);
+        		noOfG.erase(p);
+        		//cout<<"Point "<<p<< "is no longer covered"<<endl;
+        		
+        		
+		}
+		else
+		{
+			noOfG.find(p)->second--;//one guard less see p
+		}
+			
+       
+   }
+
+}
+
+
+/*create map structure <key, value> 
+key is a point from D(P), value is the vector of Polygon vertices which cover the key
+*/
+void fill_visibility(){
+	//for each point from D(P) we create a vector of Polygon vertices which cover the point
+	//start with S
+	
+	for (int i = 0; i < S.size();i++){
+		//set S[i]
+		for(auto ix: S[i]){
+			//look for the point ix
+			//return an iterator to the found element (or to the end() if the element was not found)
+			std::map<Point_2,vector<Point_2>>::iterator it = Visibility.find(ix);
+			if (it != Visibility.end())//if the point already exists in the map add the vertex i
+    			it->second.push_back(Vertices[i]);
+			else //we add a new element to Visibility> key = ix, value is a vector containing only the point Vertices[i]
+				
+				{
+					vector<Point_2> vec;
+					vec.push_back(Vertices[i]);
+					Visibility.insert(std::make_pair(ix,vec));
+				}
+			
+		}
+					
+	}
+		
+}
+void print_visibility(){
+	cout<<"Printing visibility..."<<endl;
+	for(auto ix: Visibility){
+		cout<<"Point: "<<ix.first<<" visible from: "<<endl; //print key
+		for(auto iy:ix.second) //print vertices which cover the key
+			cout<<iy<<"\t";
+		cout<<endl;
+		
+	}
+}
+
+bool LS(float * obj){
+	cout<<"LS..."<<endl;
+	if(0)//check if LS should be executed or not. At this moment, we go in LS
+		return false;
+	/* to do...*/
+	vector<int> copy = indeks;//make a copy
+	set<Point_2> CoveredPoints2 = CoveredPoints;
+	map<Point_2,int> numberOfGuards2 = numberOfGuards;
+	float obj_copy = *obj;
+	bool global_succ = false;
+	bool reset = false;
+	int i = 0;
+	while(i<copy.size()){
+		int vertex = copy[i];
+		cout<<"Cvor: "<<vertex<<endl;
+		int neigh1 = (vertex+1)%n;
+		int neigh2 = (vertex-1)%n;
+		if(!findA(copy,neigh1))//neigh1 is not in the solution
+			{
+				cout<<"Test1: "<<neigh1<<":  "<<CoveredPoints2.size()<<endl;
+				//cin.get();
+				updateCoveredPointsRemove(CoveredPoints2,numberOfGuards2,vertex);
+				
+				cout<<"Test2: "<<CoveredPoints2.size()<<endl;
+				//cin.get();
+				updateCoveredPointsAdd(CoveredPoints2,numberOfGuards2,neigh1);
+				cout<<"Test3: "<<CoveredPoints2.size()<<endl;
+				if(CoveredPoints2.size()>CoveredPoints.size()){
+					//prelazimo odmah u novo rjesenje
+					cout<<"uspjelo"<<endl;
+					cin.get();
+					//prelazimo odmah u to rjesenje
+					//indeks.erase(indeks.begin()+i);
+					//indeks.push_back(neigh1);
+					CoveredPoints = CoveredPoints2;
+					numberOfGuards = numberOfGuards2;
+					//prepravljamo i kopiju
+					copy.erase(copy.begin()+i);
+					copy.push_back(neigh1);
+					indeks = copy;
+					
+					
+					
+					i = i-1;
+					//i = copy.size();
+					global_succ = true;
+				}
+			}
+		
+		i++;
+	}
+	return global_succ;	
+}
+
+
 void read_parameters(int argc, char **argv) {
 
      int iarg=1;
@@ -54,10 +219,13 @@ void read_parameters(int argc, char **argv) {
      else if(strcmp(argv[iarg],"-t") == 0) t_lim = atoi(argv[++iarg]);
      else if(strcmp(argv[iarg],"-greedy") == 0) greedy = atoi(argv[++iarg]);
      else if(strcmp(argv[iarg],"-w_type") == 0) w_type = atoi(argv[++iarg]);
+     else if(strcmp(argv[iarg],"-ls") == 0) ls = atoi(argv[++iarg]);
      else if(strcmp(argv[iarg],"-l") == 0) output = argv[++iarg];
      else ++iarg;
    }
 }
+
+
 
 void read_from_file(std:: string path)
 {
@@ -291,15 +459,6 @@ float greedy_criterion(vector<int>& C, int i) // take s_i from S
     return val;
 }
 
-bool findA(vector<int>& s, int a)
-{
-
-     for(int si : s)
-         if(si == a)
-            return true;
-
-      return false;  
-}
 /**
 param: 
 @indeks: indeks svih skupova koji su u trenutnom parcijalnom rjesenju;
@@ -399,6 +558,71 @@ float greedy_procedure()
      //return C.size();
 }
 
+
+float greedy_LS()
+{
+	vector<int> C;
+
+     vector<int> Sx; 
+	 cout << "n: "<< n << endl;
+     for(int i=0; i < n; ++i)
+         Sx.push_back(i);
+     cout << Sx.size() << endl;
+     int f_S = f(Sx); 
+	 cout << "f_S: " << f_S << endl;
+	 int f_C = 0;
+	 float obj_val = 0;
+     while(f_C != f_S) 
+     { 
+           int index_set = min_greedy(indeks); 
+		   cout <<"index--------------> " << index_set << endl;
+           //cout<<pol[index_set]<<endl;
+           cout<<"index set: " << index_set<<endl;
+           cout<<"Koliko tacaka pokriva: "<<S[index_set].size()<<endl;
+           if(!findA(indeks, index_set)){ //jos nije dodan
+           
+               //C.push_back((set<int>) S[index_set] );//cout << "dodaj ----> " << index_set << endl;
+               //add vertex to solution
+			   indeks.push_back(index_set);
+               //update set of covered points
+               updateCoveredPointsAdd(CoveredPoints,numberOfGuards,index_set);//add  
+               //update obj_val
+                obj_val += Cost[index_set];//add cost to
+           } 
+           
+           f_C = f(indeks); 
+            //f_C = CoveredPoints.size();
+           cout << "Control: f_C--------------->" << f_C << " Covered=" << CoveredPoints.size() << endl;
+           bool succ = true;
+           while(succ){
+           	succ = LS(&obj_val);//dragan - later def global
+           	if(succ){
+           		cout<<"LS succeeded"<<endl;
+           		//break;
+			   }
+		   }
+
+			
+     }
+	/*provjera*/
+    float check1 = 0;
+	for (int i = 0; i < indeks.size();i++){
+		check1+=Cost[i];
+	}
+	cout<<"Ukupan kost: "<<check1<<"Broj strazara: "<<indeks.size()<<endl;
+	float check2 = f(indeks); 
+    //f_C = CoveredPoints.size();
+    cout << "Control: f_C--------------->" << check2 << " Polazno= " << f_S << endl;
+    
+    cout << "number of guards: " << indeks.size() << endl;
+    return obj_val; 
+     //return C.size();
+	
+}
+
+
+
+
 vector<string> split(const string& str, const string& delim)
 {
     vector<string> tokens;
@@ -465,6 +689,7 @@ void write_test(string tekst)
   outfile << tekst;
 }
 
+
 int main( int argc, char **argv ) {
 
     read_parameters(argc, argv);
@@ -522,9 +747,13 @@ int main( int argc, char **argv ) {
     // ---------------------------------greedy------------------------------------
     cout << "Run Greedy" << " with type: " <<  greedy << endl;
     auto start = high_resolution_clock::now();
-    float s = greedy_procedure();
+    float s = 10000000;
+    if(ls == 1) 
+        s = greedy_LS();
+    else 
+        s = greedy_procedure();
+
     auto stop = high_resolution_clock::now();
-    // ------------------------------greedy - end------------------------------------
 
     auto duration = duration_cast<microseconds>(stop - start); 
     cout << "Time Execution: " << duration.count() << " microseconds" << endl;
