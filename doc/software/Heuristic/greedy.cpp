@@ -172,7 +172,9 @@ bool LS(float * obj){
 		int vertex = copy[i];
 		// cout<<"Cvor: "<<vertex<<endl;
 		int neigh1 = (vertex+1) % n;
-		int neigh2 = (vertex-1) % n;
+		int neigh2 = (vertex-1) % n; 
+                if( neigh2 <  0) neigh2 = n - 1; 
+
 		if(!findA(copy,neigh1))//neigh1 is not in the solution
 	        {
 				// cout<<"Test1: "<<neigh1<<":  "<<CoveredPoints2.size()<<endl;
