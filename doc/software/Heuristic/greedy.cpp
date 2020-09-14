@@ -157,7 +157,7 @@ void print_visibility(){
 }
 
 bool LS(float * obj){
-	cout<<"LS..."<<endl;
+	cout<<"LS executed"<<endl;
 	if(0)//check if LS should be executed or not. At this moment, we go in LS
 		return false;
 	/* to do...*/
@@ -171,10 +171,10 @@ bool LS(float * obj){
 	while(i<copy.size()){
 		int vertex = copy[i];
 		// cout<<"Cvor: "<<vertex<<endl;
-		int neigh1 = (vertex+1)%n;
-		int neigh2 = (vertex-1)%n;
+		int neigh1 = (vertex+1) % n;
+		int neigh2 = (vertex-1) % n;
 		if(!findA(copy,neigh1))//neigh1 is not in the solution
-			{
+	        {
 				// cout<<"Test1: "<<neigh1<<":  "<<CoveredPoints2.size()<<endl;
 				//cin.get();
 				updateCoveredPointsRemove(CoveredPoints2,numberOfGuards2,vertex);
@@ -182,6 +182,7 @@ bool LS(float * obj){
 				//cout<<"Test2: "<<CoveredPoints2.size()<<endl;
 				//cin.get();
 				updateCoveredPointsAdd(CoveredPoints2,numberOfGuards2,neigh1);
+				//updateCoveredPointsAdd(CoveredPoints2,numberOfGuards2,neigh2);
 				//cout<<"Test3: "<<CoveredPoints2.size()<<endl;
 				if(CoveredPoints2.size()>CoveredPoints.size()){
 					//prelazimo odmah u novo rjesenje
@@ -203,9 +204,8 @@ bool LS(float * obj){
 					//i = copy.size();
 					global_succ = true;
 				}
-			}
-		
-		i++;
+	       }
+	       i++;
 	}
 	return global_succ;	
 }
@@ -439,7 +439,7 @@ float greedy_criterion_2(vector<int>& indeks, int i)
               num += Intersection[i][j];
           } 
       }
-      cout << "obj: " << num /den << endl;
+      //cout << "obj: " << num /den << endl;
       return num / den;
 }
 /**
@@ -490,7 +490,7 @@ float gridi_criterion_dragan(vector<int> &index, int i)
       // drop vertex i from indeks 
       vector<int>::iterator it = std::find(index.begin(), index.end(), i); 
       index.erase(it);
-      cout << "obj: " << obj << endl;
+      //cout << "obj: " << obj << endl;
       return obj;
 }
 
@@ -539,7 +539,7 @@ float greedy_procedure()
            //cout<<pol[index_set]<<endl;
            cout<<"index set: " << index_set<<endl;
            if(!findA(indeks, index_set)){ //jos nije dodan
-           
+
                //C.push_back((set<int>) S[index_set] );//cout << "dodaj ----> " << index_set << endl;
                indeks.push_back(index_set);
            } 
@@ -577,15 +577,15 @@ float greedy_LS()
      while(f_C != f_S) 
      { 
            int index_set = min_greedy(indeks); 
-		   cout <<"index--------------> " << index_set << endl;
+           cout <<"index--------------> " << index_set << endl;
            //cout<<pol[index_set]<<endl;
            cout<<"index set: " << index_set<<endl;
-           cout<<"Koliko tacaka pokriva: "<<S[index_set].size()<<endl;
+           cout<<"Koliko tacaka pokriva: " << S[index_set].size() << endl;
            if(!findA(indeks, index_set)){ //jos nije dodan
            
                //C.push_back((set<int>) S[index_set] );//cout << "dodaj ----> " << index_set << endl;
                //add vertex to solution
-			   indeks.push_back(index_set);
+		indeks.push_back(index_set);
                //update set of covered points
                updateCoveredPointsAdd(CoveredPoints,numberOfGuards,index_set);//add  
                //update obj_val
@@ -605,11 +605,12 @@ float greedy_LS()
 		   }	
      }
 	/*provjera*/
-    float check1 = 0;
+        float check1 = 0;
 	for (int i = 0; i < indeks.size();i++){
-		check1+=Cost[i];
+		check1 += Cost[i];
 	}
-	cout<<"Ukupan kost: "<<check1<<"Broj strazara: "<<indeks.size()<<endl;
+        obj_val = check1; // daoan update
+	cout<<"Ukupan kost: " << check1 << " Broj strazara: "<<indeks.size()<<endl;
 	float check2 = f(indeks); 
     //f_C = CoveredPoints.size();
     cout << "Control: f_C--------------->" << check2 << " Polazno= " << f_S << endl;
@@ -741,9 +742,10 @@ int main( int argc, char **argv ) {
           default: {
                     for(size_t i = 0; i < n; i++) // non-weighted version of the problem
                        Cost.push_back(1);
-                    cardinalityD = Cost.size(); wTotal = Cost.size();
+                    wTotal = Cost.size();
                    }
-   }
+                
+   }   cardinalityD = Cost.size();
     // ---------------------------------greedy------------------------------------
     cout << "Run Greedy" << " with type: " <<  greedy << endl;
     auto start = high_resolution_clock::now();
