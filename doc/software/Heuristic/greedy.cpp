@@ -21,7 +21,8 @@ map<Point_2,vector<Point_2>> Visibility;//for each point, we provide the list od
 map<Point_2,int> numberOfGuards;//for each point we keep the number of Guards in solution which see that point
 set<Point_2> CoveredPoints;//set of points covered by the solution
 vector<int> indeks; //solution
-int ls = 0; // if ls = 1: we execute a Greedy+LS procedure
+int alg = 0; // if alg = 1: we execute a Greedy+LS procedure
+bool turn_ls = 0; // tunr on LS into Greedy+LS
 
 /** pomocne strukture za gridi metod **/
 
@@ -218,7 +219,8 @@ void read_parameters(int argc, char **argv) {
      else if(strcmp(argv[iarg],"-t") == 0) t_lim = atoi(argv[++iarg]);
      else if(strcmp(argv[iarg],"-greedy") == 0) greedy = atoi(argv[++iarg]);
      else if(strcmp(argv[iarg],"-w_type") == 0) w_type = atoi(argv[++iarg]);
-     else if(strcmp(argv[iarg],"-ls") == 0) ls = atoi(argv[++iarg]);
+     else if(strcmp(argv[iarg],"-alg") == 0) alg = atoi(argv[++iarg]);
+     else if(strcmp(argv[iarg],"-turn_ls") == 0) turn_ls = atoi(argv[++iarg]);
      else if(strcmp(argv[iarg],"-l") == 0) output = argv[++iarg];
      else ++iarg;
    }
@@ -594,7 +596,7 @@ float greedy_LS()
            f_C = f(indeks); 
             //f_C = CoveredPoints.size();
            cout << "Control: f_C--------------->" << f_C << endl;// " Covered=" << CoveredPoints.size() << endl;
-           bool succ = false;
+           bool succ = (turn_ls == 1);
            while(succ){
            	succ = LS(&obj_val);//dragan - later def global
            	if(succ){
@@ -626,7 +628,7 @@ float greedy_LS()
 		        std::default_random_engine generator;
   			std::discrete_distribution<int> distribution (costs.begin(),costs.end());
     		        int number = distribution(generator);//indeks cvora u vektoru indeks, koji se izbacuje
- 			cout<<"izbaci----------------------------------> " << indeks[number] << "\n";
+ 			cout << "izbaci----------------------------------> " << indeks[number] << "\n";
  			//cin.get();
                         int vertexm = indeks[number];
  			indeks.erase(indeks.begin()+number);
@@ -790,7 +792,7 @@ int main( int argc, char **argv ) {
     cout << "Run Greedy" << " with type: " <<  greedy << endl;
     auto start = high_resolution_clock::now();
     float s = 10000000;
-    if(ls == 1) 
+    if(alg == 1) 
         s = greedy_LS();
     else 
         s = greedy_procedure();
