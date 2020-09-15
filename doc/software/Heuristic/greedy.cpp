@@ -170,14 +170,14 @@ bool LS(float * obj){
 	int i = 0;
 	while(i<copy.size()){
 		int vertex = copy[i];
-		// cout<<"Cvor: "<<vertex<<endl;
+		cout<<"Cvor: "<<vertex<<endl;
 		int neigh1 = (vertex+1) % n;
 		int neigh2 = (vertex-1) % n; 
-                if( neigh2 <  0) neigh2 = n - 1; 
+               if( neigh2 <  0) neigh2 = n - 1; 
 
 		if(!findA(copy,neigh1))//neigh1 is not in the solution
 	        {
-				// cout<<"Test1: "<<neigh1<<":  "<<CoveredPoints2.size()<<endl;
+			        cout<<"Test1: "<<neigh1<<":  "<<CoveredPoints2.size()<<endl;
 				//cin.get();
 				updateCoveredPointsRemove(CoveredPoints2,numberOfGuards2,vertex);
 				
@@ -188,8 +188,8 @@ bool LS(float * obj){
 				//cout<<"Test3: "<<CoveredPoints2.size()<<endl;
 				if(CoveredPoints2.size()>CoveredPoints.size()){
 					//prelazimo odmah u novo rjesenje
-					//cout<<"uspjelo"<<endl;
-					cin.get();
+					cout<<"uspjelo"<<endl;
+					//cin.get();
 					//prelazimo odmah u to rjesenje
 					//indeks.erase(indeks.begin()+i);
 					//indeks.push_back(neigh1);
@@ -199,9 +199,6 @@ bool LS(float * obj){
 					copy.erase(copy.begin()+i);
 					copy.push_back(neigh1);
 					indeks = copy;
-					
-					
-					
 					i = i-1;
 					//i = copy.size();
 					global_succ = true;
@@ -608,7 +605,7 @@ float greedy_LS()
            
                    double r = (rand() + 0.0) / double(RAND_MAX);
 		   cout<<"r: " << r<<endl;
-		   if(r < 0.3)//call erasing
+		   if(r < 0.1)//call erasing
 		   {
 		   	cout<<"Usao "<<r<<endl;
 			vector<float> costs;
@@ -629,11 +626,13 @@ float greedy_LS()
 		        std::default_random_engine generator;
   			std::discrete_distribution<int> distribution (costs.begin(),costs.end());
     		        int number = distribution(generator);//indeks cvora u vektoru indeks, koji se izbacuje
- 			cout<<"izbaci----------------------------------> "<<indeks[number] << "\n";
+ 			cout<<"izbaci----------------------------------> " << indeks[number] << "\n";
  			//cin.get();
+                        int vertexm = indeks[number];
  			indeks.erase(indeks.begin()+number);
- 			obj_val -=Cost[indeks[number]];
- 			//to do update structures
+ 			obj_val -= Cost[indeks[number]];
+ 			//to do update structures (acc. to indeks[number])
+                        updateCoveredPointsRemove(CoveredPoints,numberOfGuards, vertexm);
 		   	
 		   }	
         }
