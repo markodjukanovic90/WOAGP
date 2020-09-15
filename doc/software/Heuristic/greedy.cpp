@@ -596,16 +596,47 @@ float greedy_LS()
            
            f_C = f(indeks); 
             //f_C = CoveredPoints.size();
-           cout << "Control: f_C--------------->" << f_C << " Covered=" << CoveredPoints.size() << endl;
-           bool succ = true;
+           cout << "Control: f_C--------------->" << f_C << endl;// " Covered=" << CoveredPoints.size() << endl;
+           bool succ = false;
            while(succ){
            	succ = LS(&obj_val);//dragan - later def global
            	if(succ){
            		cout<<"LS succeeded"<<endl;
            		//break;
-			   }
+                }
+           }
+           
+                   double r = (rand() + 0.0) / double(RAND_MAX);
+		   cout<<"r: " << r<<endl;
+		   if(r < 0.3)//call erasing
+		   {
+		   	cout<<"Usao "<<r<<endl;
+			vector<float> costs;
+			float niz[indeks.size()];
+			float maxim = Cost[indeks[0]];
+			for(int i = 0; i < indeks.size();i++){
+				niz[i] = Cost[indeks[i]];
+				if(maxim<niz[i])
+					maxim = niz[i];				
+			}
+			//cout<<"Max cost: "<<maxim<<endl;
+			
+		   	for(int i = 0; i<indeks.size();i++){
+		   		costs.push_back(maxim - Cost[indeks[i]]);
+		   		//cout<<maxim - Cost[indeks[i]]<<"\t";
+		   	}
+		   	cout<<endl;
+		        std::default_random_engine generator;
+  			std::discrete_distribution<int> distribution (costs.begin(),costs.end());
+    		        int number = distribution(generator);//indeks cvora u vektoru indeks, koji se izbacuje
+ 			cout<<"izbaci----------------------------------> "<<indeks[number] << "\n";
+ 			//cin.get();
+ 			indeks.erase(indeks.begin()+number);
+ 			obj_val -=Cost[indeks[number]];
+ 			//to do update structures
+		   	
 		   }	
-     }
+        }
 	/*provjera*/
         float check1 = 0;
 	for (int i = 0; i < indeks.size();i++){
@@ -726,7 +757,7 @@ int main( int argc, char **argv ) {
                   float dist0  = (dist(0, n-1) + dist(0,1) ) / 2; 
                   Cost.push_back(dist0); wTotal += dist0;
                    for(int i = 1; i < n; ++i){ 
-                      float w_i = ( (0.0 + dist(i-1, i) + dist(i, i+1) ) / 2 );
+                      float w_i = ( (0.0 + dist(i-1, i) + dist(i, i+1) ) / 2.0 );
                       Cost.push_back( w_i );
                       wTotal += w_i;
                       //cout << "w_i= " << Cost[i] << endl;
@@ -740,7 +771,15 @@ int main( int argc, char **argv ) {
                         wTotal += c;
                     } 
                     break;
-                  }
+                  } 
+          case 3: { // random weights
+                    for(size_t i = 0; i < n; i++) //  weights <= 10
+                    {
+                        Cost.push_back( rand() % 10);
+                        wTotal += Cost[ i ];
+                    }
+                    break;
+                   }
           default: {
                     for(size_t i = 0; i < n; i++) // non-weighted version of the problem
                        Cost.push_back(1);
