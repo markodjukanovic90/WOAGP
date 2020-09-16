@@ -605,38 +605,52 @@ float greedy_LS()
                 }
            }
            
-                   double r = (rand() + 0.0) / double(RAND_MAX);
-		   cout<<"r: " << r<<endl;
-		   if(r < 0.1)//call erasing
+                 int k = 1;
+		   vector<int> copy = indeks;
+		   float obj_val_copy = obj_val;
+		   bool success = true;
+		   //cout<<"Duzina indeksa: "<<indeks.size()<<endl;
+		   while(k<copy.size()/2)
 		   {
-		   	cout<<"Usao "<<r<<endl;
-			vector<float> costs;
-			float niz[indeks.size()];
-			float maxim = Cost[indeks[0]];
-			for(int i = 0; i < indeks.size();i++){
-				niz[i] = Cost[indeks[i]];
-				if(maxim<niz[i])
-					maxim = niz[i];				
-			}
-			//cout<<"Max cost: "<<maxim<<endl;
-			
-		   	for(int i = 0; i<indeks.size();i++){
-		   		costs.push_back(maxim - Cost[indeks[i]]);
-		   		//cout<<maxim - Cost[indeks[i]]<<"\t";
-		   	}
-		   	cout<<endl;
-		        std::default_random_engine generator;
-  			std::discrete_distribution<int> distribution (costs.begin(),costs.end());
-    		        int number = distribution(generator);//indeks cvora u vektoru indeks, koji se izbacuje
- 			cout << "izbaci----------------------------------> " << indeks[number] << "\n";
- 			//cin.get();
-                        int vertexm = indeks[number];
- 			indeks.erase(indeks.begin()+number);
- 			obj_val -= Cost[indeks[number]];
- 			//to do update structures (acc. to indeks[number])
-                        updateCoveredPointsRemove(CoveredPoints,numberOfGuards, vertexm);
-		   	
-		   }	
+		   		int i;
+		   		//cout<<"izbacujemo:"<< k<<" elemenata."<<endl;
+		   		for(i = 0; i < k; i++){//izbacimo k elemenata
+		   			int r = rand()%copy.size();
+		   			cout<<i<<" Izbacujemo: "<<copy[r]<<endl;
+		   			obj_val_copy -=Cost[copy[r]];
+		   			copy.erase(copy.begin()+r);
+		   			//cout<<copy[r]<<"umanjimo za: "<<Cost[copy[r]]<<endl;
+ 							   			
+				   }
+				   //cout<<"vrijednost obj_val_copy: "<<obj_val_copy<<endl;
+				//vracamo k elemenata
+				i = 0;
+				while(i<k){
+				
+					int index_set = min_greedy(copy); 
+           			cout<<"index set u popravci: " << index_set<<endl;
+           			if(!findA(copy, index_set)){ //jos nije dodan
+           				i++;
+
+						copy.push_back(index_set);
+					//cout<<index_set<<" uvecamo za: "<<Cost[index_set]<<endl;
+                	obj_val_copy += Cost[index_set];//add cost to
+                	}
+                }
+                	cout<<"vraceno:"<< k<<" elemenata. obj_val_copy: "<<obj_val_copy<<endl;
+                //cout<<"obj_val: "<<obj_val<<endl;
+                if(obj_val_copy<obj_val){
+					cout<<"obj_val: "<<obj_val<<endl;
+					cout<<"obj_val_copy: "<<obj_val_copy<<endl;
+					indeks = copy;
+					obj_val = obj_val_copy;
+                	cin.get();
+                }
+                //obj_val_copy = obj_val;
+				k++;	
+           		
+				 
+ 			}
         }
 	/*provjera*/
         float check1 = 0;
