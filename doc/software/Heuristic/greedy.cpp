@@ -70,6 +70,16 @@ bool findA(vector<int>& s, int a)
       return false;  
 }
 
+float dist(int i, int j)
+{
+     return sqrt( pow( Vertices[i].first - Vertices[j].first, 2) + pow( Vertices[ i ].second - Vertices[ j ].second, 2) );
+}
+
+float distP(Point_2 x, Point_2 y)
+{
+     return sqrt( pow( x.first - y.first, 2) + pow( x.second - y.second, 2) );
+}
+
 void updateCoveredPointsAdd(set<Point_2>& CovPoints,map<Point_2,int> & noOfG, int v){//we add all points which are covered by v, when v is added to solution
     for(Point_2 p : S[v]){
     	
@@ -561,6 +571,78 @@ float greedy_procedure()
      //return C.size();
 }
 
+// izbacivanje cvora
+// izaberemo random cvor i iz parcijalnog rjesenja C (copy)
+//pogledamo njegovu okolinu --> cvorove v_i-k,...v_i-1, v_i+1,...,v_i+k
+// uzmemo distancu D i uzmemo samo one cvorove koji su na udaljenosti vecoj od D od v_i (skup VC)
+// random izbacimo neki iz skupa VC...
+
+int izbaciCvor(){
+
+     int K = 3;
+     vector<int> Candidates; // kandidati za izbacivanje
+     int i = random() % indeks.size(); // uzmemo i-ti vektor
+     int cvor = indeks[ i ];
+     int count1 = 0; 
+     for(int i = cvor + 1; i < n; ++i) 
+     {
+         if(std::find(indeks.begin(), indeks.end(), i) != indeks.end()){ // already in indeks
+            Candidates.push_back(i); 
+         }
+         count1++; 
+          
+         if(count1 == K -  1) 
+            break;
+     }
+     if(count1 < K - 1) 
+     {
+
+        for(int i = 0; count1 == (K - 1); ++i)
+        {
+           if(std::find(indeks.begin(), indeks.end(), i) != indeks.end()){ // already in indeks
+            Candidates.push_back(i); 
+           }
+           count1++;
+           if(count1 == K - 1) 
+              break;
+        } 
+     }
+     count1 = 0; 
+     for(int i = cvor - 1; i >= 0; --i) 
+     {
+         if(std::find(indeks.begin(), indeks.end(), i) != indeks.end()){ // already in indeks
+            Candidates.push_back(i); 
+         }
+         count1++; 
+           
+     }
+     if(count1 < K - 1) 
+     {
+        for(int i = n - 1; i >= 0; --i) 
+        {
+            if(std::find(indeks.begin(), indeks.end(), i) != indeks.end()){ // already in indeks
+               Candidates.push_back(i); 
+            }
+            count1++;
+            if(count1 == K - 1) 
+               break;
+        }
+     }  
+     // mjerimo udaljenost potencijalnih covrova koje hocemo izbaciti of cvora <cvor>
+     // ako je neki do cvorova na udaljenosti D > 0 od cvora, izbacimo ga iz liste kandidata
+     float Dist = 2.0; 
+
+     for(vector<int>::iterator it =  Candidates.begin(); it != Candidates.end(); ++it )
+     {
+         if(dist(cvor, *it) > 2.0)
+         {
+            Candidates.erase(it); // izbaci <i> iz potencijalnih cvorova za izbacivanje
+         } 
+     }
+     //biraj random cvor iz Candidates 
+     int rx = rand() % Candidates.size();
+     return Candidates[ rx ];
+}
 
 float greedy_LS()
 {
@@ -615,35 +697,33 @@ float greedy_LS()
 		   		int i;
 		   		//cout<<"izbacujemo:"<< k<<" elemenata."<<endl;
 		   		for(i = 0; i < k; i++){//izbacimo k elemenata
-		   			int r = rand()%copy.size();
+		   			int r = rand() % copy.size(); //funkcija za izbacivanje? 
 		   			cout<<i<<" Izbacujemo: "<<copy[r]<<endl;
-		   			obj_val_copy -=Cost[copy[r]];
-		   			copy.erase(copy.begin()+r);
-		   			//cout<<copy[r]<<"umanjimo za: "<<Cost[copy[r]]<<endl;
- 							   			
-				   }
-				   //cout<<"vrijednost obj_val_copy: "<<obj_val_copy<<endl;
+		   			obj_val_copy -= Cost[copy[r]];
+		   			copy.erase( copy.begin() + r );
+		   			//cout<<copy[r]<<"umanjimo za: "<<Cost[copy[r]]<<endl;		   			
+				}
+				//cout<<"vrijednost obj_val_copy: "<<obj_val_copy<<endl;
 				//vracamo k elemenata
 				i = 0;
-				while(i<k){
+				while(i < k){
 				
-					int index_set = min_greedy(copy); 
-           			cout<<"index set u popravci: " << index_set<<endl;
-           			if(!findA(copy, index_set)){ //jos nije dodan
-           				i++;
-
-						copy.push_back(index_set);
-					//cout<<index_set<<" uvecamo za: "<<Cost[index_set]<<endl;
-                	obj_val_copy += Cost[index_set];//add cost to
-                	}
+			           int index_set = min_greedy(copy); 
+           			   cout<<"index set u popravci: " << index_set<<endl;
+           			   if(!findA(copy, index_set)){ //jos nije dodan
+           			      i++;
+				      copy.push_back(index_set);
+				      //cout<<index_set<<" uvecamo za: "<<Cost[index_set]<<endl;
+                	              obj_val_copy += Cost[index_set];//add cost to
+                                }
                 }
-                	cout<<"vraceno:"<< k<<" elemenata. obj_val_copy: "<<obj_val_copy<<endl;
+                cout<<"vraceno:"<< k<<" elemenata. obj_val_copy: "<<obj_val_copy<<endl;
                 //cout<<"obj_val: "<<obj_val<<endl;
                 if(obj_val_copy<obj_val){
-					cout<<"obj_val: "<<obj_val<<endl;
-					cout<<"obj_val_copy: "<<obj_val_copy<<endl;
-					indeks = copy;
-					obj_val = obj_val_copy;
+			cout<<"obj_val: "<<obj_val<<endl;
+			cout<<"obj_val_copy: "<<obj_val_copy<<endl;
+			indeks = copy;
+			obj_val = obj_val_copy;
                 	cin.get();
                 }
                 //obj_val_copy = obj_val;
@@ -689,15 +769,6 @@ vector<string> split(const string& str, const string& delim)
     return tokens;
 }
 
-float dist(int i, int j)
-{
-     return sqrt( pow( Vertices[i].first - Vertices[j].first, 2) + pow( Vertices[ i ].second - Vertices[ j ].second, 2) );
-}
-
-float distP(Point_2 x, Point_2 y)
-{
-     return sqrt( pow( x.first - y.first, 2) + pow( x.second - y.second, 2) );
-}
 
 bool equalP(Point_2 x, Point_2 y)
 {
