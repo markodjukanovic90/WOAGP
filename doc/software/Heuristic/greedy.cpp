@@ -181,7 +181,7 @@ bool LS(float * obj){
 	int i = 0;
 	while(i<copy.size()){
 		int vertex = copy[i];
-		cout<<"Cvor: "<<vertex<<endl;
+		//cout<<"Cvor: "<<vertex<<endl;
 		int neigh1 = (vertex+1) % n;
 		int neigh2 = (vertex-1) % n; 
                if( neigh2 <  0) neigh2 = n - 1; 
@@ -508,7 +508,7 @@ float gridi_criterion_dragan(vector<int> &index, int i)
 
 int min_greedy(vector<int>& indeks)
 {        
-          cout << "min_greedy" << endl;
+           
           float g_m = INFEASIBLE; 
           int dodaj = -1;
           for(int i = 0; i < S.size(); ++i)
@@ -529,7 +529,7 @@ int min_greedy(vector<int>& indeks)
                  dodaj = i;
                  g_m = g_mi;   
               }
-          } cout << "dodati....." << dodaj << endl;
+          }// cout << "dodati....." << dodaj << endl;
           return dodaj;
 }
 
@@ -546,7 +546,7 @@ float greedy_procedure()
 
      while(f_C != f_S) 
      { 
-           int index_set = min_greedy(indeks); cout <<"index--------------> " << index_set << endl;
+           int index_set = min_greedy(indeks); // cout <<"index--------------> " << index_set << endl;
            //cout<<pol[index_set]<<endl;
            cout<<"index set: " << index_set<<endl;
            if(!findA(indeks, index_set)){ //jos nije dodan
@@ -577,92 +577,110 @@ float greedy_procedure()
 // uzmemo distancu D i uzmemo samo one cvorove koji su na udaljenosti vecoj od D od v_i (skup VC)
 // random izbacimo neki iz skupa VC...
 
-int izbaciCvor(){
+int izbaciCvor(vector<int>& copy){
 
-     int K = 3;
+     int K = std::min(10, (int) copy.size() / 2); 
+     float Dist = 2.0; 
+     
+     //cout <<"K: " << K << endl;
      vector<int> Candidates; // kandidati za izbacivanje
-     int i = random() % indeks.size(); // uzmemo i-ti vektor
-     int cvor = indeks[ i ];
-     int count1 = 0; 
-     for(int i = cvor + 1; i < n; ++i) 
+     int i = random() % copy.size(); // uzmemo i-ti vektor
+     int cvor = copy[ i ];  
+     int count1 = 0; bool us = true;
+     for(int i = cvor + 1; i < n && us; ++i) 
      {
-         if(std::find(indeks.begin(), indeks.end(), i) != indeks.end()){ // already in indeks
-            Candidates.push_back(i); 
+         if(std::find(copy.begin(), copy.end(), i) != copy.end()){ // already in indeks
+            Candidates.push_back(i);
          }
+         
          count1++; 
           
-         if(count1 == K -  1) 
-            break;
+         if(count1 == K) 
+           us = false;
      }
-     if(count1 < K - 1) 
+     us = true; 
+     if(count1 < K) 
      {
 
-        for(int i = 0; count1 == (K - 1); ++i)
+        for(int i = 0; count1 != K && us; ++i)
         {
-           if(std::find(indeks.begin(), indeks.end(), i) != indeks.end()){ // already in indeks
-            Candidates.push_back(i); 
+           if(std::find(copy.begin(), copy.end(), i) != copy.end()){ // already in indeks
+              Candidates.push_back(i); 
            }
            count1++;
-           if(count1 == K - 1) 
-              break;
+           if(count1 == K ) 
+              us = false;
         } 
      }
-     count1 = 0; 
-     for(int i = cvor - 1; i >= 0; --i) 
+     count1 = 0;   
+     us = true;
+     for(int i = cvor - 1; i >= 0 && us; --i) 
      {
-         if(std::find(indeks.begin(), indeks.end(), i) != indeks.end()){ // already in indeks
+         if(std::find(copy.begin(), copy.end(), i) != copy.end()){ // already in indeks
             Candidates.push_back(i); 
          }
          count1++; 
+         if(count1 == K) 
+            us = false; 
            
-     }
-     if(count1 < K - 1) 
+     }      
+     if(count1 < K) 
      {
-        for(int i = n - 1; i >= 0; --i) 
+        us = true;
+        for(int i = n - 1; i >= 0 && us; --i) 
         {
-            if(std::find(indeks.begin(), indeks.end(), i) != indeks.end()){ // already in indeks
+            if(std::find(copy.begin(), copy.end(), i) != copy.end()){ // already in indeks
                Candidates.push_back(i); 
             }
             count1++;
-            if(count1 == K - 1) 
-               break;
+            if(count1 == K) 
+               us = false;
         }
      }  
      // mjerimo udaljenost potencijalnih covrova koje hocemo izbaciti of cvora <cvor>
      // ako je neki do cvorova na udaljenosti D > 0 od cvora, izbacimo ga iz liste kandidata
-     float Dist = 2.0; 
-
-     for(vector<int>::iterator it =  Candidates.begin(); it != Candidates.end(); ++it )
-     {
-         if(dist(cvor, *it) > 2.0)
-         {
-            Candidates.erase(it); // izbaci <i> iz potencijalnih cvorova za izbacivanje
+    //cout << "dist -----> " << Candidates.size() << endl;
+    int index = 0; 
+     for(int ix = 0;  ix < Candidates.size(); ++ix)
+     {   
+         if(dist(cvor, Candidates[ ix ]) <= Dist)
+         {  //cout << "to close " << cvor << " " << Candidates[ ix ] << endl;
+            Candidates.erase( Candidates.begin() + ix ); // izbaci <i> iz potencijalnih cvorova za izbacivanje
          } 
      }
+     //cout << "|C|=" << Candidates.size() << endl;
      //biraj random cvor iz Candidates 
-     int rx = rand() % Candidates.size();
+     if(Candidates.size() == 0){
+        int rx = rand() % copy.size();
+        return copy[ rx ];
+     }
+
+     int rx = rand() % Candidates.size(); 
+     //cout <<"candidates--------------------------------------------> " << Candidates.size() << endl;
      return Candidates[ rx ];
 }
 
 float greedy_LS()
 {
-	vector<int> C;
-
-     vector<int> Sx; 
-	 cout << "n: "<< n << endl;
+     vector<int> C;
+     vector<int> Sx;  
+     cout << "n: "<< n << endl;
+     
      for(int i=0; i < n; ++i)
          Sx.push_back(i);
-     cout << Sx.size() << endl;
-     int f_S = f(Sx); 
-	 cout << "f_S: " << f_S << endl;
-	 int f_C = 0;
-	 float obj_val = 0;
-     while(f_C != f_S) 
+     //cout << Sx.size() << endl;
+     int f_S = f(Sx);  
+     cout << "f_S: " << f_S << endl;
+     int f_C = 0;
+     float obj_val = 0;
+     bool covered = false; 
+     
+     while(f_C != f_S && !covered) 
      { 
            int index_set = min_greedy(indeks); 
-           cout <<"index--------------> " << index_set << endl;
+           //cout <<"index--------------> " << index_set << endl;
            //cout<<pol[index_set]<<endl;
-           cout<<"index set: " << index_set<<endl;
+           //cout<<"index set: " << index_set<<endl;
            cout<<"Koliko tacaka pokriva: " << S[index_set].size() << endl;
            if(!findA(indeks, index_set)){ //jos nije dodan
            
@@ -677,7 +695,7 @@ float greedy_LS()
            
            f_C = f(indeks); 
             //f_C = CoveredPoints.size();
-           cout << "Control: f_C--------------->" << f_C << endl;// " Covered=" << CoveredPoints.size() << endl;
+           cout << "Control: f_C--------------->" << f_C << "Covered=" << CoveredPoints.size() << endl;
            bool succ = (turn_ls == 1);
            while(succ){
            	succ = LS(&obj_val);//dragan - later def global
@@ -687,50 +705,58 @@ float greedy_LS()
                 }
            }
            
-                 int k = 1;
+                   int k = 1;
 		   vector<int> copy = indeks;
 		   float obj_val_copy = obj_val;
 		   bool success = true;
 		   //cout<<"Duzina indeksa: "<<indeks.size()<<endl;
-		   while(k<copy.size()/2)
+                   //cout << "k: " << k << " copy: " << (copy.size()/2) << endl;
+		   while(k < copy.size()/2)
 		   {
+                                //cin.get();
 		   		int i;
 		   		//cout<<"izbacujemo:"<< k<<" elemenata."<<endl;
 		   		for(i = 0; i < k; i++){//izbacimo k elemenata
-		   			int r = rand() % copy.size(); //funkcija za izbacivanje? 
-		   			cout<<i<<" Izbacujemo: "<<copy[r]<<endl;
-		   			obj_val_copy -= Cost[copy[r]];
-		   			copy.erase( copy.begin() + r );
+		   			int r =  izbaciCvor(copy);// rand() % copy.size(); //funkcija za izbacivanje? 
+                                        //cout << "Izbacujemo --------------------------->>>>> " << r << endl;//cin.get();
+                               		obj_val_copy -= Cost[r];
+		   			copy.erase( std::find(copy.begin(), copy.end(), r) );          
+		   			//cout<<i<<" Izbacujemo: "<<copy[r]<<endl;
+		   			//obj_val_copy -= Cost[copy[r]];
+		   			//copy.erase( copy.begin() + r );
 		   			//cout<<copy[r]<<"umanjimo za: "<<Cost[copy[r]]<<endl;		   			
 				}
 				//cout<<"vrijednost obj_val_copy: "<<obj_val_copy<<endl;
 				//vracamo k elemenata
+                               
 				i = 0;
 				while(i < k){
 				
 			           int index_set = min_greedy(copy); 
-           			   cout<<"index set u popravci: " << index_set<<endl;
+           			   //cout<<"index set u popravci: " << index_set<<endl;
            			   if(!findA(copy, index_set)){ //jos nije dodan
            			      i++;
 				      copy.push_back(index_set);
 				      //cout<<index_set<<" uvecamo za: "<<Cost[index_set]<<endl;
                 	              obj_val_copy += Cost[index_set];//add cost to
+                                      f_C = f(copy) ;
+                                      covered =  f_C == f_S;  // pokriven D(P)
                                 }
                 }
-                cout<<"vraceno:"<< k<<" elemenata. obj_val_copy: "<<obj_val_copy<<endl;
+                //cout<<"vraceno:"<< k<<" elemenata. obj_val_copy: "<<obj_val_copy<<endl;
                 //cout<<"obj_val: "<<obj_val<<endl;
                 if(obj_val_copy<obj_val){
 			cout<<"obj_val: "<<obj_val<<endl;
 			cout<<"obj_val_copy: "<<obj_val_copy<<endl;
 			indeks = copy;
 			obj_val = obj_val_copy;
-                	cin.get();
+                	//cin.get();
                 }
                 //obj_val_copy = obj_val;
-				k++;	
+		k++;	
            		
 				 
- 			}
+ 	     }
         }
 	/*provjera*/
         float check1 = 0;
@@ -874,7 +900,7 @@ int main( int argc, char **argv ) {
                 
    }   cardinalityD = Cost.size();
     // ---------------------------------greedy------------------------------------
-    cout << "Run Greedy" << " with type: " <<  greedy << endl;
+    cout << "Run Greedy" << " with type: " <<  greedy << " algorithm: " << alg << "turn_ls: " << turn_ls << endl; 
     auto start = high_resolution_clock::now();
     float s = 10000000;
     if(alg == 1) 
