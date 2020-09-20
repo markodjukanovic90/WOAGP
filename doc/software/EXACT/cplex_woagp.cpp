@@ -35,6 +35,7 @@ vector<float> Cost; // at index i --> w_i
 vector<vector<float>>Intersection; // Intersection[i][j] = Volume of V(i) intersected by V(j)
 vector<set<Point_2>> S; // i-th position of S is a set of all points that are visible from vertex i
 set<Point_2> D_P;
+vector<int> indeks; // parcijalno rjesenje (indeksi skupova) 
 vector<Point_2> Vertices; // vector of vertices
 #define INFEASIBLE 1000000
 int cardinalityD; // |D(P)|
@@ -269,6 +270,11 @@ void run_cplex(vector<set<Point_2>>& S, set<Point_2>& D_P, int n){
           model.add(expr_i >= 1);      
        index++ ;
    }  
+   // dopuna parcijalnog rjesenja do najboljeg rjesenja
+   for(int i: indeks) 
+   {
+       model.add(Z[ i ] == 1 ); 
+   }
 
    //std::cout << "#Constraints: "<< constraints_num << std::endl;
    //solve the modelIloLinearNumExpr objective = cplex.linearNumExpr();
