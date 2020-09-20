@@ -10,8 +10,12 @@
 #include <string>
 #include <math.h>       /* sqrt */
 
+// the following "include" is necessary for the correct working/compilation of CPLEX. You should adapt this path to your installation of CPLEX
+#include "/home/djukanovic/Desktop/projects/LCAPS_software/cplex-12.5/include/ilcplex/ilocplex.h"
+
 using namespace std;
 using namespace std::chrono;
+ILOSTLBEGIN
 
 typedef pair<float, float> Point_2;
 
@@ -23,7 +27,8 @@ set<Point_2> CoveredPoints;//set of points covered by the solution
 vector<int> indeks; //solution
 int alg = 0; // if alg = 1: we execute a Greedy+LS procedure
 bool turn_ls = 0; // tunr on LS into Greedy+LS
-
+int time_limit = 900; // time limit of CPLEX
+float partial = 0.0;
 /** pomocne strukture za gridi metod **/
 
 vector<float> Surface; // for a vertex indexed by i, we return the surface of V(i)
@@ -80,6 +85,105 @@ float distP(Point_2 x, Point_2 y)
      return sqrt( pow( x.first - y.first, 2) + pow( x.second - y.second, 2) );
 }
 
+// begin CPLEX model
+
+float run_cplex(vector<set<Point_2>>& S, vector<Point_2>& D_P, int n){
+
+  IloEnv env;  // cout << "run_cplex " << endl;
+  env.setOut(env.getNullStream());
+  try
+  {
+   IloModel model(env);
+   IloObjective obj = IloMinimize(env);
+   // defining the set of binary variables Z
+   vector<IloNumVar> Z; cout << "S.size() ----> " << S.size() << n << endl;
+   for(int i = 0; i < n; ++i){
+       //cout << "cost i " << Cost[i] << endl;
+       IloNumVar myIntVar(env, 0, 1, ILOINT);
+       Z.push_back(myIntVar); // x_i  \in {0, 1}
+       obj.setLinearCoef(Z[i], Cost[i]); // sum_i c_i x_i
+   }
+   // constraints 
+   cout << "#Vars: " << Z.size() << endl;
+   // constraints 
+   int index = 0;
+   for(Point_2 p : D_P) 
+   {
+       IloExpr expr_i(env); bool add = false;
+       for(int j = 0; j < n; ++j)   
+       {
+           if( S[j].count( p ) ){ // item i se nalazi u skupu j
+               expr_i += Z[j];
+               add = true;
+           }
+       }
+       if(add)
+          model.add(expr_i >= 1);      
+       index++ ;
+   }  
+   // dopuna parcijalnog rjesenja do najboljeg rjesenja
+   for(int i: indeks) 
+   {
+       model.add(Z[ i ] == 1 ); 
+   }
+
+   //std::cout << "#Constraints: "<< constraints_num << std::endl;
+   //solve the modelIloLinearNumExpr objective = cplex.linearNumExpr();
+   model.add(obj);
+   IloCplex cplex(model);
+   //int time_limit = 900;
+   // pass the time limit to CPLEX
+   cplex.setParam(IloCplex::TiLim, time_limit);
+   // the following two parameters should always be set in the way as shown
+   cplex.setParam(IloCplex::NodeFileInd, 2);
+   cplex.setParam(IloCplex::Threads, 1);
+   IloNum lastObjVal = std::numeric_limits<double>::min();
+   // tell CPLEX to make use of the function 'loggingCallback' for writing out information to the screen
+   //cplex.use(loggingCallback(env, timer, times, results, gaps, iter, lastObjVal));
+   cout << "CPLEX pokrenut" << endl;
+   // cplex.exportModel("ws.lp");
+   cplex.solve();
+  
+   if (cplex.getStatus() == IloAlgorithm::Optimal or cplex.getStatus() == IloAlgorithm::Feasible)
+   {
+       if(cplex.getStatus() == IloAlgorithm::Optimal)
+          cout << "CPLEX finds optimal" << endl;
+       else
+          cout << "CPLEX finds feasible solution" << endl;
+
+       double lastVal = double(cplex.getObjValue());
+       cout << "\n CPLEX sol: " << lastVal << endl;
+       // print the objective point
+       cout << "Sets in the solution: {" <<endl;
+       bool first = true;  
+       for(int i = 0; i < Z.size(); ++i){
+           IloNum xval = cplex.getValue(Z[i]);
+           // the reason for 'xval > 0.9' instead of 'xval == 1.0' will be explained in class
+           if (xval > 0.9) {
+               cout << "S_" << ( i + 1 ) << ", ";
+               //myfileOut << (*it).first;
+           }
+
+       }
+       cout << "}" << endl;
+       //myfileOut << "value: " << lastVal << endl;
+       return lastVal;
+   }
+   else{
+       cout << "Nema rjesenja" << endl;
+       return -1;
+   } 
+}
+catch(IloException& e) {
+        cerr  << " ERROR: " << e << endl;
+}
+env.end();
+}
+
+// end CPLEX model
+
+
+
 void updateCoveredPointsAdd(set<Point_2>& CovPoints,map<Point_2,int> & noOfG, int v){//we add all points which are covered by v, when v is added to solution
     for(Point_2 p : S[v]){
     	
@@ -89,12 +193,9 @@ void updateCoveredPointsAdd(set<Point_2>& CovPoints,map<Point_2,int> & noOfG, in
        		//cout<<++temp<<"  First time: "<<p<<endl;
        	}
        	else{
-       			//p was already covered
-			   noOfG.find(p)->second++;
-       		
+       		//p was already covered
+	        noOfG.find(p)->second++;	
        	}
-       	
-       
    }
 
 }
@@ -232,6 +333,7 @@ void read_parameters(int argc, char **argv) {
      else if(strcmp(argv[iarg],"-alg") == 0) alg = atoi(argv[++iarg]);
      else if(strcmp(argv[iarg],"-turn_ls") == 0) turn_ls = atoi(argv[++iarg]);
      else if(strcmp(argv[iarg],"-l") == 0) output = argv[++iarg];
+     else if(strcmp(argv[iarg],"-partial") == 0.0) partial = atof(argv[++iarg]);
      else ++iarg;
    }
 }
@@ -533,14 +635,19 @@ int min_greedy(vector<int>& indeks)
           return dodaj;
 }
 
-float greedy_procedure()
+float greedy_procedure(bool upToK = false)
 {  
+     int setK = (upToK) ? std::ceil(n * partial) : INFEASIBLE;  // n / 10 should be parameter
+     if(setK == 0) // run a basic CPLEX
+        return -1.0; 
+
      vector<int> C;
-     vector<int> indeks;
+     //vector<int> indeks;
      vector<int> Sx; cout << "n: "<< n << endl;
      for(int i=0; i < n; ++i)
          Sx.push_back(i);
-     cout << Sx.size() << endl;
+     
+     //cout << Sx.size() << endl;
      int f_S = f(Sx); cout << "f_S: " << f_S << endl;
      int f_C = 0;
 
@@ -550,14 +657,15 @@ float greedy_procedure()
            //cout<<pol[index_set]<<endl;
            cout<<"index set: " << index_set<<endl;
            if(!findA(indeks, index_set)){ //jos nije dodan
-
                //C.push_back((set<int>) S[index_set] );//cout << "dodaj ----> " << index_set << endl;
                indeks.push_back(index_set);
            } 
            
            f_C = f(indeks); 
             
-           cout << "f_C--------------->" << f_C << " |C|=" << C.size() << endl;
+           cout << "f_C--------------->" << f_C << endl; 
+           if(indeks.size() >= setK)
+              break;
      }
 
      float greedy_val = 0;
@@ -761,18 +869,33 @@ float greedy_LS()
 	/*provjera*/
         float check1 = 0;
 	for (int i = 0; i < indeks.size();i++){
-		check1 += Cost[i];
+             check1 += Cost[i];
 	}
         obj_val = check1; // daoan update
 	cout<<"Ukupan kost: " << check1 << " Broj strazara: "<<indeks.size()<<endl;
 	float check2 = f(indeks); 
-    //f_C = CoveredPoints.size();
-    cout << "Control: f_C--------------->" << check2 << " Polazno= " << f_S << endl;
-    
-    cout << "number of guards: " << indeks.size() << endl;
-    return obj_val; 
-     //return C.size();
+        //f_C = CoveredPoints.size();
+        cout << "Control: f_C--------------->" << check2 << " Polazno= " << f_S << endl;
+        cout << "number of guards: " << indeks.size() << endl;
+        return obj_val; 
+        // return C.size();
 	
+}
+
+float Greedy_CPLEX()
+{
+    
+      bool upToK = true;
+      int length = greedy_procedure(upToK);
+      cout << "Include these partial solution into CPLEX: " << endl;
+      if(length > 0) 
+      {  
+         for(int i: indeks) 
+            cout << i << "\t";
+         cout << "\n" << endl;
+      }
+      float s = run_cplex(S, Vertices, n);
+      return s;
 }
 
 
@@ -900,18 +1023,19 @@ int main( int argc, char **argv ) {
                 
    }   cardinalityD = Cost.size();
     // ---------------------------------greedy------------------------------------
-    cout << "Run Greedy" << " with type: " <<  greedy << " algorithm: " << alg << "turn_ls: " << turn_ls << endl; 
+    cout << "Run Greedy" << "\twith type: " <<  greedy << "\talgorithm: " << alg << "\tturn_ls: " << turn_ls << endl; 
     auto start = high_resolution_clock::now();
     float s = 10000000;
-    if(alg == 1) 
-        s = greedy_LS();
-    else 
-        s = greedy_procedure();
-
+    switch(alg)
+    {
+         case 1 : s = greedy_LS();break;
+         case 2 : s = Greedy_CPLEX(); break;
+         default: s = greedy_procedure();
+    }
     auto stop = high_resolution_clock::now();
 
-    auto duration = duration_cast<microseconds>(stop - start); 
-    cout << "Time Execution: " << duration.count() << " microseconds" << endl;
+    auto duration = duration_cast<std::chrono::duration<float>>(stop - start); 
+    cout << "Time Execution: " << duration.count() << "seconds" << endl;
     cout << "Result: " << s << endl;
 
     if(output.compare("") != 0){
