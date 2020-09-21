@@ -298,7 +298,7 @@ More detailed overview of the results on art gallery problems is out the scope o
        	    \item remove $N$ guards with the largest costs out of $C'$
        	    \item remove $N$ guards which have a higher amount of points from $D(P)$ covered by other guards, represented by the function
        	    \begin{align}
-       	       ratio(i) = \frac{\sum_{v \in V, j \in V(i)} 1_{j \mbox{ is veasible from } v} }{|V(i)|}. 
+       	       ratio(i) = \frac{\sum_{v \in V\setminus{ \{i\}}, j \in V(i)} 1_{j \mbox{ is veasible from } v} }{|V(i)|}. 
        	    \end{align}
        \end{itemize}
        
