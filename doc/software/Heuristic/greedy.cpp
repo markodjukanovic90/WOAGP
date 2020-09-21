@@ -25,6 +25,8 @@ map<Point_2,vector<Point_2>> Visibility;//for each point, we provide the list od
 map<Point_2,int> numberOfGuards;//for each point we keep the number of Guards in solution which see that point
 set<Point_2> CoveredPoints;//set of points covered by the solution
 vector<int> indeks; //solution
+set<Point_2> indeksSet; // solution --> points from D(P) covered by indeks
+
 int alg = 0; // if alg = 1: we execute a Greedy+LS procedure
 bool turn_ls = 0; // tunr on LS into Greedy+LS
 int time_limit = 900; // time limit of CPLEX
@@ -48,6 +50,11 @@ int n = 0; // |V(P)|
 int w_type = 0; // ti ptezine koju pozivamo; 0: tezina proporcionalna velicini vidljivosti svakog vrha; 1: --; 2: --
 /** kraj pomocnih str. za gridi metode **/
 
+
+bool operator==(const Point_2& lhs, const Point_2& rhs)
+{
+    return  lhs.first == rhs.first && lhs.second == rhs.second;
+}
 
 inline int stoi(string &s) {
 
@@ -292,7 +299,6 @@ bool LS(float * obj){
 			        cout<<"Test1: "<<neigh1<<":  "<<CoveredPoints2.size()<<endl;
 				//cin.get();
 				updateCoveredPointsRemove(CoveredPoints2,numberOfGuards2,vertex);
-				
 				//cout<<"Test2: "<<CoveredPoints2.size()<<endl;
 				//cin.get();
 				updateCoveredPointsAdd(CoveredPoints2,numberOfGuards2,neigh1);
@@ -525,6 +531,19 @@ int f_minus(vector<int>& C, int i) // f(C u {S_i}) - f(S)
     return S[i].size() - count; 
 }
 
+int f_minus_update( int i ) // f( indeksSet U {i} )  - f( indeksSet) 
+{
+     int difference = 0;
+     for(Point_2 p : S[i])
+     {
+         if(!( indeksSet.count( p ) > 0))
+         {
+            difference++;
+         }
+     }
+     //cout << "difference: " << difference << endl;
+}
+
 float greedy_criterion_1(int i)
 {
     return Cost[i] / Surface[i];
@@ -566,11 +585,11 @@ float greedy_criterion(vector<int>& C, int i) // take s_i from S
 {   //cout << "greedy_criterion " << endl;
     //set<Point_2> s;
     //s = S[i]; cout << s.size() << endl;
-    int f_m = f_minus(C, i);  //cout << "f_m: " << f_m << endl;
+    int f_m = f_minus(C, i);  // f_minus_update( i )
     if(f_m == 0)
        return INFEASIBLE;
 
-    float val = ((float)Cost[i]) / (f_minus(C, i));     //cout << "val: " << val << endl; 
+    float val = ((float)Cost[i]) / f_m;  //(f_minus_update(C, i));     //cout << "val: " << val << endl; 
     return val;
 }
 
@@ -660,6 +679,8 @@ float greedy_procedure(bool upToK = false)
            if(!findA(indeks, index_set)){ //jos nije dodan
                //C.push_back((set<int>) S[index_set] );//cout << "dodaj ----> " << index_set << endl;
                indeks.push_back(index_set);
+               for(Point_2 p: S[index_set])
+                   indeksSet.insert( p ); 
            } 
            
            f_C = f(indeks); 
@@ -901,9 +922,6 @@ float Greedy_CPLEX()
       return s;
 }
 
-
-
-
 vector<string> split(const string& str, const string& delim)
 {
     vector<string> tokens;
@@ -1044,7 +1062,7 @@ int main( int argc, char **argv ) {
     if(output.compare("") != 0){
         string name_polygon = split(split(path, "/")[4], "_")[0];
         //cout<<name_polygon<<"---"<<output<<endl;
-        write_test(name_polygon + ";" + std::to_string(s) + ";" + std::to_string(duration.count()) + "\n");
+        write_test(name_polygon + ";" + std::to_string(s) + ";"  + std::to_string(indeks.size())  + ";" + std::to_string(duration.count()) + "\n");
     }
     
     
