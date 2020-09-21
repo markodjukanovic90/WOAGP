@@ -560,6 +560,7 @@ param:
 @S: skup svih skupova (instance) 
 @C: parcijalno rjesenje (trenutno) 
 @i: index skupa S_i koji se razmatra za dodavanje u parcijalni skup @C
+// cuvati skup koji je pokriven (reference) ili idenkse (hes mapa ka indeksu), pa se pitamo koliko novih tacaka je pokriveno.... 
 **/
 float greedy_criterion(vector<int>& C, int i) // take s_i from S
 {   //cout << "greedy_criterion " << endl;
@@ -895,6 +896,8 @@ float Greedy_CPLEX()
          cout << "\n" << endl;
       }
       float s = run_cplex(S, Vertices, n);
+      //destroy ILP-LNS
+      
       return s;
 }
 
