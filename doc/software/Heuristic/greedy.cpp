@@ -25,7 +25,7 @@ map<Point_2,vector<Point_2>> Visibility;//for each point, we provide the list od
 map<Point_2,int> numberOfGuards;//for each point we keep the number of Guards in solution which see that point
 set<Point_2> CoveredPoints;//set of points covered by the solution
 vector<int> indeks; //solution
-set<Point_2> indeksSet; // solution --> points from D(P) covered by indeks
+//set<Point_2> indeksSet; // solution --> points from D(P) covered by indeks
 
 int alg = 0; // if alg = 1: we execute a Greedy+LS procedure
 bool turn_ls = 0; // tunr on LS into Greedy+LS
@@ -536,7 +536,7 @@ int f_minus_update( int i ) // f( indeksSet U {i} )  - f( indeksSet)
      int difference = 0;
      for(Point_2 p : S[i])
      {
-         if(!( indeksSet.count( p ) > 0))
+         if(!( CoveredPoints.count( p ) > 0))
          {
             difference++;
          }
@@ -585,7 +585,7 @@ float greedy_criterion(vector<int>& C, int i) // take s_i from S
 {   //cout << "greedy_criterion " << endl;
     //set<Point_2> s;
     //s = S[i]; cout << s.size() << endl;
-    int f_m = f_minus(C, i);  // f_minus_update( i )
+    int f_m =  f_minus_update( i );
     if(f_m == 0)
        return INFEASIBLE;
 
@@ -680,7 +680,7 @@ float greedy_procedure(bool upToK = false)
                //C.push_back((set<int>) S[index_set] );//cout << "dodaj ----> " << index_set << endl;
                indeks.push_back(index_set);
                for(Point_2 p: S[index_set])
-                   indeksSet.insert( p ); 
+                   CoveredPoints.insert( p ); 
            } 
            
            f_C = f(indeks); 
