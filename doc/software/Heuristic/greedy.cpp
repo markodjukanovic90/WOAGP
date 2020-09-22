@@ -612,8 +612,7 @@ param:
 **/
 float greedy_criterion(vector<int>& C, int i) // take s_i from S
 {   //cout << "greedy_criterion " << endl;
-    //set<Point_2> s;
-    //s = S[i]; cout << s.size() << endl;
+
     int f_m =  f_minus_update( i );
     if(f_m == 0)
        return INFEASIBLE;
@@ -664,23 +663,26 @@ int min_greedy(vector<int>& indeks)
           int dodaj = -1;
           for(int i = 0; i < S.size(); ++i)
           { 
-              float g_mi;
-              switch(greedy){
+              if(!findA(indeks, i))
+              {  
+                 float g_mi;
+                 switch(greedy){
 
-                  case 0: g_mi = greedy_criterion(indeks, i); break;
-                  case 1: g_mi = greedy_criterion_1(i); break;
-                  case 2: g_mi = greedy_criterion_2(indeks, i) ; break;
-                  default: g_mi = gridi_criterion_dragan(indeks, i);
-              }
-              bool us = g_mi <= g_m; 
-              bool us1 = g_mi != INFEASIBLE;
+                        case 0:  g_mi = greedy_criterion(indeks, i); break;
+                        case 1:  g_mi = greedy_criterion_1(i); break;
+                        case 2:  g_mi = greedy_criterion_2(indeks, i) ; break;
+                        default: g_mi = gridi_criterion_dragan(indeks, i);
+                 }
+                 bool us = g_mi <= g_m; 
+                 bool us1 = g_mi != INFEASIBLE;
 
-              if(us and us1 and !findA(indeks, i)) 
-              { 
-                 dodaj = i;
-                 g_m = g_mi;   
-              }
-          }// cout << "dodati....." << dodaj << endl;
+                 if(us and us1) 
+                 { 
+                    dodaj = i;
+                    g_m = g_mi;   
+                 }
+               }// cout << "dodati....." << dodaj << endl;
+          }
           return dodaj;
 }
 
@@ -723,9 +725,7 @@ float greedy_procedure(bool upToK = false)
 
      float greedy_val = 0;
      for(int ix: indeks){
-         
         greedy_val += Cost[ ix ];
-        
      }
      cout << "number of guards: " << indeks.size() << endl;
      return greedy_val; 
