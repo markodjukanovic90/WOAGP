@@ -9,6 +9,8 @@
 #include <utility>
 #include <string>
 #include <math.h>       /* sqrt */
+#include <unordered_map> 
+#include <unordered_set> 
 
 // the following "include" is necessary for the correct working/compilation of CPLEX. You should adapt this path to your installation of CPLEX
 #include "/home/djukanovic/Desktop/projects/LCAPS_software/cplex-12.5/include/ilcplex/ilocplex.h"
@@ -50,6 +52,28 @@ int n = 0; // |V(P)|
 int w_type = 0; // ti ptezine koju pozivamo; 0: tezina proporcionalna velicini vidljivosti svakog vrha; 1: --; 2: --
 /** kraj pomocnih str. za gridi metode **/
 
+
+/** hash-map to store points in Covered points */
+
+/** another try to spped up operations over CoveredPoints structure **/
+vector<bool>covered;
+ 
+struct hashFunc{
+    size_t operator()(const Point_2 &k) const{
+    size_t h1 = std::hash<double>()(k.first);
+    size_t h2 = std::hash<double>()(k.second);
+    return (h1 ^ (h2 << 1));
+    }
+};
+
+struct equalsFunc{
+  bool operator()( const Point_2& lhs, const Point_2& rhs ) const{
+    return (lhs.first == rhs.first) && (lhs.second == rhs.second);
+  }
+};
+
+unordered_map<Point_2, bool, hashFunc, equalsFunc> pointDPMapping;
+/** end of the structure **/
 
 bool operator==(const Point_2& lhs, const Point_2& rhs)
 {
@@ -355,7 +379,7 @@ void read_from_file(std:: string path)
      int n = stoi(line); // number of vertices
 
     int temp = 0;
-
+    int indeksiranje = 0;
     while(temp<n){
         std::getline(infile, line);
 
@@ -378,7 +402,6 @@ void read_from_file(std:: string path)
          Point_2 vertex;
          vertex.first = stof(vrh1);
          vertex.second = stof(vrh2);
-
          Vertices.push_back(vertex);
 
         //izdvjanje skupa tacaka koje se vide iz tog vrha
@@ -410,7 +433,13 @@ void read_from_file(std:: string path)
          tacka.first = stof(x);
          tacka.second = stof(y);
 
-        vertexSet.insert(tacka);
+        vertexSet.insert(tacka); 
+        /*if(pointDPMapping.find( tacka ) == pointDPMapping.end() )
+        {
+           pointDPMapping[ tacka ] = indeksiranje; 
+           indeksiranje++;
+           //covered.push_back(false);
+        }*/
         ostatak.erase(0, pos + delimiter.length());
     }
     S.push_back(vertexSet);
@@ -536,9 +565,9 @@ int f_minus_update( int i ) // f( indeksSet U {i} )  - f( indeksSet)
      int difference = 0;
      for(Point_2 p : S[i])
      {
-         if(!( CoveredPoints.count( p ) > 0))
+         if( !( CoveredPoints.count( p ) > 0))          // !( CoveredPoints.count( p ) > 0)) //pointExists.find(p) == pointExists.end() )
          {
-            difference++;
+             difference++;
          }
      }
      //cout << "difference: " << difference << endl;
@@ -680,7 +709,9 @@ float greedy_procedure(bool upToK = false)
                //C.push_back((set<int>) S[index_set] );//cout << "dodaj ----> " << index_set << endl;
                indeks.push_back(index_set);
                for(Point_2 p: S[index_set])
+                   //pointExists[p] = true;
                    CoveredPoints.insert( p ); 
+                   //covered[ pointDPMapping[p] ] = true;
            } 
            
            f_C = f(indeks); 
@@ -1047,6 +1078,7 @@ int main( int argc, char **argv ) {
     cout << "Run Greedy" << "\twith type: " <<  greedy << "\talgorithm: " << alg << "\tturn_ls: " << turn_ls << endl; 
     auto start = high_resolution_clock::now();
     float s = 10000000;
+
     switch(alg)
     {
          case 1 : s = greedy_LS();break;
