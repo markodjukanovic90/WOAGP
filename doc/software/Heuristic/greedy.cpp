@@ -571,6 +571,7 @@ int f_minus_update( int i ) // f( indeksSet U {i} )  - f( indeksSet)
          }
      }
      //cout << "difference: " << difference << endl;
+     return difference;
 }
 
 float greedy_criterion_1(int i)
@@ -621,6 +622,9 @@ float greedy_criterion(vector<int>& C, int i) // take s_i from S
     return val;
 }
 
+
+
+
 /**
 param: 
 @indeks: indeks svih skupova koji su u trenutnom parcijalnom rjesenju;
@@ -630,12 +634,13 @@ param:
 float gridi_criterion_dragan(vector<int> &index, int i)
 {
 
-      if(index.size() > 0 and std::find( index.begin(), index.end(), i)  != index.end() )
-         return INFEASIBLE;
+     /* if(index.size() > 0 and std::find( index.begin(), index.end(), i)  != index.end() )
+         return INFEASIBLE;*/
           
       index.push_back(i); // trebalo bi ovo optimizovati 
-
-      int correct_total = CoveredPoints.size();//cardinality_by_index(index);  // broj pokrivenih tacaka diskretizacije
+      
+      int number_after_add_i = f_minus_update( i ); 
+      int correct_total =  CoveredPoints.size() +  number_after_add_i;//cardinality_by_index(index);  // broj pokrivenih tacaka diskretizacije
       int incorrect_total =  cardinalityD - correct_total;
       
       int wPartial = 0; 
