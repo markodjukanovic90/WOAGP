@@ -635,7 +635,7 @@ float gridi_criterion_dragan(vector<int> &index, int i)
           
       index.push_back(i); // trebalo bi ovo optimizovati 
 
-      int correct_total = cardinality_by_index(index);  // broj pokrivenih tacaka diskretizacije
+      int correct_total = CoveredPoints.size();//cardinality_by_index(index);  // broj pokrivenih tacaka diskretizacije
       int incorrect_total =  cardinalityD - correct_total;
       
       int wPartial = 0; 
