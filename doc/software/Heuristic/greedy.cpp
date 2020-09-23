@@ -252,8 +252,7 @@ void updateCoveredPointsRemove(set<Point_2>& CovPoints,map<Point_2,int> & noOfG,
 		else
 		{
 			noOfG.find(p)->second--;//one guard less see p
-		}
-			
+		}	
        
    }
 
@@ -528,7 +527,6 @@ int f(vector<int> &C)
       std::set<Point_2> d;
       for(int ix: C){
           for (Point_2 dii: S[ix]){
-              // cout << "dii" << dii.first << endl;
                d.insert(dii);
           }
       }
@@ -661,22 +659,23 @@ float gridi_criterion_dragan(vector<int> &index, int i)
 }
 
 
-int min_greedy(vector<int>& indeks)
+int min_greedy(vector<int>& indeks1)
 {        
            
           float g_m = INFEASIBLE; 
-          int dodaj = -1;
+          int dodaj = -1; cout << " isize " << indeks1.size() << " " << S.size() <<  endl;
           for(int i = 0; i < S.size(); ++i)
-          { 
-              if(!findA(indeks, i))
-              {  
+          {    cout <<"i: " << i << " ";
+              
+              if( std::find(indeks1.begin(), indeks1.end(), i) == indeks1.end() )
+              {  cout << " nalazi se " << i << "\n "; 
                  float g_mi;
                  switch(greedy){
 
-                        case 0:  g_mi = greedy_criterion(indeks, i); break;
-                        case 1:  g_mi = greedy_criterion_1(i); break;
-                        case 2:  g_mi = greedy_criterion_2(indeks, i) ; break;
-                        default: g_mi = gridi_criterion_dragan(indeks, i);
+                        case 0 :  g_mi = greedy_criterion(indeks1, i); break;
+                        case 1 :  g_mi = greedy_criterion_1(i); break;
+                        case 2 :  g_mi = greedy_criterion_2(indeks1, i) ; break;
+                        default: g_mi = gridi_criterion_dragan(indeks1, i);
                  }
                  bool us = g_mi <= g_m; 
                  bool us1 = g_mi != INFEASIBLE;
@@ -836,7 +835,7 @@ float greedy_LS()
          Sx.push_back(i);
      //cout << Sx.size() << endl;
      int f_S = f(Sx);  
-     cout << "f_S: " << f_S << endl;
+     cout << "f_S: " << f_S << endl; 
      int f_C = 0;
      float obj_val = 0;
      bool covered = false; 
@@ -847,7 +846,7 @@ float greedy_LS()
            //cout <<"index--------------> " << index_set << endl;
            //cout<<pol[index_set]<<endl;
            //cout<<"index set: " << index_set<<endl;
-           cout<<"Koliko tacaka pokriva: " << S[index_set].size() << endl;
+           cout<<"Koliko tacaka pokriva: " << S[index_set].size() << " " << f_S << endl;
            if(!findA(indeks, index_set)){ //jos nije dodan
            
                //C.push_back((set<int>) S[index_set] );//cout << "dodaj ----> " << index_set << endl;
@@ -862,6 +861,7 @@ float greedy_LS()
            f_C = f(indeks); 
             //f_C = CoveredPoints.size();
            cout << "Control: f_C--------------->" << f_C << "Covered=" << CoveredPoints.size() << endl;
+    
            bool succ = (turn_ls == 1);
            while(succ){
            	succ = LS(&obj_val);//dragan - later def global
@@ -875,18 +875,18 @@ float greedy_LS()
 		   vector<int> copy = indeks;
 		   float obj_val_copy = obj_val;
 		   bool success = true;
-		   //cout<<"Duzina indeksa: "<<indeks.size()<<endl;
-                   //cout << "k: " << k << " copy: " << (copy.size()/2) << endl;
-		   while(k < copy.size()/2)
+		   while(k < copy.size()/3)
 		   {
                                 //cin.get();
 		   		int i;
-		   		//cout<<"izbacujemo:"<< k<<" elemenata."<<endl;
+		   		cout<<"izbacujemo:"<< k<<" elemenata."<<endl;
 		   		for(i = 0; i < k; i++){//izbacimo k elemenata
 		   			int r =  izbaciCvor(copy);// rand() % copy.size(); //funkcija za izbacivanje? 
-                                        //cout << "Izbacujemo --------------------------->>>>> " << r << endl;//cin.get();
+                                        cout << "Izbacujemo --------------------------->>>>> " << r << " " << copy.size() << endl;//cin.get();
                                		obj_val_copy -= Cost[r];
-		   			copy.erase( std::find(copy.begin(), copy.end(), r) );          
+		   			copy.erase( std::find(copy.begin(), copy.end(), r) );    
+                                        updateCoveredPointsRemove(CoveredPoints,numberOfGuards, r);
+                                        //TODO: update covered points      
 		   			//cout<<i<<" Izbacujemo: "<<copy[r]<<endl;
 		   			//obj_val_copy -= Cost[copy[r]];
 		   			//copy.erase( copy.begin() + r );
@@ -899,17 +899,19 @@ float greedy_LS()
 				while(i < k){
 				
 			           int index_set = min_greedy(copy); 
-           			   //cout<<"index set u popravci: " << index_set<<endl;
-           			   if(!findA(copy, index_set)){ //jos nije dodan
-           			      i++;
-				      copy.push_back(index_set);
-				      //cout<<index_set<<" uvecamo za: "<<Cost[index_set]<<endl;
-                	              obj_val_copy += Cost[index_set];//add cost to
-                                      f_C = f(copy) ;
-                                      covered =  f_C == f_S;  // pokriven D(P)
-                                }
+           			   cout<<"index set u popravci: " << index_set<< " " << copy.size() << endl;
+           			   //if(!findA(copy, index_set)){ //jos nije dodan
+                                   if( index_set == -1) 
+                                       break;
+           			   i++;
+				   copy.push_back(index_set);
+				   //cout<<index_set<<" uvecamo za: "<<Cost[index_set]<<endl;
+                	           obj_val_copy += Cost[index_set];//add cost to
+                                   f_C = f(copy); 
+                                   covered =  f_C == f_S;  // pokriven D(P)
+                                   //}
                 }
-                //cout<<"vraceno:"<< k<<" elemenata. obj_val_copy: "<<obj_val_copy<<endl;
+                cout<<"vraceno:"<< k<<" elemenata. obj_val_copy: "<<obj_val_copy<<endl;
                 //cout<<"obj_val: "<<obj_val<<endl;
                 if(obj_val_copy<obj_val){
 			cout<<"obj_val: "<<obj_val<<endl;
