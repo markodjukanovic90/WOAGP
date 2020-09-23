@@ -235,7 +235,7 @@ void updateCoveredPointsRemove(set<Point_2>& CovPoints,map<Point_2,int> & noOfG,
     	
         if (noOfG.find(p) == noOfG.end()){
         	cout<<"------------------ERROR:"<<p<<"  "<<noOfG.find(p)->second<<endl;
-        	cin.get();
+        	//cin.get();
         	return;
         }
        // cout<<"Tacka "<<p<<" pokrivena sa: "<< noOfG.find(p)->second<<endl;
@@ -401,7 +401,7 @@ void read_from_file(std:: string path)
          Point_2 vertex;
          vertex.first = stof(vrh1);
          vertex.second = stof(vrh2);
-         Vertices.push_back(vertex);
+         Vertices.push_back(vertex); numberOfGuards[vertex] = 0;
 
         //izdvjanje skupa tacaka koje se vide iz tog vrha
 
@@ -432,7 +432,7 @@ void read_from_file(std:: string path)
          tacka.first = stof(x);
          tacka.second = stof(y);
 
-        vertexSet.insert(tacka); 
+        vertexSet.insert(tacka); numberOfGuards[tacka] =  0;
         /*if(pointDPMapping.find( tacka ) == pointDPMapping.end() )
         {
            pointDPMapping[ tacka ] = indeksiranje; 
