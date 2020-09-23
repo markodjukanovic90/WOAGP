@@ -219,14 +219,7 @@ void updateCoveredPointsAdd(set<Point_2>& CovPoints,map<Point_2,int> & noOfG, in
     for(Point_2 p : S[v]){
     	
        CovPoints.insert(p);
-        if (noOfG.find(p) == noOfG.end()){
-       		noOfG.insert(std::make_pair(p,1));//first guard which cover point p
-       		//cout<<++temp<<"  First time: "<<p<<endl;
-       	}
-       	else{
-       		//p was already covered
-	        noOfG.find(p)->second++;	
-       	}
+       noOfG.find(p)->second++;
    }
 
 }
