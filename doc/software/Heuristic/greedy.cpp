@@ -224,33 +224,22 @@ void updateCoveredPointsAdd(set<Point_2>& CovPoints,map<Point_2,int> & noOfG, in
 
 }
 void updateCoveredPointsRemove(set<Point_2>& CovPoints,map<Point_2,int> & noOfG, int v){//we remove all points which are covered by v, when v is removed from solution
-    for(Point_2 p : S[v]){
+
+        for(Point_2 p : S[v]){
     	
-        if (noOfG.find(p) == noOfG.end()){
+           /*if (noOfG.find(p) == noOfG.end() || noOfG.find(p)->second <= 0){
         	cout<<"------------------ERROR:"<<p<<"  "<<noOfG.find(p)->second<<endl;
-        	//cin.get();
+        	cin.get();
         	return;
-        }
-       // cout<<"Tacka "<<p<<" pokrivena sa: "<< noOfG.find(p)->second<<endl;
-        if(noOfG.find(p)->second == 1)
-        {
-        		//only the guard v see p in the solution
-        		//remove from CovPoints and remove from noOfGuards
-        		CovPoints.erase(p);
-        		noOfG.erase(p);
-        		//cout<<"Point "<<p<< "is no longer covered"<<endl;
-        		
-        		
-		}
-		else
-		{
-			noOfG.find(p)->second--;//one guard less see p
-		}	
-       
-   }
-
+           }*/
+	   noOfG.find(p)->second--;//smanjujemo broj cuvara za 1
+	  if(noOfG.find(p)->second == 0)
+          {	
+	     CovPoints.erase(p);//tacka vise nije pokrivena, pa je brisemo iz liste pokrivenih tacaka
+	  }
+ 
+       }
 }
-
 
 /*create map structure <key, value> 
 key is a point from D(P), value is the vector of Polygon vertices which cover the key
