@@ -532,6 +532,29 @@ float greedy_criterion_2(vector<int>& indeks, int i)
       //cout << "obj: " << num /den << endl;
       return num / den;
 }
+
+float greedy_criterion_3(vector<int>& Partial, int i)
+{
+    
+     float val = 0.0; 
+     for(Point_2 j: S[ i ])
+     {
+         for(int k = 0; k < n; ++k) 
+         {
+             if( k != i  && std::find(Partial.begin(), Partial.end(), k ) == Partial.end())
+             {    
+                 for(int ix: Partial){ 
+                    if(std::find(S[ ix ].begin(), S[ ix ].end(), j) != S[ ix ].end()){
+                       val += 1;
+                       break;
+                    }
+                 }
+             }
+         } 
+     }
+     return  ((double) val) / S[ i ].size() ;
+}
+
 /**
 param:
 @S: skup svih skupova (instance) 
@@ -603,7 +626,8 @@ int min_greedy(vector<int>& indeks1)
                         case 0 :  g_mi = greedy_criterion(indeks1, i); break;
                         case 1 :  g_mi = greedy_criterion_1(i); break;
                         case 2 :  g_mi = greedy_criterion_2(indeks1, i) ; break;
-                        default: g_mi = gridi_criterion_dragan(indeks1, i);
+                        case 3 :  g_mi = gridi_criterion_dragan(indeks1, i);break;
+                        default:  g_mi = greedy_criterion_3(indeks1, i); 
                  }
                  bool us = g_mi <= g_m; 
                  bool us1 = g_mi != INFEASIBLE;
