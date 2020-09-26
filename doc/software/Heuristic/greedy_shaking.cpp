@@ -687,7 +687,7 @@ int izbaciCvor(vector<int>& copy){
      }
 
      int rx = rand() % Candidates.size(); 
-     cout <<"candidates--------------------------------------------> " << Candidates.size() << endl;
+     //cout <<"candidates--------------------------------------------> " << Candidates.size() << endl;
      return Candidates[ rx ];
 }
 
@@ -711,22 +711,24 @@ float greedy_LS()
            int index_set = min_greedy(indeks,numberOfGuards,CoveredPoints); 
            //cout<<"index set: " << index_set<<endl;
            //cout<<"Koliko tacaka pokriva: " << S[index_set].size() << " " << f_S << endl;
-           if(!findA(indeks, index_set)){ //jos nije dodan
+           //if(!findA(indeks, index_set)){ //jos nije dodan
            
                //C.push_back((set<int>) S[index_set] );//cout << "dodaj ----> " << index_set << endl;
                //add vertex to solution
-			indeks.push_back(index_set);
+		indeks.push_back(index_set);
                //update set of covered points
                updateCoveredPointsAdd(CoveredPoints,numberOfGuards,index_set);//add  
                //update obj_val
                 obj_val += Cost[index_set];//add cost to
-           } 
+           //} 
            
-           f_C = f(indeks); 
-            //f_C = CoveredPoints.size();
+           //int f_C1 = f(indeks); 
+           f_C = CoveredPoints.size(); //assert( f_C1 == f_C);
     	   bool shak= true;
-	   if(f_C==f_S)
+	   
+           if(f_C==f_S)
     	      shak = false;//gotovo je pa ne moramo da idemo u shaking
+           
            bool succ = (turn_ls == 1);
            while(succ){
            	succ = LS(&obj_val);//dragan - later def global
@@ -746,12 +748,12 @@ float greedy_LS()
 		   {
                                 //cin.get();
 		   		bool force = false;
-				   int i;
+				int i;
 		   	//	cout<<"izbacujemo:"<< k<<" elemenata."<<endl;
 		   		for(i = 0; i < k; i++){//izbacimo k elemenata
 		   			int r =  izbaciCvor(copy);// rand() % copy.size(); //funkcija za izbacivanje? 
-                    //cout << "Izbacujemo --------------------------->>>>> " << r << " " << copy.size() << endl;//cin.get();
-                    obj_val_copy -= Cost[r];
+                                //cout << "Izbacujemo --------------------------->>>>> " << r << " " << copy.size() << endl;//cin.get();
+                                obj_val_copy -= Cost[r];
 		   			copy.erase( std::find(copy.begin(), copy.end(), r) ); 
 					//cout<<"Prije pucanja"<<endl;
                     updateCoveredPointsRemove(CoveredPoints2,numberOfGuards2, r);
@@ -801,8 +803,8 @@ float greedy_LS()
 			cout<<"obj_val_copy: "<<obj_val_copy<<endl;
 			//cin.get();
 			indeks = copy;
-			f_C = f(indeks);
 			CoveredPoints = CoveredPoints2;
+                        f_C = CoveredPoints.size();//f_C = f(indeks); 
 			numberOfGuards = numberOfGuards2;
 			obj_val = obj_val_copy;
                 	//cin.get();
