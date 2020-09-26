@@ -165,23 +165,66 @@ vector<Point_2> discrate(Polygon_2& p)
   double ymax = box.ymax();
   double* resolutionxy = resolution(p);
 
-  while (x <= xmax)
+  if (p.is_simple())
   {
-    y = box.ymin();
-    while (y <= ymax)
+    while (x <= xmax)
     {
-      
-      if (p.is_simple())
+      y = box.ymin();
+      while (y <= ymax)
       {
         Point_2 point(x,y);
+        cout<<"Provjeravam tacku: "<<point<<endl;
         int bs = p.bounded_side(point);
 
         if(bs==CGAL::ON_BOUNDED_SIDE) //  || bs==CGAL::ON_BOUNDARY
           points.push_back(point);
+        y += resolutionxy[1];
       }
-      y += resolutionxy[1];
+      x += resolutionxy[0];
     }
-    x += resolutionxy[0];
+  } 
+  
+  return points;
+}
+
+vector<Point_2> discratePandPV(Polygon_2& p, vector<Polygon_2> &pv, vector<set<Point_2>> & pvD)
+{
+  vector<Point_2> points;
+  for (size_t i = 0; i < p.size(); i++)
+    points.push_back(p[i]); 
+
+  CGAL::Bbox_2 box = p.bbox();
+  double x = box.xmin();
+  double y = box.ymin();
+  double xmax = box.xmax();
+  double ymax = box.ymax();
+  double* resolutionxy = resolution(p);
+
+  if (p.is_simple())
+  {
+    while (x <= xmax)
+    {
+      y = box.ymin();
+      while (y <= ymax)
+      {
+        Point_2 point(x,y);
+        cout<<"Provjeravam tacku: "<<point<<endl;
+        int bs = p.bounded_side(point);
+
+        if(bs==CGAL::ON_BOUNDED_SIDE) //  || bs==CGAL::ON_BOUNDARY
+        {
+          points.push_back(point);
+          for (size_t k = 0; k < pv.size(); k++)
+          {
+            int bs2 = pv[k].bounded_side(point);
+            if(bs2==CGAL::ON_BOUNDED_SIDE || bs2==CGAL::ON_BOUNDARY)
+              pvD[k].insert(point);
+          }
+        }
+        y += resolutionxy[1];
+      }
+      x += resolutionxy[0];
+    }
   } 
   
   return points;
@@ -193,6 +236,7 @@ mpfr_void discratePVI(vector<Point_2> &D, Polygon_2 &p, set<Point_2> &points)
       for (size_t i = 0; i < D.size(); i++)
       {
         int bs = p.bounded_side(D[i]);
+        cout<<"Ispitujem tacku: "<<D[i]<<endl;
 
         if(bs==CGAL::ON_BOUNDED_SIDE || bs==CGAL::ON_BOUNDARY) //  || bs==CGAL::ON_BOUNDARY
           (points).insert(D[i]);
@@ -269,6 +313,7 @@ vector<Polygon_2> visibility_polygon(Point_2* points, int& n)
 
   for (size_t i = 0; i < n; i++)
   {
+    cout<<"Trazim vidljivost za tacku: "<<points[i]<<endl;
     Halfedge_const_handle he = env.halfedges_begin();
     int q_1 = i-1;
     if (q_1==-1)
@@ -363,11 +408,11 @@ Traits_2::FT area_set_polygons(Polygon_set_2 S)
 
 int main(int argc, char const *argv[])
 {
-  for(int file_number=190; file_number<201; file_number+=2) // start = 8
-  for(int file_order=1; file_order<=file_number; file_order++) // file_order<=file_number
+  for(int file_number=2250; file_number<2251; file_number+=2) // start = 8
+  for(int file_order=1; file_order<=3; file_order++) // file_order<=file_number
   {
-    const string category = "random";
-    string filename = "rand-" + std::to_string(file_number) + "-" + std::to_string(file_order);
+    const string category = "random-big";
+    string filename = "random-" + std::to_string(file_number) + "-" + std::to_string(file_order);
     
     string location = "instance/" + category + "/" + filename + + ".pol";
     string output = "preprocessing/" + category + "/" + filename + "_D1.txt";
@@ -388,17 +433,32 @@ int main(int argc, char const *argv[])
       if(pv[i].orientation()==-1)
         pv[i].reverse_orientation();
     // kraj promjene orjentacije
+    auto stop = high_resolution_clock::now();
+    auto duration1 = duration_cast<microseconds>(stop - start);
     cout<<"end!!!"<<endl;
      
 
+    // -----------------------diskretization polygon and pv------------------------------
+    cout<<"Creating diskretization polygon P and visibility polygons.............."<<endl;
+    start = high_resolution_clock::now();
+    vector<set<Point_2>> pvD(p.size());
+    vector<Point_2> D = discratePandPV(p, pv, pvD);
+    stop = high_resolution_clock::now();
+    auto duration2 = duration_cast<microseconds>(stop - start);
+    cout<<"end!!!"<<endl;
+
+
     // -----------------------diskretization polygon------------------------------
+    /*
     cout<<"Creating diskretization polygon P..............";
     vector<Point_2> D = discrate(p);
     auto stop = high_resolution_clock::now();
     auto duration1 = duration_cast<microseconds>(stop - start);
     cout<<"end!!!"<<endl;
+    */
 
     // -----------------------diskretization visibility polygons-------------------
+    /*
     cout<<"Creating diskretization for visibility polygons...................";
     start = high_resolution_clock::now();
     vector<set<Point_2>> pvD(p.size());
@@ -406,6 +466,7 @@ int main(int argc, char const *argv[])
         discratePVI(D, pv[i], pvD[i]);
     stop = high_resolution_clock::now();
     auto duration2 = duration_cast<microseconds>(stop - start);
+    */
 
     //-------------------------------- area of poligons -------------------------
     cout<<"Calculating area of polygon...................";
@@ -416,7 +477,7 @@ int main(int argc, char const *argv[])
     stop = high_resolution_clock::now();
     auto duration3 = duration_cast<microseconds>(stop - start);
     cout<<"end!!!"<<endl;
-    
+    /*
     //-------------------------------- area of intersection poligons -------------------------
     cout<<"Calculating area of digerence polygon..................."<<endl;
     start = high_resolution_clock::now();
@@ -430,6 +491,7 @@ int main(int argc, char const *argv[])
           //cout<<p[i]<<p[j]<<"="<<(float)converter(area_set_polygons(pvs))<<endl;
           Intersection[i].push_back( (float)converter(area_set_polygons(pvs)) );
         }
+    */
     stop = high_resolution_clock::now();
     auto duration4 = duration_cast<microseconds>(stop - start);
     cout<<"end!!!"<<endl;
@@ -461,7 +523,7 @@ int main(int argc, char const *argv[])
         
         write_test(output, tjeme + ":" + std::to_string(Surface[i]) + "\n");
     }
-
+/*
     for (size_t i = 0; i < n; i++)
     {
       for (size_t j = i+1; j < n; j++)
@@ -475,6 +537,7 @@ int main(int argc, char const *argv[])
         write_test(output, tjemeI + "," + tjemeJ + ":" + std::to_string(Intersection[i][j-i-1]) + "\n");
       }
     }
+*/
     cout<<"end!!!"<<endl;
   }
 
