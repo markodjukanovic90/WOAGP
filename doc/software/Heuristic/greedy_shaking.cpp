@@ -53,8 +53,9 @@ int w_type = 0; // ti ptezine koju pozivamo; 0: tezina proporcionalna velicini v
 /** kraj pomocnih str. za gridi metode **/
 
 // greedy + shaking
-   float Offset = 0.1;
-   int Dist = 2; 
+   float Offset = 0.0;
+   float Dist = 0; 
+   float DistMax = 1000000;
 //
 
 /** hash-map to store points in Covered points */
@@ -257,7 +258,7 @@ void read_parameters(int argc, char **argv) {
      else if(strcmp(argv[iarg],"-turn_ls") == 0) turn_ls = atoi(argv[++iarg]);
      else if(strcmp(argv[iarg],"-l") == 0) output = argv[++iarg];
      else if(strcmp(argv[iarg],"-partial") == 0.0) partial = atof(argv[++iarg]);
-     else if(strcmp(argv[iarg],"-dist") == 0) Dist = atoi( argv[++iarg] );
+     else if(strcmp(argv[iarg],"-dist") == 0) Dist = atof( argv[++iarg] );
      else if(strcmp(argv[iarg],"-offset") == 0.0) Offset = atof(argv[++iarg]);
      else ++iarg;
    }
@@ -606,11 +607,11 @@ int min_greedy(vector<int>& indeks1,map<Point_2,int>& numberOfG, set<Point_2>& C
 
 int izbaciCvor(vector<int>& copy){
 
-     int K = std::min(ceil(Offset * copy.size()), (int) copy.size() / 2); 
+     int K = std::min((int) ceil(Offset * copy.size()), (int) copy.size() / 2); 
      if(K == 0) 
          K = 1;
 
-     float Dist =  Dist; 
+     float Distance = DistMax * Dist; 
      
      //cout <<"K: " << K << endl;
      vector<int> Candidates; // kandidati za izbacivanje
@@ -670,7 +671,7 @@ int izbaciCvor(vector<int>& copy){
      // mjerimo udaljenost potencijalnih covrova koje hocemo izbaciti of cvora <cvor>
      // ako je neki do cvorova na udaljenosti D > 0 od cvora, izbacimo ga iz liste kandidata
     //cout << "dist -----> " << Candidates.size() << endl;
-    int index = 0; 
+    int index = 0;
      for(int ix = 0;  ix < Candidates.size(); ++ix)
      {   
          if(dist(cvor, Candidates[ ix ]) <= Dist)
@@ -686,7 +687,7 @@ int izbaciCvor(vector<int>& copy){
      }
 
      int rx = rand() % Candidates.size(); 
-     //cout <<"candidates--------------------------------------------> " << Candidates.size() << endl;
+     cout <<"candidates--------------------------------------------> " << Candidates.size() << endl;
      return Candidates[ rx ];
 }
 
@@ -944,11 +945,18 @@ int main( int argc, char **argv ) {
     cout << "Run Greedy" << "\twith type: " <<  greedy << "\talgorithm: " << alg << "\tturn_ls: " << turn_ls << endl; 
     auto start = high_resolution_clock::now();
     float s = 10000000;
+    /** calcaute DistMAx */
+
+    float DistMax =  dist(0, 1);
+    for(int i = 1; i < n; ++i){
+        float wi = dist(i-1, i);
+        if(DistMax <  wi)
+           DistMax = wi;
+    }
 
     switch(alg)
     {
          case 1 : s = greedy_LS();break;
-      
          default: break;
     }
     auto stop = high_resolution_clock::now();
@@ -963,6 +971,6 @@ int main( int argc, char **argv ) {
         write_test(name_polygon + ";" + std::to_string(s) + ";"  + std::to_string(indeks.size())  + ";" + std::to_string(duration.count()) + "\n");
     }
     
-    
+    cout << "offset: " << Offset << " dist: " << Dist << endl;
     return EXIT_SUCCESS;
 }
