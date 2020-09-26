@@ -465,7 +465,6 @@ int f(vector<int> &C)
 
 int f_minus(vector<int>& C, int i) // f(C u {S_i}) - f(S)
 {
-    //cout <<" f_minus" << C.size() << " - " << ss.size() << endl;
     int count = 0; // ako i \in ss nije niti u jednom od skupova u S, onda count++;
     if(C.size() == 0 ){
        //cout << "before " << S[i].size() - count;
@@ -525,7 +524,6 @@ float greedy_criterion_2(vector<int>& indeks, int i)
       for(int j = 0; j < S.size(); ++j) {
           if( std::find(indeks.begin(), indeks.end(), j) == indeks.end() and i < j)
           {   // S_j ne smije biti u vec dodanom parcijalnom skupu 
-              // cout << i << " " << j << endl;
               num += Intersection[i][j];
           } 
       }

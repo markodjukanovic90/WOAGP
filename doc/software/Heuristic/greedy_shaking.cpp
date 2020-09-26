@@ -52,6 +52,10 @@ int n = 0; // |V(P)|
 int w_type = 0; // ti ptezine koju pozivamo; 0: tezina proporcionalna velicini vidljivosti svakog vrha; 1: --; 2: --
 /** kraj pomocnih str. za gridi metode **/
 
+// greedy + shaking
+   float Offset = 0.1;
+   int Dist = 2; 
+//
 
 /** hash-map to store points in Covered points */
 
@@ -253,6 +257,8 @@ void read_parameters(int argc, char **argv) {
      else if(strcmp(argv[iarg],"-turn_ls") == 0) turn_ls = atoi(argv[++iarg]);
      else if(strcmp(argv[iarg],"-l") == 0) output = argv[++iarg];
      else if(strcmp(argv[iarg],"-partial") == 0.0) partial = atof(argv[++iarg]);
+     else if(strcmp(argv[iarg],"-dist") == 0) Dist = atoi( argv[++iarg] );
+     else if(strcmp(argv[iarg],"-offset") == 0.0) Offset = atof(argv[++iarg]);
      else ++iarg;
    }
 }
@@ -600,12 +606,15 @@ int min_greedy(vector<int>& indeks1,map<Point_2,int>& numberOfG, set<Point_2>& C
 
 int izbaciCvor(vector<int>& copy){
 
-     int K = std::min(10, (int) copy.size() / 2); 
-     float Dist = 2.0; 
+     int K = std::min(ceil(Offset * copy.size()), (int) copy.size() / 2); 
+     if(K == 0) 
+         K = 1;
+
+     float Dist =  Dist; 
      
      //cout <<"K: " << K << endl;
      vector<int> Candidates; // kandidati za izbacivanje
-     int i = rand() % copy.size(); // uzmemo i-ti vektor
+     int i = rand() % copy.size(); // uzmemo i-ti vektor (potpuno random) 
      int cvor = copy[ i ];  
      int count1 = 0; bool us = true;
      for(int i = cvor + 1; i < n && us; ++i) 
@@ -699,11 +708,7 @@ float greedy_LS()
      while(f_C != f_S && !covered) 
      { 
            int index_set = min_greedy(indeks,numberOfGuards,CoveredPoints); 
-           //cout <<"index--------------> " << index_set << endl;
-           //cout<<pol[index_set]<<endl;
            //cout<<"index set: " << index_set<<endl;
-          /* if(index_set == -1)
-           		break;*/
            //cout<<"Koliko tacaka pokriva: " << S[index_set].size() << " " << f_S << endl;
            if(!findA(indeks, index_set)){ //jos nije dodan
            
@@ -718,10 +723,9 @@ float greedy_LS()
            
            f_C = f(indeks); 
             //f_C = CoveredPoints.size();
-           //cout << "Control: f_C--------------->" << f_C << "Covered=" << CoveredPoints.size() <<"Potrebno"<<f_S<< endl;
-    		bool shak= true;
-			if(f_C==f_S)
-    			shak = false;//gotovo je pa ne moramo da idemo u shaking
+    	   bool shak= true;
+	   if(f_C==f_S)
+    	      shak = false;//gotovo je pa ne moramo da idemo u shaking
            bool succ = (turn_ls == 1);
            while(succ){
            	succ = LS(&obj_val);//dragan - later def global
@@ -780,7 +784,7 @@ float greedy_LS()
 				   copy.push_back(index_set);
 				   updateCoveredPointsAdd(CoveredPoints2,numberOfGuards2, index_set);
 				   //cout<<index_set<<" uvecamo za: "<<Cost[index_set]<<endl;
-                	obj_val_copy += Cost[index_set];//add cost to
+                	           obj_val_copy += Cost[index_set];//add cost to
                                    //f_C = f(copy); 
                                    //covered =  f_C == f_S;  // pokriven D(P)
                                    //}
@@ -788,8 +792,8 @@ float greedy_LS()
                 //cout<<"vraceno:"<< k<<" elemenata. obj_val_copy: "<<obj_val_copy<<endl;
                 //cout<<"obj_val: "<<obj_val<<endl;
                 //if(obj_val_copy<obj_val)
-				if((CoveredPoints2.size()>CoveredPoints.size() && obj_val_copy<obj_val)||force)
-				{
+		if((CoveredPoints2.size()>CoveredPoints.size() && obj_val_copy<obj_val)||force)
+		{
                 	cout<<"------Poboljsanje u okviru shakinga---"<<endl;
                 	cout<<"Pokriveno u copy: "<<CoveredPoints2.size()<<"  Pokriveno u indeks: "<<CoveredPoints.size()<<endl;
 			cout<<"obj_val: "<<obj_val<<endl;
