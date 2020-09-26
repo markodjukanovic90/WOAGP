@@ -569,7 +569,7 @@ float greedy_criterion(vector<int>& C, int i) // take s_i from S
     if(f_m == 0)
        return INFEASIBLE;
 
-    float val = ((float)Cost[i]) / f_m;  //(f_minus_update(C, i));     //cout << "val: " << val << endl; 
+    float val = ((float)Cost[i]) / f_m; //(f_minus_update(C, i));     //cout << "val: " << val << endl; 
     return val;
 }
 
@@ -613,7 +613,7 @@ float gridi_criterion_dragan(vector<int> &index, int i)
 int min_greedy(vector<int>& indeks1)
 {        
            
-          float g_m = INFEASIBLE; 
+          float g_m = INFEASIBLE; float sec_criterion = INFEASIBLE;
           int dodaj = -1; cout << " isize " << indeks1.size() << " " << S.size() <<  endl;
           for(int i = 0; i < S.size(); ++i)
           {   //cout <<"i: " << i << " ";
@@ -634,10 +634,23 @@ int min_greedy(vector<int>& indeks1)
 
                  if(us and us1) 
                  { 
-                    dodaj = i;
-                    g_m = g_mi;   
+                    if(g_mi == g_m && (alg == 3 or alg == 0)) // tie-breaking mechanism in Dragan's greedy 
+                    {
+                       float sec = greedy_criterion_1(i);
+                       if(sec_criterion < sec) 
+                       {
+                          sec_criterion = sec;
+                          dodaj = i; 
+                          g_m = g_mi;
+                       }
+                    }
+                    else
+                    {
+                       dodaj = i; 
+                       g_m = g_mi;
+                    }   
                  }
-               }// cout << "dodati....." << dodaj << endl;
+              }// cout << "dodati....." << dodaj << endl;
           }
           return dodaj;
 }
