@@ -4,7 +4,7 @@ Poziv: ./greedy -f ../milan/preprocessing/small/min-100-1_D1.txt -alg 1 -greedy 
 -f: path to instance file;
 -t: amount of time to allow execution;
 
--alg: algoritam koji pozovamo:
+-alg: algoritam koji pozivamo:
       0: pure Greedy
       1: Greedy+LS;
       2: Greedy + CPLEX
@@ -27,3 +27,9 @@ w_type: type of weight involved into benchmarks
         2: avg visibility tezina
         3: random 
         4: non-weighted verzija
+
+dodatni parametri za greedy + shaking:
+
+-dist:  int, distanca od cvora i i ostalih cvorova u parcijalnom rjesenju --> za kandidate za izbacivanje se uzmu samo oni cvorovi koji su na udaljenosti vecoj od <dist> od cvora i
+-offset: float (= p = offset * Parcijalno_rjesenje): Ako je cvor v_i u parcijalnom rjesenju, 
+               za shaking razmatramo samo cvorove {v_{i-p},...., v_i,... v_{i+p}}
