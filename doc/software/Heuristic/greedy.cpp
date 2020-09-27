@@ -125,9 +125,9 @@ float run_cplex(vector<set<Point_2>>& S, vector<Point_2>& D_P, int n){
   try
   {
    IloModel model(env);
-   IloObjective obj = IloMinimize(env);
+   IloObjective obj = IloMinimize(env); n = S.size();
    // defining the set of binary variables Z
-   vector<IloNumVar> Z; cout << "S.size() ----> " << S.size() << n << endl;
+   vector<IloNumVar> Z; cout << "S.size() ----> " << S.size() << "\t" << n << endl; 
    for(int i = 0; i < n; ++i){
        //cout << "cost i " << Cost[i] << endl;
        IloNumVar myIntVar(env, 0, 1, ILOINT);
@@ -143,7 +143,7 @@ float run_cplex(vector<set<Point_2>>& S, vector<Point_2>& D_P, int n){
        IloExpr expr_i(env); bool add = false;
        for(int j = 0; j < n; ++j)   
        {
-           if( S[j].count( p ) ){ // item i se nalazi u skupu j
+           if( S[j].count( p ) > 0 ){ // item i se nalazi u skupu j
                expr_i += Z[j];
                add = true;
            }
@@ -374,6 +374,52 @@ void read_from_file(std:: string path)
     S.push_back(vertexSet);
     temp++;
    }
+
+
+   /* random generator to add vertices
+    for(int i = 0; i < 10000; ++i)
+   { 
+       Point_2 vert; vert.first = 0; vert.second = 0;
+       while(true) 
+       {
+             vert.first  = 100 + rand() % 1000; 
+             vert.second = 100 + rand() % 1000; 
+             if(std:: find(Vertices.begin(), Vertices.end(), vert) == Vertices.end() )
+             {   Vertices.push_back(vert); numberOfGuards[vert] = 0; break;}
+                 
+       }
+       set<Point_2> addSet;
+       int x = 500;
+       for(int xi = 0; xi < x; ++xi) 
+       { 
+           int index = 0;        
+           int x = 100 + rand() % 100;
+           int y = rand() % S[ x ].size();
+           for(Point_2 p : S[ x ])
+           {
+               index++;
+               if(index == y / 2)
+               {
+                  addSet.insert(p);
+                  break;
+               } 
+           } // y/ 2 + 1,..., y
+       }
+       for(int y = 0; y < 10; ++y)
+       {
+             if(rand() % 2 > 0 ) 
+             {  
+                int a = 100 + rand() % 1000; 
+                int b = 100 + rand() % 1000;
+                Point_2 pp = make_pair(a, b);
+                if( std::find(Vertices.begin(), Vertices.end(), pp ) == Vertices.end() )
+                {    Vertices.push_back(pp);   //cout << "push" << endl;
+                } 
+                addSet.insert(pp);
+             }
+       }// cout << "add... " << endl;
+       S.push_back(addSet);     
+   } */ 
     //izdvajanje povrsina
     temp = 0;
     while(temp<n){
@@ -617,7 +663,7 @@ int min_greedy(vector<int>& indeks1)
           {   //cout <<"i: " << i << " ";
               
               if( std::find(indeks1.begin(), indeks1.end(), i) == indeks1.end() )
-              {  cout << " nalazi se " << i << "\n "; 
+              {  //cout << " nalazi se " << i << "\n "; 
                  float g_mi;
                  switch(greedy){
 
