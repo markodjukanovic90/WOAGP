@@ -215,12 +215,14 @@ More detailed overview of the results on art gallery problems is out the scope o
 			\item in each iteration add such a guard to $s^{ps}$ for which the obj value is minimal
 			\item end when $incorrect_{total}$ becomes 0
           \end{itemize}
+      Ties are broken by using  price-per-unit heuristic.
       \subsection{An improvement of Greedy Solution}
       Local search and Large Neighborhood search \fxnote{TODO...}
       Local search (LS) technique is a basis of the LS--based metaheuristics. Let us define the structure of neighborhood. We define them over the set of guards.
-      The first configuration of neighbourhood of some partial solution is operation of swapping; that means from a given partial solution $s^P$, we choose one guard from $s^P$ and then pick another guard from $V \setminus s^p$ w.r.t. value $obj(;)$.
+      The first configuration of neighborhood of some partial solution is operation of swapping; that means from a given partial solution $s^P$, we choose one guard from $s^P$ and then pick another guard from $V \setminus s^p$ w.r.t. value $obj(;)$.
 
-      Another criterion for the neighbourhood's configuration ($k$-th) would be taking arbitrary $k$ guards $\{p_1,...,p_d\}$ from $s^p$, then drop them from $s^p$. Afterwords, for each $p_i$ which are dropped off, we take the guard which is the nearest by distance from $p_i$ and add them into $s^p$.
+      
+      %Another criterion for the neighbourhood's configuration ($k$-th) would be taking arbitrary $k$ guards $\{p_1,...,p_d\}$ from $s^p$, then drop them from $s^p$. Afterwords, for each $p_i$ which are dropped off, we take the guard which is the nearest by distance from $p_i$ and add them into $s^p$.
 
       \subsection{Hybrid of the Greed Heuristic and Local Search}
 
@@ -290,7 +292,8 @@ More detailed overview of the results on art gallery problems is out the scope o
         	\end{itemize}
             \item return $f(C')$. 
         \end{enumerate}
-          
+      \begin{comment}
+      
        \noindent \textbf{Improvements of the above method.} The above method can serve as a basic iteration 
        of a more advanced techniques like ILP-LNS or CMSA. In this case, methods for destructing the solutions 
        has to be proposed.  Underlying idea could be:
@@ -301,7 +304,7 @@ More detailed overview of the results on art gallery problems is out the scope o
        	       ratio(i) = \frac{\sum_{v \in V\setminus{ \{i\}}, j \in V(i)} 1_{j \mbox{ is veasible from } v} }{|V(i)|}. 
        	    \end{align}
        \end{itemize}
-       
+      \end{comment}     
     
      \section{Computational Results}
        We used the instance of a specific OAGP and assigned the weights to each vertex of polygons. We have generated three kind of benchmarks:
