@@ -132,7 +132,7 @@ More detailed overview of the results on art gallery problems is out the scope o
 
      Let us suppose we are given a discretization $D(P)$ of the polygon $P$ (with a family of rectangles). Then we relate the OAGP with the known MSC problem.
      Family $\mathcal{F}\subseteq D(P)$ of nonempty sets is given as: $S_i \in \mathcal{F}$ iff it includes any point from $D(P)$ which is visible from guard $i\in V$. Note that set $S_i$ includes a point $p_i$ which can also included by some other guard $j\in V$, $i \neq j$. So, the task of OAPG becomes finding a minimal cardinalty cover $\mathcal{C}\subseteq\{S_1,...,S_n\}$ of set $D(P)$, that is
-     $$ \bigcup_{c \in \mathcal{C}} c = D(P).$$ The Integer Programming model for the Set Cover problem is known, and is as follows:
+     $$ \bigcup_{c \in \mathcal{C}} c = D(P).$$ The IP  model for the Set Cover problem is well-known, and based on it the following model
      \begin{align}
         &\sum_{i=1}^n x_i \longrightarrow \min \\
         &\mbox{s.t.} \\
@@ -149,17 +149,18 @@ More detailed overview of the results on art gallery problems is out the scope o
      	 0, \mbox{otherwise},
      \end{cases}$ \\
       presents a MIP model to solve OAGP where $V(j)$ is the set of all points from $D(P)$ that are visible from $j$-th vertex of $P$.
-     Set $Z = \{j \in V\mid x_i=1\}$ represents a solution of the problem.
+     Set $Z = \{j \in V\mid x_i=1\}$ represents a solution of the problem w.r.t. discrete relaxation $D$ of the polygon.
      Constraint~(\ref{eq:const-3}) enforces that any point $p_i \in D(P)$ will be visible from at least one guard from $Z$.
 
-     If we want to add weights into the OAGP problem such that all guard have no equal weight (of 1), we obtained the weighted variant of OAGP, that is the WOAGP problem. This can be augmented that the prices of cameras do not need to be equal and these prices might be different due to the quality (of the range) of the cameras that are installed at some specific corners.  Let us suppose that for any guard $p_i$ we assign a price $w_i$, $i=1,...,n$. Then, the above model is may be extended to its weighted version where the objective function has to be replaced by
+     If we want to add weights into the OAGP problem such that all guards have no equal weight (of 1), we obtained the weighted variant of OAGP, labelled by WOAGP problem. Introducing prices into the basic problem can be augmented by the fact that the prices of cameras do not need to be equal and these prices might be different due to the quality (respecting the range of spectrum of view) of the cameras that are installed at some specific corners.  Let us suppose that for any guard $p_i$, we assign a price $w_i>0$, $i=1,...,n$. Then, the above model is may be extended to its weighted version where the objective function has to be replaced by
      $$ \sum_{i} x_i w_i,$$
       and all other constraints remain the same.
 
-      In order to solve this model, we propose to use a general purpose solver \textsc{Cplex}.
+      In order to solve this model, we use a general purpose solver \textsc{Cplex}.
      \section{Algorithmic Approaches for WOAGP}
-          Since the WOAGP can be seen as the Weighted Set Cover problem (WSCP) and since the best known heuristics to solve WSCP is an enhanced greedy heuristic, our idea is to apply greedy algorithms to solve WOAGP. These algorithms produce a solution of reasonable quality within a short interval of time. Efficient of greedy heuristics is related to a greedy criterion utilized to expand current (non-complete, that is partial) solution to complete one. Among all candidates ( solution components for expansion, that is not-yet-considered guards, we choose one with the smallest greedy value etc. until the solution is complete (i.e., cover all regions of the polygon).
-          Pseudocode of Greedy heuristic is given in Algorithm~\ref{alg:greedy}
+          Since the WOAGP can be seen as the Weighted Set Cover problem (WSCP) and since the best known heuristics to solve WSCP is an enhanced greedy heuristic, our idea is to transform a WOAGP instance into a WSC problem instance \fxerror{TODO: Milan treba da ovo objasni (proces transformacije -- neka uzme citavu jednu pod-sekciju za ovo...) }and then
+          apply greedy algorithms to solve WOAGP. These algorithms produce a solution of reasonable quality within a short interval of time. Efficiency of such greedy heuristics is related to a greedy criterion utilized to expand current (non-complete, i.e., partial) solution to complete one. Among all candidates (solution components for expansion, that is not-yet-considered guards, we choose one with the smallest greedy value until the solution is complete (i.e., cover all  points from $D(P)$).
+          A general pseudocode of Greedy heuristics is given in Algorithm~\ref{alg:greedy}
 
           \begin{algorithm}[!t]
           	\caption{Greedy Heuristic}\label{alg:greedy}
@@ -173,40 +174,34 @@ More detailed overview of the results on art gallery problems is out the scope o
           		\EndWhile
           	\end{algorithmic}
           \end{algorithm}
-      \subsection{Greedy Heuristic based on Price-per-Unit}
-       Our greedy criterion to expand current partial solution $s^P$  is based on the WOAGP characteristics, that is considering not-yet-covered regions of polygon $P$, that is, its discretisation $D(P)$. For each not yet considered guards $p_i$, we assign the region he is able to see by $S_{p_i}$. As the next candidate to extend $s^P$, we choose not-yet-considered guard $p^*$ which is able to cover his part $S_{p_i}$ by smallest price per unit, among the other not considered guards. More precisely, greedy criterion $g$ is given as:
+      \subsection{Greedy Criterion based on Price-per-Unit}
+       This greedy criterion to extend current partial solution $s^P$  is based on exploiting the characteristics of the  WOAGP, that is considering not-yet-covered regions of polygon $P$, that is, its discretisation $D(P)$. For each not yet considered guards $p_i$, we assign the region which is able to see by $S_{p_i}$. As the next candidate to extend $s^P$, we choose that guard $p^*$ which is able to cover set $S_{p_i}$ by smallest price per unit, among the other not considered guards. More precisely, greedy criterion $g$ is given as:
        \begin{align}
             g(s^p, p_i) = \frac{w_{p_i}}{S_{p_i}},
        \end{align}
        and $p^*$ that minimizes $g(s^p, p^*)$ value is chosen as an extension of the current partial solution.
-       Afterwards the region $S_{p^*}$ is further then dropped off from $P$, i.e., $P=P \setminus S_{p^*}$, and update $s^p= s^p \cup \{p^*\}$.  These steps are repeated until $s^P$ is complete, which means $P = \emptyset$ (polygon $P$ is covered by the guards from $s^P$).
+       Afterwards, the region $S_{p^*}$ is then dropped off from $P$, i.e., $P=P \setminus S_{p^*}$, and we update $s^p= s^p \cup \{p^*\}$.  These steps are repeated until $s^P$ is complete, which means $P = \emptyset$ (polygon $P$ is covered by the guards from $s^P$).
 
-       The best WSC problem greedy heuristic known from the literature was based on the following greedy heuristic:
+       Concerning the literature for WSC problem (\fxnote{citirati}), the most known greedy heuristic was based on the following greedy heuristic:
        \begin{align}
           g(s^p, p_i) = \frac{w_{p_i}}{ f(s^p \cup \{p_i\})  - f(s^p)},
        \end{align}
       where $f(s^p) = |\bigcup_{s \in s^p} s |$.
       
       One additional criterion can be given as a measure of intersection between one set  $S_{p_i}$ and 
-      and the other sets $S_{p_j}$, $j \neq i$ as follow:
+      and the other sets $S_{p_j}$, $j \neq i$ as follow (\fxerror{Izbaciti ovaj kriterij}):
       \begin{align}\label{eq:intersection-heuristic}
       	   g(s^P,p_i) = \frac{\sum_{p_j \in V \setminus s^P: p_i \neq p_j}|S_{p_i} \cap S_{p_j}|}{|V|-|s^P|-1}, p_i \in V \setminus s^P,
       \end{align}
       where $|S_{p_i} \cap S_{p_j}|$ denotes the measure of surface (in some unit) of the intersection for the two 
       visible regions. If some set $S_{p_i}$ has less intersection with the  visible regions of other candidate guards it is more likely that $p_i$ will be a good candidate for a guard. So, based on it, we always try to  add a vertex $p_j$ to $s^P$ which has the smallest $g$ value acc. to formula~(\ref{eq:intersection-heuristic}) 
       
-        \subsection{An Alternative Greedy Heuristic}
-        \fxnote{TODO: work in progress...} Greedy criterion:
-          \begin{itemize}
-          	\item prefer those guards with a smaller cost $w_i$;
-          	\item If there are more guards with the smallest cost,
-          	prefer one with the largest $S_{p_i}$.
-          \end{itemize}
-		\fxnote{TODO: work in progress...} Another approach DRAGAN:
+        \subsection{An Novel Greedy Heuristic}
+          We proposed greedy criterion based on the following steps::
            \begin{itemize}
 			\item introduce a penalty function
-          	\item introduce a term ``incorrect point''. For a point from D(P) we say that it is incorrect if it is not covered by any guard from a current partial solution $s^{ps}$.
-			\item let $incorrect_{total}$ be the total number of incorrect points from discretisazion $D(P)$
+          	\item introduce a term ``incorrect point''. For a point from $D(P)$ we say that it is incorrect if it is not covered by any guard from a current partial solution $s^{ps}$.
+			\item let $incorrect_{total}$ be the total number of incorrect points from discretization $D(P)$
 			\item let $w_{total}$ be the total sum of all weights among all verteces
 			\item involve the penalty function in the objective function
 				$$obj(s^{ps}; v)  = \sum_{i \in s^{ps} \cup \{v\}} w_i+ incorrect_{total}$$ or
@@ -215,16 +210,13 @@ More detailed overview of the results on art gallery problems is out the scope o
 			\item in each iteration add such a guard to $s^{ps}$ for which the obj value is minimal
 			\item end when $incorrect_{total}$ becomes 0
           \end{itemize}
-      Ties are broken by using  price-per-unit heuristic.
+      Ties occurred in the search are broken by using  price-per-unit heuristic.
       \subsection{An improvement of Greedy Solution}
-      Local search and Large Neighborhood search \fxnote{TODO...}
+      Local search and Large Neighborhood search \fxnote{TODO: izbaciti ovo!}
       Local search (LS) technique is a basis of the LS--based metaheuristics. Let us define the structure of neighborhood. We define them over the set of guards.
       The first configuration of neighborhood of some partial solution is operation of swapping; that means from a given partial solution $s^P$, we choose one guard from $s^P$ and then pick another guard from $V \setminus s^p$ w.r.t. value $obj(;)$.
 
-      
-      %Another criterion for the neighbourhood's configuration ($k$-th) would be taking arbitrary $k$ guards $\{p_1,...,p_d\}$ from $s^p$, then drop them from $s^p$. Afterwords, for each $p_i$ which are dropped off, we take the guard which is the nearest by distance from $p_i$ and add them into $s^p$.
-
-      \subsection{Hybrid of the Greed Heuristic and Local Search}
+      \subsection{Hybrid of the Greed Heuristic and Local Search}\fxnote{TODO: izbaciti i ovo!}
 
        In order to improve the results of the Greedy heuristic, we propose a hybridization with the LS method.
        The pseudocode is given in Algorithm~\ref{alg:hybrid-ls-greedy}.
@@ -280,8 +272,9 @@ More detailed overview of the results on art gallery problems is out the scope o
         Beam Searxh is an incomplete BFS heuristic search algorithm. At each level of the search, the best $\beta>0$ nodes i kept in the structure called \emph{beam} $B$. all nodes are then expanded in all possible ways. Among the expansions, again, $\beta$ bst nodes is taken for the beam of the next level. 
         The search is processed in the same manner until $B$ is empty. The main question concerns of the criterion of choosing the nodes for a beam. This is done by means of a heuristic evaluation of the nodes. The heuristic is a problem-specific aspect of each problem that is considered for solving. \fxnote{work in progress...}
     \end{comment}   
-    
-    \subsection{Hybrid Greedy + CPLEX}
+    \subsection{A hybrid of the Greedy and shaking}
+    \fxnote{TODO: Ubaciti pricu o shaking $-->$ Dragan?}
+    \subsection{A Hybrid of the Greedy + CPLEX}
         CPLEX will soon or later degrade in its performance w.r.t. instance size. On the other hand, the later stage of Greedy increase the chance to worsen the final greedy solution.  So it makes sense to combine  partial solutions generated by  Greedy over interactions  and use CPLEX to make the (partial)  solution complete. Our approach consists of the following steps:
         \begin{enumerate}
         	\item Run a Greedy method up to $K$ iterations and obtain a partial solution $C$ (therefore, $|C| = K$); 
