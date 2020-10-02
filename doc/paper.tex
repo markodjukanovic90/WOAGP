@@ -141,7 +141,7 @@ The main contributions of this paper are:
      \fxnote{TODO: work on literature approaches}
      %\section{Preliminaries}
      
-     \subsection{Discretization}\fxnote{TODO: Milan}
+     \subsection{Discretization}  \fxerror{TODO: Milan treba da ovo objasni proces transofrmacije, zasto uzimamo ovakav tip diskretizacije, kako se onda problem svodi na SC, da obajsni zasto diskretni grid ne mora dati potpunu pokrivenost poligona -- dvije slike. Proces transfomracije objasniti kratko (mozda i pseudokod ako je moguce da se prikaze)... }
      
      \section{Exact methods}\fxnote{TODO: Marko}
      \subsection{Integer linear programming method}
@@ -179,7 +179,7 @@ The main contributions of this paper are:
      \section{Algorithmic Approaches for WOAGP}
      \subsection{Greedy approaches for solving WOAGP}
      \subsubsection{An existing greedy method}\fxnote{TODO: Milana}
-          Since the WOAGP can be seen as the Weighted Set Cover problem (WSCP) and since the best known heuristics to solve WSCP is an enhanced greedy heuristic, our idea is to transform a WOAGP instance into a WSC problem instance \fxerror{TODO: Milan treba da ovo objasni (proces transformacije -- neka uzme citavu jednu pod-sekciju za ovo...) }and then
+          Since the WOAGP can be seen as the Weighted Set Cover problem (WSCP) and since the best known heuristics to solve WSCP is an enhanced greedy heuristic, our idea is to transform a WOAGP instance into a WSC problem instance and then
           apply greedy algorithms to solve WOAGP. These algorithms produce a solution of reasonable quality within a short interval of time. Efficiency of such greedy heuristics is related to a greedy criterion utilized to expand current (non-complete, i.e., partial) solution to complete one. Among all candidates (solution components for expansion, that is not-yet-considered guards, we choose one with the smallest greedy value until the solution is complete (i.e., cover all  points from $D(P)$).
           A general pseudocode of Greedy heuristics is given in Algorithm~\ref{alg:greedy}
 
@@ -196,103 +196,38 @@ The main contributions of this paper are:
           	\end{algorithmic}
           \end{algorithm}
     %  \subsection{Greedy Criterion based on Price-per-Unit}
-    \fxnote{TODO: izbaciti ovo!}
-       This greedy criterion to extend current partial solution $s^P$  is based on exploiting the characteristics of the  WOAGP, that is considering not-yet-covered regions of polygon $P$, that is, its discretisation $D(P)$. For each not yet considered guards $p_i$, we assign the region which is able to see by $S_{p_i}$. As the next candidate to extend $s^P$, we choose that guard $p^*$ which is able to cover set $S_{p_i}$ by smallest price per unit, among the other not considered guards. More precisely, greedy criterion $g$ is given as:
-       \begin{align}
-            g(s^p, p_i) = \frac{w_{p_i}}{S_{p_i}},
-       \end{align}
-       and $p^*$ that minimizes $g(s^p, p^*)$ value is chosen as an extension of the current partial solution.
-       Afterwards, the region $S_{p^*}$ is then dropped off from $P$, i.e., $P=P \setminus S_{p^*}$, and we update $s^p= s^p \cup \{p^*\}$.  These steps are repeated until $s^P$ is complete, which means $P = \emptyset$ (polygon $P$ is covered by the guards from $s^P$).
+      Concerning the literature for WSC problem~\ref{chvatal1979greedy, lovasz1975ratio}, one of the most efficient greedy heuristic was based on the following greedy rule:
+     \begin{align}
+     g(s^p, p_i) = \frac{w_{p_i}}{ f(s^p \cup \{p_i\})  - f(s^p)},
+     \end{align}
+     where $f(s^p) = |\bigcup_{s \in s^p} s |$.
+     This heuristic is also a approximation algorithm which ensures $O(\log(n))$ approximation factor. 
 
-       Concerning the literature for WSC problem (\fxnote{citirati}), the most known greedy heuristic was based on the following greedy heuristic:
-       \begin{align}
-          g(s^p, p_i) = \frac{w_{p_i}}{ f(s^p \cup \{p_i\})  - f(s^p)},
-       \end{align}
-      where $f(s^p) = |\bigcup_{s \in s^p} s |$.
-
-      One additional criterion can be given as a measure of intersection between one set  $S_{p_i}$ and
-      and the other sets $S_{p_j}$, $j \neq i$ as follow (\fxerror{Izbaciti ovaj kriterij}):
-      \begin{align}\label{eq:intersection-heuristic}
-      	   g(s^P,p_i) = \frac{\sum_{p_j \in V \setminus s^P: p_i \neq p_j}|S_{p_i} \cap S_{p_j}|}{|V|-|s^P|-1}, p_i \in V \setminus s^P,
-      \end{align}
-      where $|S_{p_i} \cap S_{p_j}|$ denotes the measure of surface (in some unit) of the intersection for the two
-      visible regions. If some set $S_{p_i}$ has less intersection with the  visible regions of other candidate guards it is more likely that $p_i$ will be a good candidate for a guard. So, based on it, we always try to  add a vertex $p_j$ to $s^P$ which has the smallest $g$ value acc. to formula~(\ref{eq:intersection-heuristic})
-
-        \subsubsection{An Novel Greedy Heuristic}\fxnote{TODO: Dragan}
-        In this subsection we present a novel greedy function, which is used in the greedy algorithm. Let us introduce a term  ``incorrect point''. For a point from $D(P)$ we say that it is incorrect if it is not covered by any guard from a current partial solution $s^{ps}$. Let $incorrect_{total}$ be the total number of incorrect points from discretization $D(P)$ for the current partial solution and let $w_{total}$ be the total sum of all weights among all vertices. Then, the greedy function for the given partial solution $s^{ps}$ and the guard $v$ is defined as:
+        \subsubsection{A Novel Greedy Heuristic}\fxnote{TODO: Dragan}
+        In this subsection we present a novel greedy function, which is used in the greedy algorithm. Let us introduce a term  ``incorrect point''. For a point from $D(P)$ we say that it is incorrect if it is not covered by any guard from a current partial solution $s^{ps}$. Let denote by $incorrect_{total}$ the total number of incorrect points from discretization $D(P)$ for the current partial solution and let $w_{total}$ be the total sum of all weights among all vertices. Then, the greedy function for the given partial solution $s^{ps}$ and the guard $v$ is defined as:
         \begin{equation}\label{eq:greedyfun2}
 				%$$obj(s^{ps}; v)  = \sum_{i \in s^{ps} \cup \{v\}} w_i+ incorrect_{total}$$ or
-				obj(s^{ps}; v) = \frac{\sum_{i \in s^{ps} \cup \{v\}\}} w_i}{w_{total}}+ \frac{incorrect_{total}}{|D(P)|}\fxnote{moguce i skaliranje ove dvije vrijednosti?}
+				obj(s^{ps}; v) = \frac{\sum_{i \in s^{ps} \cup \{v\}\}} w_i}{w_{total}}+ \frac{incorrect_{total}}{|D(P)|}
 		\end{equation}	
-            From Equation (\ref{eq:greedyfun2}) one can see that the greedy function mainly depends on the second term, since the value of the first one is not greater than 1. Other words, this function prefers such guards  whose inclusion in the partial solution more points will be covered. On the other side, if the inclusion of some two guards covers the same number of points, then the function suggest  the guard with lower cost. In the early stage of the greedy algorithm this approach enables that the guards which covers more points are preferable, while in a later stage, when less points remain uncovered, the function prefers the guards with lower cost.
+            From Equation (\ref{eq:greedyfun2}) one can see that the greedy function mainly depends on the second term, since the value of the first one is not greater than 1. On other words, this function prefers such guards  which inclusion in the partial solution will cover more points. On the other side, if the inclusion of some two guards covers the same number of points, then the function suggest  the guard with lower cost. In the early stage of the greedy algorithm this approach enables that the guards which covers more points are preferable, while in a later stage, when less points remain uncovered, the function prefers the guards with lower cost.
 
 
-            In the Equation.. the trade off between two terms is more balanced. In this case, the algorithm do not prefer ultimately 
+            In the Equation.. the trade off between two terms is more balanced. In this case, the algorithm do not prefer ultimately \fxnote{TODO...}
             \begin{itemize}
 
 \item start Greedy with empty solution
 			\item in each iteration add such a guard to $s^{ps}$ for which the obj value is minimal
 			\item end when $incorrect_{total}$ becomes 0
           \end{itemize}
-      Ties occurred in the search are broken by using  price-per-unit heuristic.
+      Ties occurred in the search are broken by using  price-per-unit heuristic which i stated as follows. 
+       For each not yet considered guards $p_i$, we assign the region which is visible from $p_i$ by $S(p_j)$. As the next candidate to extend $s^P$, we choose a guard $p^*$ which covers set $V(j)$ by smallest price per unit, among the other candidate to extend $s^P$. More precisely, greedy criterion $g$ is given as:
+      \begin{align}
+      g(s^p, p_i) = \frac{w_{p_i}}{S_{p_i}},
+      \end{align}
+      and $p^*$ that minimizes $g(s^p, p^*)$ value is chosen as an extension of the current partial solution.
+      In our experimental studies, we found out that this heuristic does not perform well on its own, but presents a reasonable tie-breaking mechanism and is able to boost quality of our greedy heuristics. 
      \subsubsection{Partial calculation of objective function}
-      \subsection{Hybrids of the Greedy algorithm}
-
-
-       In order to improve the results of the Greedy heuristic, we propose a hybridization with the LS method.
-       The pseudocode is given in Algorithm~\ref{alg:hybrid-ls-greedy}.
-        \begin{algorithm}[!t]
-       	\caption{Local Search + Greedy}\label{alg:hybrid-ls-greedy}
-       	\begin{algorithmic}
-       		   	\State \textbf{Input:} and Instance of the problem; $pct\in (0,1)$:percentage
-       		    \State \textbf{Output:} a complete solution $s$
-       		    \State $s_{greedy} \gets \emptyset$
-       		    \While{ $s_{greedy}$ is not complete}
-       		        \State $s_{greedy} \gets$ call Greedy to expend $s_{greedy}$ for (up to) $\lfloor n \cdot pct \rfloor$ guards
-       		        \State $s_{greedy} \gets$ LS($s_{greedy}$)
-       		    \EndWhile
-       \end{algorithmic}
-       \end{algorithm}	
-
-       \begin{algorithm}[!t]
-      	\caption{Local Search}\label{alg:local-search}
-      	\begin{algorithmic}[1]
-      		\State \textbf{Input:} a (partial) solution $s_{greedy}=\{v_1,...,v_k\}$, $iter_{allow}>0., $ probability $p$
-      		\State \textbf{Output:} and improved solution $s$
-      		\While{$iter < iter_{allow}$}
-      		     \State $D(P)_s$ the number of points covered by $s_{greedy}$
-      		      \If{$|D(P)_s| == |D(P)|$} // a complete solution
-      		          \State return $s_{greedy}$
-      		      \EndIf
-      		     \State choose random vertex $v_{i'}$ from $s_{greedy}$
-      		     \State $v_{i''},v_{i'''} \gets$ two neighbor vertices of vertex  $v_{i'}$
-      		     \State $s^1_{greedy} \gets$ $s_{greedy} \cup \{v_{i''} \} \setminus \{v_{i'}\}$
-                 \State $s^2_{greedy} \gets$ $s_{greedy} \cup \{v_{i'''} \} \setminus \{v_{i'}\}$
-      		      \If{$|D(P)_{s^1_{greedy}}|>|D(P)_{s_{greedy}}|$ }
-                        \State $s_{greedy} \gets s^1_{greedy}$
-      \EndIf
-                    \If {$|D(P)_{s^1_{greedy}}|==|D(P)_{s_{greedy}}|$ }
-                        \State $s_{greedy} \gets s^1_{greedy}$ with probability $p$
-
-      		      \EndIf
-      		       \If{$|D(P)_{s^2_{greedy}}|>|D(P)_{s_{greedy}}|$ }
-                        \State $s_{greedy} \gets s^2_{greedy}$
-      		      \EndIf
-
-            \If {$|D(P)_{s^2_{greedy}}|==|D(P)_{s_{greedy}}|$ }
-                        \State $s_{greedy} \gets s^2_{greedy}$ with probability $p$
-                    \EndIf
-      		     \State $iter \gets iter +1 $
-      		\EndWhile
-      		 \State return $s_{greedy}$
-      	\end{algorithmic}
-      \end{algorithm}
-    \begin{comment}
-
-     \subsection{Beam Search (BS)}
-        Beam Searxh is an incomplete BFS heuristic search algorithm. At each level of the search, the best $\beta>0$ nodes i kept in the structure called \emph{beam} $B$. all nodes are then expanded in all possible ways. Among the expansions, again, $\beta$ bst nodes is taken for the beam of the next level.
-        The search is processed in the same manner until $B$ is empty. The main question concerns of the criterion of choosing the nodes for a beam. This is done by means of a heuristic evaluation of the nodes. The heuristic is a problem-specific aspect of each problem that is considered for solving. \fxnote{work in progress...}
-    \end{comment}
+ 
     \subsubsection{A hybrid of the Greedy and shaking}
     \fxnote{TODO: Ubaciti pricu o shaking $-->$ Dragan?}
     \subsubsection{A Hybrid of the Greedy + CPLEX}
@@ -305,7 +240,8 @@ The main contributions of this paper are:
         		\item we obtain a complete solution $C'$;
         	\end{itemize}
             \item return $f(C')$.
-        \end{enumerate}\fxnote{TODO: Mozemo li uciti iz uzimanja nekih parcijalnih rjesenja koja komponenta je bolja, a koja nije?}
+        \end{enumerate} 
+    
       \begin{comment}
 
        \noindent \textbf{Improvements of the above method.} The above method can serve as a basic iteration
