@@ -107,15 +107,15 @@
 
 
     \section{Introduction}\label{sec:introduction}
-     \emph{The Orthogonal Art Gallery Problem} (OAGP) is one of many variants of Art Gallery Problem (AGP). AGP asks for a set of points $G$ of minimal cardinality on some polygon $P$ such that for each point $y \in P$ there is $x \in G$ such that $xy \subset P$.  Set $G$ is called guard set of $P$ and the points from $G$ as guards. The orthogonal AGP consider on arbitrary polygon but whose angles are $90^{\circ}$ and $270^{\circ}$. This problem was stated by Victor  Klee in 1973.~\cite{o1987art}. The problem is motivated from installing the cameras in a building (or gallery) such that the whole surface of the building is covered. Orthogonality constraint naturally comes out from the orthogonality of the walls in a building.
+     \emph{The Orthogonal Art Gallery Problem} (OAGP) is one of many variants of Art Gallery Problem (AGP). AGP asks for a set of points $G$ of minimal cardinality on some polygon $P$ such that for each point $y \in P$ there is $x \in G$ such that $xy \subset P$.  Set $G$ is called guard set of $P$ and the points from $G$ as guards. The orthogonal AGP consider on arbitrary polygon but whose angles are $90^{\circ}$ and $270^{\circ}$. This problem was stated by Victor  Klee in 1973.~\cite{o1987art}. The problem is motivated from installing the cameras inside a building (or gallery) such that the whole area of the building is covered. Orthogonality constraint naturally comes out from the orthogonality of the walls in buildings.
 
-     Kahn et al. in ~\cite{kahn1983traditional} formulated and proofed that 	$\lfloor \frac{n}{4} \rfloor$ guards are  sufficient to cover an orthogonal polygon with $n$ vertices.  A variant of the OAGP for which we are interested in this study allows only that guards are positioned at the vertices of polygon $P$. Actually, we are looking for minimum vertex guards needed to cover an orthogonal polygon. This problem is known to be NP- hard in ~\cite{schuchardt1995two,katz2008guarding}.
+     Kahn et al. in ~\cite{kahn1983traditional} formulated and proofed that 	$\lfloor \frac{n}{4} \rfloor$ guards are  sufficient to cover an orthogonal polygon with $n$ vertices.  A variant of the OAGP for which we are interested in this study allows only that guards are positioned at the vertices of polygon $P$. Actually, we are looking for minimum vertex guards needed to cover an orthogonal polygon. This restricted problem is known to be NP- hard in ~\cite{schuchardt1995two,katz2008guarding}.
 
-     By discretization $D(P)$ the set of points of the polygon $P$, the art gallery problem can be reduced to the well-known Min Set Cover Problem. For each vertex of the polygon $P$, a set of points of visibility is determined. On that way, the problem of determining the minimum number of guards covering the entire polygon is reduced to determining the minimum number of subsets of points, such that each point from $D(P)$ is included in at least one of the chosen subsets.
+     By discretization $D(P)$ the set of points of the polygon $P$, the art gallery problem can be reduced to the well-known Min Set Cover Problem.\fxnote{Marko: ovdje fali motivacija zasto radimo diskretizaciju poligona} For each vertex of the polygon $P$, a set of points of visibility is determined. In that way, the problem of determining the minimum number of guards covering the entire polygon is reduced to determining the minimum number of subsets of points, such that each point from $D(P)$ is included in at least one of the chosen subsets.
 
 
 
-     In ~\cite{ghosh2010approximation} an approximate solution of the minimum vertex guard problem, which can be computed in $O(n^4)$ time and the size of the solution is at most $O(\log n)$ times the optimal, is presented for simple polygon with $n$ vertices. Firstly, this algorithm partition the polygonal region into convex components and construct sets consisting of these convex components. After that, on these constructed sets Johnson’s approximation algorithm ~\cite{johnson1974approximation} for the Minimum set-covering problem (MSC) is applied to get solution.
+     In ~\cite{ghosh2010approximation} an approximate solution of the minimum vertex guard problem, which can be computed in $O(n^4)$ time and the size of the solution is at most $O(\log n)$ times the optimal, is presented for simple polygon with $n$ vertices. Firstly, this algorithm do a partitioning the polygonal region into convex components and construct sets consisting of these convex components. After that, on these constructed sets Johnson’s approximation algorithm ~\cite{johnson1974approximation} for the Minimum set-covering problem (MSC) is applied to get solution.
 
      An anytime algorithm to compute successively better approximations of the optimum to Minimum Vertex Guard is proposed in ~\cite{tomas2003approximation}.  A major idea of this approach is exploring dominance of visibility regions to first detect pieces that are
 more difficult to guard. The same problem is solved   in ~\cite{tomas2006visibility} by applying successive approximations from  ~\cite{tomas2003approximation}.
@@ -125,17 +125,17 @@ Tozoni et a. ~\cite{tozoni2013practical,tozoni2016algorithm}  presented an exact
 More detailed overview of the results on art gallery problems is out the scope of this paper and can be found in a survey paper  ~\cite{ghosh2010approximation2}.
 
 
-    Couto et al. presented an exact and efficient algorithm for the Orthogonal Art Gallery Problem in ~\cite{couto2007exact}. The algorithm is divided into two phases. In the preprocessing phase an initial discretization is constructed and the Integer Programming model for solving MSC is applied.  In the solution phase, the discretized instance is iteratively refined and solved, until the solution becomes viable.
+    Couto et al. presented an exact and efficient algorithm for the Orthogonal Art Gallery Problem in ~\cite{couto2007exact}. The algorithm is divided into two phases. In the preprocessing phase an initial discretization is constructed and the Integer Programming model for solving MSC is applied.  In the solution phase, the discretized instance is iteratively refined and solved, until the solution becomes viable. \fxnote{Marko: ja bih ovdje samo rekao:  Couto et al. an efficient exact algorithm  for OAGP  based on preprocessing and refinement phases of the the discretized instance. }
 \subsection{Problem definition}
 
 
 \subsection{Main contributions}
 The main contributions of this paper are:
 \begin{itemize}
-\item We developed a novel greedy approach which is based on balancing the trade off between the total sum of guard costs and the total number of uncovered points.
-\item We developed a specially designed shaking procedure, which perturbs the current partial solution in such a way that some vertices are replaced with others \fxnote{TODO: popraviti}
+\item We developed a novel greedy approach which is based on balancing the trade off between the total sum of guards' costs and the total number of not yet covered points from the discretization.
+\item We developed a specially designed shaking procedure, which perturbs the current partial solution in such a way that some vertices are replaced with others based on a distance measure.\fxnote{TODO: popraviti}
 \item Both an existing and the novel greedy algorithms are hybridized with the proposed shaking procedure and with the ILP
-\item We considered different types of weights, based on a... \fxnote{TODO}
+\item We considered different types of weights for our benchmarks, based on a... \fxnote{TODO}
 \end{itemize}
 
      \fxnote{TODO: work on literature approaches}
