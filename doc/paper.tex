@@ -145,13 +145,13 @@ The main contributions of this paper are:
 
      \section{Exact methods}\fxnote{TODO: Marko}
      \subsection{Integer linear programming method}
-     Solvers which solves IP model for OAGP problem are one of the most efficient techniques to approach this problem. It is known that the problem is related to the known Minimal-Set-Cover (MSC) problem.
-
-     Let us suppose we are given a discretization $D(P)$ of the polygon $P$ (with a family of rectangles). Then we relate the OAGP with the known MSC problem.
-     Family $\mathcal{F}\subseteq D(P)$ of nonempty sets is given as: $S_i \in \mathcal{F}$ iff it includes any point from $D(P)$ which is visible from guard $i\in V$. Note that set $S_i$ includes a point $p_i$ which can also included by some other guard $j\in V$, $i \neq j$. So, the task of OAPG becomes finding a minimal cardinalty cover $\mathcal{C}\subseteq\{S_1,...,S_n\}$ of set $D(P)$, that is
-     $$ \bigcup_{c \in \mathcal{C}} c = D(P).$$ The IP  model for the Set Cover problem is well-known, and based on it the following model
+     Let us suppose we are given a polygon $P$ and a discretization $D(P)$ of $P$.  Our task is to cover all points from $D(P)$ by some vertices from $P$ such that the sum of their weights is minimized. 
+     The problem is related to the known Minimal Weighted Set-Cover (MWSC) problem. 
+     Family $\mathcal{F}\subseteq D(P)$ of nonempty sets consists of sets
+      $S_i \in \mathcal{F}$ which include point $p \in D(P)$ that is visible from guard $v_i\in V$, that is $pv_i \subset P$.  Note that set $S_i$ includes a point $p_i$ which can also included by some other guard $v_j\in V$, $i \neq j$. In this was, the task is equivalent of  finding a minimum cardinalty cover $\mathcal{C}\subseteq\{S_1,...,S_n\}$ of the set of points $D(P)$, that is
+     $$ \bigcup_{C \in \mathcal{C}} C = D(P).$$ The IP  model for the Weighted Set Cover problem is well-known in the literature, and is here adapted for our task as follows:
      \begin{align}
-        &\sum_{i=1}^n x_i \longrightarrow \min \\
+        &\sum_{i=1}^n w_ix_i \longrightarrow \min \\
         &\mbox{s.t.} \\
         &\sum_{j\in V} a_{ij}x_j \geq 1\ (\forall p_i\in D(P)) \label{eq:const-3}\\
         & x_j \in \{0,1\}, j \in V,
@@ -162,18 +162,16 @@ The main contributions of this paper are:
           0, \mbox{otherwise}
      \end{cases}$
      and $x_i = \begin{cases}
-     	 1, \mbox{ if } \mbox{ the point } i \in \mathcal{C},\\
+     	 1, \mbox{ if } \mbox{ the point } p_i \in \mathcal{C},\\
      	 0, \mbox{otherwise},
      \end{cases}$ \\
-      presents a MIP model to solve OAGP where $V(j)$ is the set of all points from $D(P)$ that are visible from $j$-th vertex of $P$.
-     Set $Z = \{j \in V\mid x_i=1\}$ represents a solution of the problem w.r.t. discrete relaxation $D$ of the polygon.
+      where $V(j)$ is the set of all points from $D(P)$ that are visible from $j$-th vertex of $P$.
+     Set $Z = \{j \in V\mid x_i=1\}$ represents a solution of the problem w.r.t. discretization $D(P)$ of polygon $P$.
      Constraint~(\ref{eq:const-3}) enforces that any point $p_i \in D(P)$ will be visible from at least one guard from $Z$.
 
-     If we want to add weights into the OAGP problem such that all guards have no equal weight (of 1), we obtained the weighted variant of OAGP, labelled by WOAGP problem. Introducing prices into the basic problem can be augmented by the fact that the prices of cameras do not need to be equal and these prices might be different due to the quality (respecting the range of spectrum of view) of the cameras that are installed at some specific corners.  Let us suppose that for any guard $p_i$, we assign a price $w_i>0$, $i=1,...,n$. Then, the above model is may be extended to its weighted version where the objective function has to be replaced by
-     $$ \sum_{i} x_i w_i,$$
-      and all other constraints remain the same.
+    Introducing the prices into the basic problem can be augmented by the fact that prices of cameras are usually not equal and they are related to their quality (respecting the range of spectrum of view) or due to the fact that installing cameras at some specific corners is much harder than to some other areas. 
 
-      In order to solve this model, we use a general purpose solver \textsc{Cplex}.
+      In order to solve this model, we apply a general purpose solver \textsc{Cplex}.
        \subsection{Constraint programming method}\fxnote{TODO: Marko}
 
      \section{Algorithmic Approaches for WOAGP}
