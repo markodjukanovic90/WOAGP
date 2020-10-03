@@ -172,8 +172,11 @@ The main contributions of this paper are:
     Introducing the prices into the basic problem can be augmented by the fact that prices of cameras are usually not equal and they are related to their quality (respecting the range of spectrum of view) or due to the fact that installing cameras at some specific corners is much harder than to some other areas. 
 
       In order to solve this model, we apply a general purpose solver \textsc{Cplex}.
-       \subsection{Constraint programming method}\fxnote{TODO: Marko}
-
+       \subsection{Constraint programming method} An equivalent CP model was implemented and tested by CP Optimizer. In this case,  Constraint~(\ref{eq:const-3}) is transformed into 
+       \begin{equation}
+           \bigvee_{ j \in V } (a_{ij} \wedge x_j) = 1, 
+       \end{equation}
+      whereas the other constraints and the objective function are the same like in the above MIP model. 
      \section{Algorithmic Approaches for WOAGP}
      \subsection{Greedy approaches for solving WOAGP}
       Since the WOAGP can be seen as the Weighted Set Cover problem (WSCP) and since the best known heuristics to solve WSCP is an enhanced greedy heuristic, our idea is to transform a WOAGP instance into a WSC problem instance and then
