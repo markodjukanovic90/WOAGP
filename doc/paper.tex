@@ -135,7 +135,30 @@
 	\end{itemize}
 	
 	
-	\subsection{Discretization}  \fxerror{TODO: Milan treba da ovo objasni proces transofrmacije, zasto uzimamo ovakav tip diskretizacije, kako se onda problem svodi na SC, da obajsni zasto diskretni grid ne mora dati potpunu pokrivenost poligona -- dvije slike. Proces transfomracije objasniti kratko (mozda i pseudokod ako je moguce da se prikaze)... }
+	\subsection{Discretization}  
+	The discretization $D(P)$ of the polygon $P$ is builded as follows. Consider the regular grid with resolution $\bigtriangleup_{x}\times\bigtriangleup_{y}$ starting at the lower left corner of the bounding box of P, where \\
+$ \bigtriangleup_{x}=min\{ |u_{x}-v_{x}|,\ u_{x}\neq v_{x}\ |\  u,v\ adjacent\ vertices\ of\ the\ polygon\ P \}$ and\\
+$ \bigtriangleup_{y}=min\{ |u_{y}-v_{y}|,\ u_{y}\neq v_{y}\ |\  u,v\ adjacent\ vertices\ of\ the\ polygon\ P \}$.
+	
+	\begin{algorithm}[!t]
+		\caption{Discretization $D(P)$ of the polygon $P$}\label{alg:discret}
+		\begin{algorithmic}[1]
+			\State \textbf{Input:} The set of vertices V of the polygon $P$
+			\State \textbf{Output:} The discretization $D(P)$ of the polygon $P$
+			\State $BB \gets bounding\_box(P);$
+			\State $\bigtriangleup_{x},\bigtriangleup_{y} \gets resolution(P);$
+			\State $D(BB) \gets regular\_grid(BB,\bigtriangleup_{x},\bigtriangleup_{y});$
+			\State $D(P) \gets D(BB) \cap P;$
+			\State $D(P) \gets D(P) \cup V;$
+		\end{algorithmic}
+	\end{algorithm}
+	
+	
+	The intersection points of this grid that are interior to $P$ and all vertices from $P$ are added to the set $D(P)$.The pseudocode for building the discretizations $D(P)$ is given in Algorithm~\ref{alg:discret}.
+	
+	\fxnote{TODO: zasto uzimamo ovakav tip diskretizacije, obajsniti zasto id pokrivenssti diskretizacije ne slijedu pokrivenost poligona -- dvije slike}
+
+	\fxerror{TODO: Milan treba da ovo objasni proces transofrmacije, zasto uzimamo ovakav tip diskretizacije, kako se onda problem svodi na SC, da obajsni zasto diskretni grid ne mora dati potpunu pokrivenost poligona -- dvije slike. Proces transfomracije objasniti kratko (mozda i pseudokod ako je moguce da se prikaze)... }
 	
 	\section{Exact methods}\fxnote{TODO: Marko}
 	In this section we present the known exact ILP and constraint programming (CP) methods for solving WMSCP, which are used  in the rest of the paper.
