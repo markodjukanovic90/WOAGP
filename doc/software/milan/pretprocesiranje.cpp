@@ -408,8 +408,8 @@ Traits_2::FT area_set_polygons(Polygon_set_2 S)
 
 int main(int argc, char const *argv[])
 {
-  for(int file_number=2250; file_number<2251; file_number+=2) // start = 8
-  for(int file_order=1; file_order<=3; file_order++) // file_order<=file_number
+  for(int file_number=2500; file_number<2501; file_number+=2) // start = 8
+  for(int file_order=2; file_order<=3; file_order++) // file_order<=file_number
   {
     const string category = "random-big";
     string filename = "random-" + std::to_string(file_number) + "-" + std::to_string(file_order);
