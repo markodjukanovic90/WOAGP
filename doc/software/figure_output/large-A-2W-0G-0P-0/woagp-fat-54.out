@@ -1,0 +1,15 @@
+54 136 502.909
+Run Greedy	with type: 0	algorithm: 2	turn_ls: 0
+Include these partial solution into CPLEX: 
+S.size() ----> 54	54
+#Vars: 54
+CPLEX pokrenut
+CPLEX finds optimal
+
+obj: 3.71603
+Sets in the solution: {
+S_2, S_28, S_38, S_40, S_42, S_45, S_49, S_53, }
+time:0.00506531 s
+guards:8
+obj:3.71603
+3.716028;8;0.005065

@@ -1,0 +1,15 @@
+62 153 670.296
+Run Greedy	with type: 0	algorithm: 2	turn_ls: 0
+Include these partial solution into CPLEX: 
+S.size() ----> 62	62
+#Vars: 62
+CPLEX pokrenut
+CPLEX finds optimal
+
+obj: 3.29606
+Sets in the solution: {
+S_2, S_32, S_46, S_48, S_50, S_53, S_57, S_61, }
+time:0.00688116 s
+guards:8
+obj:3.29606
+3.296063;8;0.006881
