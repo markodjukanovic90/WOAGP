@@ -130,16 +130,18 @@
 
 	
 	\subsection{Discretization}  
-	The discretization $D(P)$ of the polygon $P$ is builded as follows. Consider the regular grid with resolution $\bigtriangleup_{x}\times\bigtriangleup_{y}$ starting at the lower left corner of the bounding box of $P$, where \\
-$ \bigtriangleup_{x}=\min\{ |u_{x}-v_{x}|\mid u_{x}\neq v_{x}\}$ and\\
-$ \bigtriangleup_{y}=\min\{ |u_{y}-v_{y}|\mid u_{y}\neq v_{y}\}$,\\
-where $ (u_{x},u_{y}),(v_{x},v_{y})$ adjacent vertices of the polygon $P$.
+	The discretization $D(P)$ of the polygon $P$ is built as follows. Consider the regular grid with resolution $\bigtriangleup_{x}\times\bigtriangleup_{y}$ starting at the lower left corner of the bounding box of polygon $P$ which height and weight are defined as follow: 
+	\begin{equation}
+         \bigtriangleup_{x}=\min\{ |u_{x}-v_{x}|\mid u_{x}\neq v_{x}\} \mbox{ and }
+         \bigtriangleup_{y}=\min\{ |u_{y}-v_{y}|\mid u_{y}\neq v_{y}\},
+ 	\end{equation}
+where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
 	
 	\begin{algorithm}[!t]
-		\caption{Discretization $D(P)$ of the polygon $P$}\label{alg:discret}
+		\caption{Discretization $D(P)$ of polygon $P$}\label{alg:discret}
 		\begin{algorithmic}[1]
-			\State \textbf{Input:} The set of vertices V of the polygon $P$
-			\State \textbf{Output:} The discretization $D(P)$ of the polygon $P$
+			\State \textbf{Input:} The set of vertices $V$ of polygon $P$
+			\State \textbf{Output:} The discretization $D(P)$ of polygon $P$
 			\State $BB \gets bounding\_box(P);$
 			\State $\bigtriangleup_{x},\bigtriangleup_{y} \gets resolution(P);$
 			\State $D(BB) \gets regular\_grid(BB,\bigtriangleup_{x},\bigtriangleup_{y});$
@@ -147,11 +149,10 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ adjacent vertices of the polygon $P$.
 			\State $D(P) \gets D(P) \cup V;$
 		\end{algorithmic}
 	\end{algorithm}
+
+	All intersection points of this regular grid with polygon $P$ and all vertices of $P$ are added into the discrete set $D(P)$. The pseudocode which presents the building steps of the discretizations $D(P)$ is given in Algorithm~\ref{alg:discret}.
 	
-	
-	The intersection points of this grid that are interior to $P$ and all vertices from $P$ are added to the set $D(P)$.\fxnote{Ova recenica je nejasna, moze li malo bolji prevod? Referisi u odnosu na Pseudokod} The pseudocode for building the discretizations $D(P)$ is given in Algorithm~\ref{alg:discret}.
-	
-	\fxnote{TODO: zasto uzimamo ovakav tip diskretizacije, objasniti zasto id pokrivenosti diskretizacije ne slijedu pokrivenost poligona -- dvije slike}
+	\fxnote{TODO: zasto uzimamo ovakav tip diskretizacije, objasniti zasto id pokrivenosti diskretizacije ne slijedu pokrivenost poligona -- dvije slike dodaj gdje optimalan izbor cvorova pokriva poligon, i gdje optimalni izbor cvorova ne pokriva poligon...}
 	
 	\section{Exact methods}
 	In this section we present the exact ILP and \emph{Constraint Programming} (CP) models for solving WMSCP, which are used  in the rest of the paper.
