@@ -157,11 +157,11 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
 	\section{Exact methods}
 	In this section we present the exact ILP and \emph{Constraint Programming} (CP) models for solving WMSCP, which are used  in the rest of the paper.
 	\subsection{Integer linear programming model}
-	Let us suppose we are given a polygon $P$ and a discretization $D(P)$ of $P$.  The task we consider is covering all points from $D(P)$ by some vertices $V=\{v_1,...,v_n\}$ of $P$ such that the sum of their weights is minimized.
+	Let us suppose we are given a polygon $P$ and a discretization $D(P)$ of $P$.  The task we consider is covering all points from $D(P)$ by a subset vertices $V=\{v_1,...,v_n\}$ of $P$ such that sum of the weights of vertices in the subset is minimized.
 	The problem is related to the known MWSC problem.
-	Family $\mathcal{F}$ of nonempty sets consists of sets
-	$S_i \in \mathcal{F}$ which include point $p \in D(P)$ that is visible from guard $v_i\in V$, that is $pv_i \subset P$.  Note that set $S_i$ includes a point $p_i$ which can also included by some other guard $v_j\in V$, $i \neq j$. To each set set $S_i$, a cost $c(S_i) = w_i$ is assigned.  In this way, our starting task is then equivalent of finding a minimum cardinalty cover $\mathcal{C}\subseteq\{S_1,...,S_n\}$ of the set of points $D(P)$, that is
-	$$ \bigcup_{C \in \mathcal{C}} C = D(P)$$ such that $\sum_{S_i \in \mathcal{C}} c(S_i)$ is minimized.  The ILP  model for the WSCP is known from the literature, and is here adapted to WOAGP  as follows:
+	Family $\mathcal{F}$ of nonempty sets consists of the sets
+	$S_i \in \mathcal{F}$ which include points $p \in D(P)$ that are visible from guard $v_i\in V$, i.e., $pv_i \subset P$.  Note that set $S_i$ includes points $p_i\in D(P)$ that might also be included by some other guard $v_j\in V$, $i \neq j$. For each set $S_i$, the cost $c(S_i) = w_i$ is assigned.  In this way, our starting task is then equivalent of finding a minimum cardinalty covering $\mathcal{C}\subseteq\{S_1,...,S_n\}$ of the set of points $D(P)$, that is
+	$$ \bigcup_{C \in \mathcal{C}} C = D(P),$$ such that $\sum_{S_i \in \mathcal{C}} c(S_i)$ is minimized.  The ILP  model for the WSCP is already known from the literature, where  here adapted to WOAGP  as follows:
 	\begin{align}
 	&\sum_{i=1}^n w_ix_i \longrightarrow \min \\
 	&\mbox{s.t.} \\
@@ -177,7 +177,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
 	1, \mbox{ if } \mbox{ the point } p_i \in \mathcal{C},\\
 	0, \mbox{otherwise},
 	\end{cases}$ \\
-	where $V(j)$ is the set of all points from $D(P)$ that are visible from $j$-th vertex of $P$.
+	and $V(j)$ is the set of all points from $D(P)$ that are visible from $j$-th vertex of $P$.
 	Set $Z = \{j \in V\mid x_i=1\}$ represents a solution of the problem w.r.t. discretization $D(P)$ of polygon $P$.
 	Constraint~(\ref{eq:const-3}) enforces that any point $p_i \in D(P)$ will be visible from at least one guard from $Z$.
 	
@@ -187,10 +187,10 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
 	\begin{equation}
 	\bigvee_{ j \in V } (a_{ij} \wedge x_j) = 1,
 	\end{equation}
-	whereas the other constraints and the objective function are the same like in the above MIP model. Note that CP appraoch works in a branch-and-bound manner imploying a constriant propagation and variable domain filtering~\cite{laborie2018ibm}.
+	whereas the other constraints and the objective function correspond to above MIP model. Note that CP appraoch works in a branch-and-bound manner employing a constraint propagation and variable domain filtering~\cite{laborie2018ibm}.
 	\section{Algorithmic Approaches for WOAGP}
 	\subsection{Greedy approaches for solving WOAGP}
-	Since the WOAGP instances can be transformed into  WMSCP instances and since one of the most efficient heuristics to solve WSCP from the literature is an enhanced greedy heuristic~\cite{chvatal1979greedy}, our idea is after transforming a WOAGP instance into a WSC problem instance to	apply various greedy algorithms to solve WOAGP. Greedy algorithms produce a solution of reasonable quality within a short interval of time and are, in essence, easy to implement. Efficiency of such greedy heuristics is related to a greedy criterion utilized to expand current (non-complete, i.e., partial) solution to complete one. Among all candidates (solution components for expansion, that is not-yet-considered guards) we choose one with the smallest greedy value and add it to the current solution until it is complete (i.e., it covers all  points from $D(P)$).
+	Since the WOAGP instances can be transformed into  WMSCP instances and since one of the most efficient heuristics to solve WSCP from the literature is an enhanced greedy heuristic~\cite{chvatal1979greedy}, our idea is after transforming a WOAGP instance into a WSC problem instance to	apply various greedy algorithms to solve WOAGP. Greedy algorithms produce a solution of reasonable quality within a short interval of time and are, in essence, easy to implement. Efficiency of such greedy heuristics is related to a greedy criterion utilized to expand current (non-complete, i.e., partial) solution to make it complete. Among all candidates (solution components for expansion, that is not-yet-considered guards) we choose one with the smallest greedy value and add it to the current solution, and repeating the step until it becomes complete (i.e., it covers all  points from $D(P)$).
 	A general pseudocode of Greedy heuristics is given in Algorithm~\ref{alg:greedy}
 	
 	\begin{algorithm}[!t]
@@ -292,9 +292,9 @@ The choice of vertices to be removed is carefully designed and depends on the ge
 	
 	
 	\subsubsection{A Hybrid of the Greedy + CPLEX} \fxnote{TODO: Marko}
-	CPLEX will soon or later degrades its performance w.r.t. instance size. On the other hand, the later stage of Greedy increase the chance to worsen the final greedy solution.  So, it makes sense to combine  partial solutions generated by  Greedy over a few interactions  and then to use CPLEX to do the completion of the partial solution. Our approach consists of the following steps:
+	CPLEX as an exact solver will soon or later degrade in its performance w.r.t. instance size. On the other hand, the later stages of a Greedy procedure increase the chance to worsen the final greedy solution since it is noticed that factor of similarity of the remaining nodes becomes high and it becomes hard to recognize more promising nodes from those which are less promising.  So, it makes sense to combine  partial solutions generated by  Greedy within a few interactions and then to use CPLEX to make the completion of the partial solution. Our approach consists of the following steps:
 	\begin{enumerate}
-		\item Run a Greedy method up to $K$ iterations (parameter) to obtain a partial solution $C$ (therefore, $|s^p| = K$);
+		\item Run a Greedy method up to $K$ iterations (parameter) to obtain a partial solution $C$ (therefore, $|s^p| = K$); K is set to $K=\lceil n \cdot partial \rceil$, where $partial \in (0, 1)$ is a parameter of the algorithm;
 		\item Take solution $s^p$ and make it complete by solving a corresponding submodel via CPLEX:
 		\begin{itemize}
 			\item CPLEX solves corresponding sub-model which is formed by adding constraints $x_{i} = 1$, for all $v_i \in s^p$ into the existing WOAGP model;
