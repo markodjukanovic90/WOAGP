@@ -255,9 +255,40 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
 		\item function \texttt{updateCoveredPointsAdd (vertex v)} -- updates  structures \texttt{CoveredPoints} and \texttt{numberOfGuards} by considering all new points which are covered by vertex \texttt{v}, when \texttt{v} is added to solution;
 		\item function \texttt{updateCoveredPointsRemove(vertex v)} -- updates  structures \texttt{CoveredPoints} and \texttt{numberOfGuards} by removing all points which are covered by \texttt{v}, when \texttt{v} is removed from partial solution.
 	\end{itemize}
+	\begin{algorithm}[!t]
+          	\caption{Function updateCoveredPointsAdd}\label{alg:updateCoveredPointsAdd}
+          	\begin{algorithmic}[1]
+          		\State \textbf{Input:} vertex v
+          		\State \textbf{Output:} updated structures ||coveredPoints and numberOfGuards
+          		\For{Point p in S[v]}
+          		\State coveredPoints.insert(p)
+          		\State numberOfGuards.find(p).second++
+          		\EndFor
+          	\end{algorithmic}
+          \end{algorithm}
+                    \begin{algorithm}[!t]
+          	\caption{Function updateCoveredPointsAdd}\label{alg:updateCoveredPointsRemove}
+          	\begin{algorithmic}[1]
+          		\State \textbf{Input:} vertex v
+          		\State \textbf{Output:} updated structures coveredPoints and numberOfGuards
+          		\For{Point p in S[v]}
+          		\State numberOfGuards.find(p).second-- --
+                \If {numberOfGuards.find(p).second==0}
+                    \State coveredPoints.remove(p)
+                    \EndIf
+          		\EndFor
+          	\end{algorithmic}
+          \end{algorithm}
 	
 	\subsubsection{A hybrid of the Greedy and shaking}
 	\fxnote{TODO: Ubaciti pricu o shaking $-->$ Dragan?}
+The idea of shaking procedure is to improve the quality of the overall search process by examining other (partial) solutions from the neighborhoods of the current (partial) solution. The main principle  is to remove some vertices from the current solution and to add some others, with the hope that the overall quality of the solution is improved. More precisely,
+shaking procedure creates a system of neighborhoods which is used for deriving new partial solutions based on the current one.
+ The overall shaking procedure is shown in Figure XXX. In the $k$th neighborhood, the procedure choose some $k$ vertices according to the specific criteria and remove them from the current solution. After that, the procedure is trying to add (not necessarily new) $k$ vertices to the solution, by using the same criterion as in the greedy function. After the process of removing and adding the vertices is finished, the algorithm examines the quality of the obtained new partial solution. Two criteria are considered: the value of the objective function (i.e. the sum of vertex weights in the solution) and the total number of uncovered points. If both values of the new partial solution less than of the current one, than the new solution becomes the current partial solution and the algorithm continues with the next neighborhood. If any of values of the new solution is not less than of the current one, than no changes are made and the algorithm continues with the next neighborhood. The algorithm stops when all neighborhoods are examined. In the proposed shaking algorithm, the minimum size of the neighborhood is 1 and the maximum is set to $solution.size()$.
+
+The choice of vertices to be removed is carefully designed and depends on the geometrical properties of the considered polygon. In order to remove $k$ vertices, the algorithm iteratively call the function removeVertex which uses two parameters: DIST and OFFSET. This function chooses a random vertex from the solution and forms a list of candidates for removing from the solution. This list is formed as follows. Let $V$ be a random vertex of the polygon.
+
+	
 	
 	
 	\subsubsection{A Hybrid of the Greedy + CPLEX} \fxnote{TODO: Marko}
