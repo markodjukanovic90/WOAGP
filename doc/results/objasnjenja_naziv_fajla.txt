@@ -1,0 +1,21 @@
+large-A-1-W-0-G-4-P-0.0-offs-0.1-dist-10.csv
+
+<tip_instance>-A-<broj_algoritma>-W-<tezina_tip>-G-<tip_greedy>P<parametar_parition_vrijednost>-offs<parametar_offset_vrijednost>-dist<parametar_dist_vrijednost>
+
+tip_instance: large, small, random
+broj_algoritma: 0: pure greedy
+                1: shaking 
+                2: CPLEX
+                3: CP
+
+tezina_tip: 0 | 1
+tip_greedy: =: 0: Lovasz
+               3: Dragan 1
+               4: Dragan 2
+
+
+parametar_parition_vrijednost: 0.05 | 0.1 | 0.2
+parametar_offset_vrijednost: 0.05 | 0.1 | 0.2 
+parametar_dist_vrijednost: 2 | 5 | 10
+
+
