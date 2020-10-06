@@ -130,9 +130,10 @@
 
 	
 	\subsection{Discretization}  
-	The discretization $D(P)$ of the polygon $P$ is builded as follows. Consider the regular grid with resolution $\bigtriangleup_{x}\times\bigtriangleup_{y}$ starting at the lower left corner of the bounding box of P, where \\
-$ \bigtriangleup_{x}=min\{ |u_{x}-v_{x}|,\ u_{x}\neq v_{x}\ |\  u,v\ adjacent\ vertices\ of\ the\ polygon\ P \}$ and\\
-$ \bigtriangleup_{y}=min\{ |u_{y}-v_{y}|,\ u_{y}\neq v_{y}\ |\  u,v\ adjacent\ vertices\ of\ the\ polygon\ P \}$. \fxnote{tekst ne bi trebao biti italic, koristiti mbox naredbu ili mathrm, min je naredba u latexu  "min", mjesto $"|"$ korisititi naredbu "mid"; koristis nedefinisane simbole $u_x$ i $u_y$ }
+	The discretization $D(P)$ of the polygon $P$ is builded as follows. Consider the regular grid with resolution $\bigtriangleup_{x}\times\bigtriangleup_{y}$ starting at the lower left corner of the bounding box of $P$, where \\
+$ \bigtriangleup_{x}=\min\{ |u_{x}-v_{x}|\mid u_{x}\neq v_{x}\}$ and\\
+$ \bigtriangleup_{y}=\min\{ |u_{y}-v_{y}|\mid u_{y}\neq v_{y}\}$,\\
+where $ (u_{x},u_{y}),(v_{x},v_{y})$ adjacent vertices of the polygon $P$.
 	
 	\begin{algorithm}[!t]
 		\caption{Discretization $D(P)$ of the polygon $P$}\label{alg:discret}
