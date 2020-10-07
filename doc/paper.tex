@@ -213,8 +213,8 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
 	
 	%  \subsection{Greedy Criterion based on Price-per-Unit}
 	Concerning the greedy heuristic for the literature for solving WMSC problem~\cite{chvatal1979greedy, lovasz1975ratio}, one of the most efficient greedy heuristic was based on the following greedy rule:
-	\begin{align}
-	g(s^p, p_i) = \frac{w_{p_i}}{ f(s^p \cup \{p_i\})  - f(s^p)},
+	\begin{align}\label{eq:Lovasz}
+	q_1(s^p, p_i) = \frac{w_{p_i}}{ f(s^p \cup \{p_i\})  - f(s^p)},
 	\end{align}
 	where $f(s^p) = |\bigcup_{s \in s^p} s |$.
 	This heuristic is also an approximation algorithm with $O(\log(n))$ approximation factor.
@@ -338,11 +338,22 @@ The choice of vertices to be removed is carefully designed and depends on geomet
       
       After conducting preliminary results, we decided to use the following parameters for our algorithms:
       \begin{itemize}
-      	\item Greedy + Shaking parameters:  $\mathrm{DIST} = 5 \cdot \max_{i=0,...,n-1} d(v_i, v_{i+1})$, where $d$ represents the Euclidean distance, and $\mathrm{OFFSET} = 0.3$,
+      	\item Greedy + Shaking parameters:  $\texttt{DIST} = 5 \cdot \max_{i=0,...,n-1} d(v_i, v_{i+1})$, where $d$ represents the Euclidean distance, and $\texttt{OFFSET} = 0.3$,
         \item Greedy + CPLEX parameters: $K = 0.05 \cdot n$. 
       \end{itemize}
+     The benchmark sets and the executable file of this project are provided at \href{link}{link}.
 	\subsection{Results and Discussion}
-
+        The following algorithms are included in our computation:
+        \begin{itemize}
+        	\item  exact approaches: CP and ILP approach.The later is, henceforth, called \textsc{CPLEX};
+        \end{itemize}  and 9 heuristic approaches: 
+           \begin{itemize}
+           	\item three pure greedy methods, guided by $g_1$, $g_2$ and $g_3$ greedy criterion. We label them by \textsc{Greedy-1}, \textsc{Greedy-2} and \textsc{Greedy-3}, respectively;
+            \item three \textsc{Greedy+Shaking} variants, henceforth labeled by \textsc{Greedy}-$i$+Shaking, $i=1,2,3$, where $i$ stands for heuristic $g_i$ involved in the method;
+            \item three \textsc{Greedy+Cplex} variants, henceforth labeled by  \textsc{Greedy}-$i$+CPLEX, $i=1,2,3$, 
+            where $i$ stands for heuristic $g_i$ involved as the greedy criterion of the hybrid;
+           \end{itemize}
+         
 	\section{Conclusions and Future Work}
 	
 	
