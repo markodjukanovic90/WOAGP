@@ -333,11 +333,16 @@ The choice of vertices to be removed is carefully designed and depends on geomet
      	 \item \emph{large} instances: \fxnote{TODO: Milan: main characteristics, why they differ from others}
      \end{itemize}
      For small and large instances, one polygon for each $n \in\{8,10,...,200\}$ has been generated, which makes 100 instances per each benchmark set. In overall, we have 200 polygons which vertices with two different weights, which gives us, in overall, 400 problem instances.
-     \subsection{Settings and the Parameters' choice}
-     \fxnote{TODO: Marko}
-     
-	\subsection{Results on exact methods}
-\fxnote{Marko: Solving of CP i MIP solvers are limited to 5 mins. }
+     \subsection{Settings and the choice of the Parameters}
+      All variants of our algorithms were implemented in C++ with g++~7.4 and the experiments were conducted in single-threaded mode on a machine with an Intel Xeon E5-2640 processor with 2.40 GHz and a memory limit of 8GB. The maximum computation time of each of our algorithms was set to 5 min. 
+      
+      After conducting preliminary results, we decided to use the following parameters for our algorithms:
+      \begin{itemize}
+      	\item Greedy + Shaking parameters:  $\mathrm{DIST} = 5 \cdot \max_{i=0,...,n-1} d(v_i, v_{i+1})$, where $d$ represents the Euclidean distance, and $\mathrm{OFFSET} = 0.3$,
+        \item Greedy + CPLEX parameters: $K = 0.05 \cdot n$. 
+      \end{itemize}
+	\subsection{Results and Discussion}
+
 	\section{Conclusions and Future Work}
 	
 	
