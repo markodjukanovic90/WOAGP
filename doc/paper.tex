@@ -186,11 +186,11 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
 	Constraint~(\ref{eq:const-3}) enforces that any point $p_i \in D(P)$ will be visible from at least one guard from $Z$. 
 	
 	In order to solve this model, we apply a general purpose solver \textsc{Cplex}~\cite{lima2010ibm}.
-	\subsection{Constraint programming model} An equivalent CP model was implemented and tested by IBM ILOG CP Optimizer~\cite{}. In this case,  Constraint~(\ref{eq:const-3}) is transformed into
+	\subsection{Constraint programming model} An equivalent CP model was implemented and tested by IBM ILOG CP Optimizer~\cite{laborie2018ibm}. In this case,  Constraint~(\ref{eq:const-3}) is transformed into
 	\begin{equation}
 	\bigvee_{ j \in V } (a_{ij} \wedge x_j) = 1,
 	\end{equation}
-	whereas the other constraints and the objective function are the same like in the above MIP model. Note that CP appraoch works in a branch-and-bound manner imploying a constriant propagation and variable domain filtering~\cite{laborie2018ibm}.
+	whereas the other constraints and the objective function are the same like in the above MIP model. Note that CP appraoch works in a branch-and-bound manner employing a constraint propagation and variable domain filtering~\cite{rossi2006handbook}.
 	\section{Algorithmic Approaches for WOAGP}
 	\subsection{Greedy approaches for solving WOAGP}
 	Since the WOAGP instances can be transformed into  WMSCP instances and since one of the most efficient heuristics to solve WSCP from the literature is an enhanced greedy heuristic~\cite{chvatal1979greedy}, our idea is after transforming a WOAGP instance into a WSC problem instance to	apply various greedy algorithms to solve WOAGP. Greedy algorithms produce a solution of reasonable quality within a short interval of time and are, in essence, easy to implement. Efficiency of such greedy heuristics is related to a greedy criterion utilized to expand current (non-complete, i.e., partial) solution to complete one. Among all candidates (solution components for expansion, that is not-yet-considered guards) to extend current partial solution,  we choose one with the smallest greedy value and add it to the current solution until it becomes complete (i.e., it covers all  points from $D(P)$).
@@ -209,18 +209,18 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
 			\EndWhile
 		\end{algorithmic}
 	\end{algorithm}
-	\subsubsection{An existing greedy method}\fxnote{TODO: Milana}
+	\subsubsection{An existing greedy method} 
 	
 	%  \subsection{Greedy Criterion based on Price-per-Unit}
-	Concerning the literature for WMSC problem~\cite{chvatal1979greedy, lovasz1975ratio}, one of the most efficient greedy heuristic was based on the following greedy rule:
+	Concerning the greedy heuristic for the literature for solving WMSC problem~\cite{chvatal1979greedy, lovasz1975ratio}, one of the most efficient greedy heuristic was based on the following greedy rule:
 	\begin{align}
 	g(s^p, p_i) = \frac{w_{p_i}}{ f(s^p \cup \{p_i\})  - f(s^p)},
 	\end{align}
 	where $f(s^p) = |\bigcup_{s \in s^p} s |$.
-	This heuristic is also a approximation algorithm which ensures $O(\log(n))$ approximation factor.
+	This heuristic is also an approximation algorithm with $O(\log(n))$ approximation factor.
 	
-	\subsubsection{A Novel Greedy Heuristic}\fxnote{TODO: Dragan}
-	In this subsection we present a novel greedy function, which is used in the greedy algorithm. Let us introduce a term  ``incorrect point''. For a point from $D(P)$ we say that it is incorrect if it is not covered by any guard from a current partial solution $s^{ps}$. Let us denote by $incorrect_{total}$ the total number of incorrect points from discretization $D(P)$ for the current partial solution.  Let $w_{total}$ be the total sum of all weights among all vertices and $|D(P)|$ be the cardinality of discretization set. The greedy function for the given partial solution $s^{ps}$ and the guard $v$ takes into account both the value of the objective function of the WOAGP  applied to the partial solution if $v$ is included in it and the total number of incorrect points, given by the formula:
+	\subsubsection{A Novel Greedy Heuristic} 
+	In this subsection we present a novel greedy function, which is used in the greedy algorithm. First, we introduce a term  ``incorrect point''; for a point from $D(P)$ we say that it is incorrect if it is not covered by any guard from a current partial solution $s^{ps}$. Let us denote by $incorrect_{total}$ the total number of incorrect points from discretization $D(P)$ for the current partial solution.  Let $w_{total}$ be the total sum of all weights among all vertices and $|D(P)|$ be the cardinality of discretization set. The greedy function for the given partial solution $s^{ps}$ and the guard $v$ takes into account both the value of the objective function of the WOAGP  applied to the partial solution when guard $v$ is included in $s^{ps}$ and the total number of incorrect points, given by the formula:
 	\begin{equation}\label{eq:greedyfun2}
 	%$$obj(s^{ps}; v)  =    \frac{\sum_{i \in s^{ps} \cup \{v\}\}} w_i}{w_{total}}+ incorrect_{total}$$
 	g(s^{ps}; v) = \alpha \cdot \sum_{i \in s^{ps} \cup \{v\}} w_i+ \beta \cdot {incorrect_{total}}
@@ -235,20 +235,19 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
 	\begin{equation}\label{eq:greedyfun4}
 	g_3(s^{ps}; v)  =    \frac{\sum_{i \in s^{ps} \cup \{v\}\}} w_i}{w_{total}}+ \frac{incorrect_{total}}{|D(P)|}
 	\end{equation}
-	From Equation (\ref{eq:greedyfun3}) one can see that the greedy function $g_2$ mainly depends on the second term, since the value of the first one is not greater than 1. On other words, this function prefers such guards  which inclusion in the partial solution will cover more points. On the other side, if the inclusion of some two guards covers the same number of points, then the function suggests  the guard with lower cost. In the early stage of the greedy algorithm this approach will prefer those guards which covers more points of the not-yet-covered points from $D(P)$, while in a later stage, when less points remain uncovered, the function prefers the guards with lower cost.
-	
+	From Equation (\ref{eq:greedyfun3}) one can see that the greedy function $g_2$ mainly depends on the second term, since the value of the first one is not greater than 1. On other words, this function prefers such guards  whose inclusion in the partial solution covers more points. On the other hand, if the inclusion of some two guards covers the same number of points, then the function suggests  the guard with lower cost. At the earliest stages of the greedy algorithm this approach will prefer those guards which cover more points of the not-yet-covered points from $D(P)$, while in a later stage, when less points remain uncovered, the function prefers the guards with lower cost. 
 	
 	In the Equation  (\ref{eq:greedyfun4}) the second term is also normalized and the trade off between two terms is more balanced.
 	In this case, the algorithm does not  ultimately prefer any of criteria for choosing next vertex. Instead,  \fxnote{TODO...}
 	
 	
-	Ties occurred in the search are broken by using  price-per-unit heuristic which i stated as follows.
-	For each not yet considered guards $p_i$, we assign the region which is visible from $p_i$ by $Surf(v_j)$. As the next candidate to extend $s^P$, we choose a guard $v^*$ which covers set $V(j)$ by the smallest price per unit, among the other candidate to extend $s^P$. More precisely, this greedy criterion $g$ is given as:
+	Ties occurred in the search are broken by using  price-per-unit heuristic which is stated as follows.
+	For each not yet considered guards $p_i$, we assign the region which is visible from $p_i$ by $\emph{Surf}(v_j)$. As the next candidate to extend $s^{ps}$, we choose a guard $v^*$ which covers set $V(j)$ by the smallest price per unit, among the other candidate to extend $s^{ps}$. More precisely, this greedy criterion $g$ is given as:
 	\begin{align}
-	g(s^p, v_i) = \frac{w_{i}}{|Surf({v_i})|},
+	g(s^{ps}, v_i) = \frac{w_{i}}{|Surf({v_i})|},
 	\end{align}
-	and vertex $v^*$ that minimizes $g(s^p, v_i)$ is chosen as an extension of the current partial solution.
-	In our experimental studies, we found out that this heuristic does not perform well on its own, but presents a reasonable tie-breaking mechanism and is able to boost quality of our greedy heuristics which includes~(\ref{eq:greedyfun3}) and (\ref{eq:greedyfun4}).
+	and vertex $v^*$ that minimizes $g(s^{ps}, v_i)$ is chosen as an extension of the current partial solution.
+	In our experimental studies, we found out that this heuristic does not perform well on its own, but presents a reasonable tie-breaking mechanism and is able to boost quality of our greedy heuristics which includes criteria~(\ref{eq:greedyfun3}) and (\ref{eq:greedyfun4}).
 	\subsubsection{Partial calculation of objective function}
 	
 	In order to enable fast calculation of greedy functions described in previous subsections, we introduce several useful structures and auxiliary functions:
@@ -262,48 +261,45 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
 	\begin{algorithm}[!t]
           	\caption{Function updateCoveredPointsAdd}\label{alg:updateCoveredPointsAdd}
           	\begin{algorithmic}[1]
-          		\State \textbf{Input:} vertex v
-          		\State \textbf{Output:} updated structures ||coveredPoints and numberOfGuards
-          		\For{Point p in S[v]}
-          		\State coveredPoints.insert(p)
-          		\State numberOfGuards.find(p).second++
+          		\State \textbf{Input:} vertex $v$
+          		\State \textbf{Output:} updated structures: coveredPoints and numberOfGuards
+          		\For{$p$ in $S[v]$}
+          		\State coveredPoints.insert($p$)
+          		\State numberOfGuards.find($p$).second++
           		\EndFor
           	\end{algorithmic}
           \end{algorithm}
                     \begin{algorithm}[!t]
           	\caption{Function updateCoveredPointsAdd}\label{alg:updateCoveredPointsRemove}
           	\begin{algorithmic}[1]
-          		\State \textbf{Input:} vertex v
+          		\State \textbf{Input:} vertex $v$
           		\State \textbf{Output:} updated structures coveredPoints and numberOfGuards
-          		\For{Point p in S[v]}
-          		\State numberOfGuards.find(p).second-- --
-                \If {numberOfGuards.find(p).second==0}
-                    \State coveredPoints.remove(p)
+          		\For{$p \in S[v]$}
+          		\State numberOfGuards.find($p$).second-- --
+                \If {numberOfGuards.find($p$).second$=0$}
+                    \State coveredPoints.remove($p$)
                     \EndIf
           		\EndFor
           	\end{algorithmic}
           \end{algorithm}
 	
-	\subsubsection{A hybrid of the Greedy and shaking}
-	\fxnote{TODO: Ubaciti pricu o shaking $-->$ Dragan?}
+	\subsubsection{A hybrid of the Greedy and a shaking}
+	\fxnote{TODO: Dragan}
 The idea of shaking procedure is to improve the quality of the overall search process by examining other (partial) solutions from the neighborhoods of the current (partial) solution. More precisely,
 shaking procedure creates a system of neighborhoods which is used for deriving new partial solutions based on the current one. The main principle  is to remove some vertices from the current solution and to add some others, with the hope that the overall quality of the solution is improved.
- The overall procedure is shown in Figure XXX. In the $k$th neighborhood, the procedure chooses some $k$ vertices according to the specific criteria and removes them from the current solution. After that, the procedure is trying to add (not necessarily new) $k$ vertices to the solution, by using the same criterion as in the greedy function. After the process of removing and adding the vertices is finished, the algorithm examines the quality of the obtained new partial solution. Two criteria are considered: the value of the objective function (i.e. the sum of vertex weights in the solution) and the total number of uncovered points. If both values of the new partial solution less than of the current one, then the new solution becomes the current partial solution and the algorithm continues with the next neighborhood. If any of values of the new solution is not less than of the current one, than no changes are made and the algorithm continues with the next neighborhood. The algorithm stops when all neighborhoods are examined and the overall search continues with the greedy heuristic. In the proposed shaking algorithm, the minimum size of the neighborhood is 1 and the maximum is set to $solution.size()/3$.
+ The overall procedure is shown in Figure XXX. In the $k$th neighborhood, the procedure chooses some $k$ vertices according to the specific criteria and removes them from the current solution. After that, the procedure is trying to add (not necessarily new) $k$ vertices to the solution, by using the same criterion as in the greedy function. After the process of removing and adding the vertices is finished, the algorithm examines the quality of the obtained new partial solution. Two criteria are considered: the value of the objective function (i.e. the sum of vertex weights in the solution) and the total number of uncovered points. If the both values of the new partial solution are lower  than the corresponding values of the current one, then the new solution becomes the current partial solution and the algorithm proceeds with the next neighborhood. If any of the two values of the new solution is not lower than of the corresponding values of the current one, than no changes are made and the algorithm proceeds with the next neighborhood. The algorithm stops once all neighborhoods are examined and the overall search continues with the greedy heuristic. In the proposed shaking algorithm, the minimum size of the neighborhood is 1 and the maximum size is set to $solution.size()/3$.\fxnote{sta je solution, nigdje prethodno definisano, donji cio dio nedostaje}
 
-The choice of vertices to be removed is carefully designed and depends on geometrical properties of the considered polygon. In order to remove $k$ vertices, the algorithm iteratively call the function \texttt{removeVertex} which uses two parameters: \texttt{DISTANCE} and \texttt{OFFSET}. In each call, function \texttt{removeVertex} chooses a random vertex $v$ from the solution and forms a list of candidates for removing from the solution. The list is formed as follows. Moving along the \texttt{OFFSET} edges of the polygon from the vertex $v$ in both directions (clockwise and counterclockwise), all vertices belonging to the partial solution are initially added to the list. Further, all such vertices, which are on the Euclidean distance less than \texttt{DISTANCE} are removed. Other words, candidate for the removing are relatively close to the vertex $v$ in the sense of adjacent edges in the polygon, but far from $v$ with respect to Euclidean distance. By this approach, shaking effect is stronger, since we remove vertices which are more distant from the current one, but still related to it with respect of the polygon structure. In such strategy leads to the empty list, then a random vertex from the solution is removed.
-\fxnote{Negdje navesti kako se racunaju ove DISTANCE and OFFSET}
-
+The choice of vertices to be removed is carefully designed and depends on geometrical properties of the considered polygon. In order to remove $k$ vertices, the algorithm iteratively call the function \texttt{removeVertex} which uses two parameters: \texttt{DISTANCE} and \texttt{OFFSET}. In each call, function \texttt{removeVertex} chooses a random vertex $v$ from the solution and forms a list of candidates for removing from the solution. The list is formed as follows. Moving along the \texttt{OFFSET} edges of the polygon from the (randomly chosen) vertex $v$ in both directions (clockwise and counterclockwise), all vertices belonging to the partial solution are initially added to the list. Further, all such vertices, which are on the Euclidean distance lower than \texttt{DISTANCE} from vertex $v$ are removed. Other words, candidate for the removing are relatively close to the vertex $v$ in the sense of adjacent edges in the polygon, but far from $v$ with respect to Euclidean distance. By this approach, shaking effect is stronger, since we remove vertices which are more distant from the current one, but still related to it with respect of the polygon structure. If such strategy leads to an empty list, then a random vertex from the solution has been removed.
+\fxnote{Negdje navesti kako se racunaju ove DISTANCE and OFFSET}	
 	
-	
-	
-	\subsubsection{A Hybrid of the Greedy + CPLEX} \fxnote{TODO: Marko}
-	CPLEX will soon or later degrades its performance w.r.t. instance size. On the other hand, the later stage of Greedy increase the chance to worsen the final greedy solution.  So, it makes sense to combine  partial solutions generated by  Greedy over a few interactions  and then to use CPLEX to do the completion of the partial solution. Our approach consists of the following steps:
+\subsubsection{A Hybrid of the Greedy + CPLEX}  
+	The performance of \textrm{Cplex}  soon or later degrades w.r.t. instance size since the prolem is NP--hard. On the other hand, in the later stage, there is an increased chance for Greedy to worsen the final greedy solution due to a high number of components which are similar to be chosen for extension. So, it makes sense to combine  partial solutions generated with a Greedy procedure over a few interactions  and only then to use CPLEX to do the completion of the partial solution. In details, our approach consists of the following steps:
 	\begin{enumerate}
-		\item Run a Greedy method up to $K$ iterations (parameter) to obtain a partial solution $C$ (therefore, $|s^p| = K$);
-		\item Take solution $s^p$ and make it complete by solving a corresponding submodel via CPLEX:
+		\item Run a Greedy method up to $K$ iterations (parameter) to obtain a partial solution $s^{ps}$ (therefore, $|s^{ps}| = K$);
+		\item Take solution $s^{ps}$ and make it complete by solving a corresponding submodel via CPLEX:
 		\begin{itemize}
-			\item CPLEX solves corresponding sub-model which is formed by adding constraints $x_{i} = 1$, for all $v_i \in s^p$ into the existing WOAGP model;
-			\item we obtain a complete solution $\bar {s^p}$;
+			\item CPLEX solves corresponding sub-model which is formed by adding constraints $x_{i} = 1$, for all $v_i \in s^{ps}$ into the existing WOAGP model;
+			\item a complete solution $\bar {s^p}$ is obtained;
 		\end{itemize}
 		\item Return $f(\bar {s^p})$.
 	\end{enumerate}
@@ -325,19 +321,21 @@ The choice of vertices to be removed is carefully designed and depends on geomet
 	\section{Computational Results}
 	We used the instance of the specific OAGP up to a 200 vertices, and assigned the weights to each vertex of polygons. We included two kind of weights into these benchmarks:
 	\begin{itemize}
-		\item \emph{topologically-based benchmarks}. For each vertex $i$ of polygon $P$ let us denote by $l_i$ and $l_{i+1}$ the lengths of edges that comes out of vertex $i$. Then, $w_i := \frac{l_i + l_{i+1}}{2}$. This can be augmented by the fact that if the the arithmetic length of both edges that comes out of vertex $i$ is longer, it is expected that vertex is a guard can see a larger pieces of polygon $P$. This implies that the range of camera $i$ has to be larger, which again means that it has to be of a higher price.
+		\item \emph{topologically-based benchmarks}. For each vertex $i$ of polygon $P$ let us denote by $l_i$ and $l_{i+1}$ the lengths of edges that comes out of vertex $i$. Then, $w_i := \frac{l_i + l_{i+1}}{2}$. This way of assigning weights is augmented by the fact that if the the arithmetic length of both edges that comes out of vertex $i$ is longer, it is expected that vertex is a guard can see a larger pieces of polygon $P$. This implies that the range of camera $i$ has to be larger, which again means that it has a higher price. In case of the second smaller edge, we add the arithmetic mean for the both lengths as a price of the vertex.  
 		\item \emph{point-based benchmarks:} For each vertex $j$, we consider the number of points in $D(P)$ that are visible from the given vertex $(|V(j)|)$. Based on this number, we assign prices to the vertices on the following way:
 		\begin{equation}
 		w_j = n \cdot \frac{|V(j)|}{|D(P)|}, j=1,...,n.
 		\end{equation}
 	\end{itemize}
-     We used three different kind of benchmark sets:
+     We used two different kind of benchmark sets:
      \begin{itemize}
-     	\item \emph{random} instances: \fxnote{TODO: Milan: main characteristics, why they differ from others}
-     	\item \emph{small} instances:\fxnote{TODO:Milan: main characteristics, why they differ from others}
-     	\item \emph{large} instances: \fxnote{TODO: Milan: main characteristics, why they differ from others}
+     	 \item \emph{small} instances:\fxnote{TODO:Milan: main characteristics, why they differ from others}
+     	 \item \emph{large} instances: \fxnote{TODO: Milan: main characteristics, why they differ from others}
      \end{itemize}
-     Fro small and large instances, one polygon with $n \in\{8,10,...,200\}$ has been generated, which makes 100 instances per each benchmark set. For random set, we took a subset of 200 instances. In overall, we have 400 polygons which vertices are weighted by two different weights, which gives us, in overall, 800 instances.
+     For small and large instances, one polygon for each $n \in\{8,10,...,200\}$ has been generated, which makes 100 instances per each benchmark set. In overall, we have 200 polygons which vertices with two different weights, which gives us, in overall, 400 problem instances.
+     \subsection{Settings and the Parameters' choice}
+     \fxnote{TODO: Marko}
+     
 	\subsection{Results on exact methods}
 \fxnote{Marko: Solving of CP i MIP solvers are limited to 5 mins. }
 	\section{Conclusions and Future Work}
