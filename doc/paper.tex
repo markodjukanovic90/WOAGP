@@ -347,6 +347,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
             \item three \textsc{Greedy+Cplex} variants, henceforth labeled by  \textsc{Greedy}-$i$+\textsc{Cplex}, $i=1,2,3$, 
             where $i$ stands for heuristic $g_i$ involved as the greedy criterion of the hybrid;
            \end{itemize}
+         From our results, we noticed that there is no significant difference between the results of \textsc{Greedy-2} and \textsc{Greedy-3}. Therefore, we report only the results of \textsc{Greedy-2} algorithm.
          Summarized numerical results for all of our algorithm variants are displayed in Table~\ref{tab:t_w0} and Table~\ref{tab:t_w1} for topollogically-based benchmarks and point-based benchmarks, respectively. 
          
          \begin{table}
@@ -363,11 +364,10 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
             \textsc{Cplex} & 15.93 & 0.0 & & \\ \hline
             \textsc{Cp} &  16.04 & 0.0 & & \\ \hline
          	\textsc{Greeedy-1} & 22.04  & & & \\ \hline
-         	\textsc{Greeedy-2} &  & & & \\ \hline
-         	\textsc{Greeedy-3} &  & & & \\ \hline
-         	\textsc{Greeedy-1 + Cplex} & & & & \\ \hline
-         	\textsc{Greeedy-2 + Cplex} & & & & \\ \hline
-         	\textsc{Greeedy-3 + Cplex} & & & & \\ \hline
+         	\textsc{Greeedy-2} & 19.97  & & & \\ \hline
+         	\textsc{Greeedy-1 + Cplex} & 18.49 & & & \\ \hline
+         	\textsc{Greeedy-2 + Cplex} & 18.39 & & & \\ \hline
+          
          	\hline
          \end{tabular}
          \caption{Different combinations of the algorithms.}
@@ -388,10 +388,10 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
     		\textsc{Cp} & & & & \\ \hline
     		\textsc{Greeedy-1} & & & & \\ \hline
     		\textsc{Greeedy-2} & & & & \\ \hline
-    		\textsc{Greeedy-3} & & & & \\ \hline
+ 
     		\textsc{Greeedy-1 + Cplex} & & & & \\ \hline
     		\textsc{Greeedy-2 + Cplex} & & & & \\ \hline
-    		\textsc{Greeedy-3 + Cplex} & & & & \\ \hline
+    	 
     		\hline
     	\end{tabular}
     	\caption{Different combinations of the algorithms.}
