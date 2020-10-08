@@ -123,10 +123,10 @@
 	The main contributions of this paper are:
 	\begin{itemize}
 		\item We developed a novel greedy approach which is based on balancing the trade off between the total sum of guards' costs and the total number of not yet covered points from the discretization.
-		\item We developed a specially designed shaking procedure, which perturbs the current partial solution in such a way that some vertices are replaced with others, where the replacement is based on measuring  distances between points in the polygon.\fxnote{TODO: popraviti}
-		\item Both an existing and the novel greedy algorithms are hybridized with the proposed shaking procedure and with the ILP.
+	 
+		\item Both an existing and the novel greedy algorithms are hybridized with the ILP.
 		\item We considered different types of weights for our benchmarks, based on an approximation of the costs in real situations.
-		\item In a comprehensive computational experiment, \fxnote{TODO: popraviti} different variants of approximative algorithms we tested, analysed, and their efficiency checked. The methods are then compared to the exact approaches ILP and \emph{Constraint Programming} (CP).
+		\item In a comprehensive computational experiment, \fxnote{TODO: popraviti} different variants of approximative algorithms we tested, analysed, and their efficiency checked. The methods are then compared to the exact approaches ILP and \emph{Constraint Programming} (CP) w.r.t. the quality of obtained heuristic solutions as well as runtimes.
 	\end{itemize}
 
 	
@@ -283,16 +283,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
           	\end{algorithmic}
           \end{algorithm}
 	
-	\subsubsection{A hybrid of the Greedy and a shaking}
-	\fxnote{TODO: Dragan}
-The idea of shaking procedure is to improve the quality of the overall search process by examining other (partial) solutions from the neighborhoods of the current (partial) solution. More precisely,
-shaking procedure creates a system of neighborhoods which is used for deriving new partial solutions based on the current one. The main principle  is to remove some vertices from the current solution and to add some others, with the hope that the overall quality of the solution is improved.
- The overall procedure is shown in Figure XXX. In the $k$th neighborhood, the procedure chooses some $k$ vertices according to the specific criteria and removes them from the current solution. After that, the procedure is trying to add (not necessarily new) $k$ vertices to the solution, by using the same criterion as in the greedy function. After the process of removing and adding the vertices is finished, the algorithm examines the quality of the obtained new partial solution. Two criteria are considered: the value of the objective function (i.e. the sum of vertex weights in the solution) and the total number of uncovered points. If the both values of the new partial solution are lower  than the corresponding values of the current one, then the new solution becomes the current partial solution and the algorithm proceeds with the next neighborhood. If any of the two values of the new solution is not lower than of the corresponding values of the current one, than no changes are made and the algorithm proceeds with the next neighborhood. The algorithm stops once all neighborhoods are examined and the overall search continues with the greedy heuristic. In the proposed shaking algorithm, the minimum size of the neighborhood is 1 and the maximum size is set to $solution.size()/3$.\fxnote{sta je solution, nigdje prethodno definisano, donji cio dio nedostaje}
-
-The choice of vertices to be removed is carefully designed and depends on geometrical properties of the considered polygon. In order to remove $k$ vertices, the algorithm iteratively call the function \texttt{removeVertex} which uses two parameters: \texttt{DISTANCE} and \texttt{OFFSET}. In each call, function \texttt{removeVertex} chooses a random vertex $v$ from the solution and forms a list of candidates for removing from the solution. The list is formed as follows. Moving along the \texttt{OFFSET} edges of the polygon from the (randomly chosen) vertex $v$ in both directions (clockwise and counterclockwise), all vertices belonging to the partial solution are initially added to the list. Further, all such vertices, which are on the Euclidean distance lower than \texttt{DISTANCE} from vertex $v$ are removed. Other words, candidate for the removing are relatively close to the vertex $v$ in the sense of adjacent edges in the polygon, but far from $v$ with respect to Euclidean distance. By this approach, shaking effect is stronger, since we remove vertices which are more distant from the current one, but still related to it with respect of the polygon structure. If such strategy leads to an empty list, then a random vertex from the solution has been removed.
-\fxnote{Negdje navesti kako se racunaju ove DISTANCE and OFFSET}	
-	
-\subsubsection{A Hybrid of the Greedy + CPLEX}  
+\subsubsection{A Hybrid of the \textsc{Greedy + Cplex}}  
 	The performance of \textrm{Cplex}  soon or later degrades w.r.t. instance size since the prolem is NP--hard. On the other hand, in the later stage, there is an increased chance for Greedy to worsen the final greedy solution due to a high number of components which are similar to be chosen for extension. So, it makes sense to combine  partial solutions generated with a Greedy procedure over a few interactions  and only then to use CPLEX to do the completion of the partial solution. In details, our approach consists of the following steps:
 	\begin{enumerate}
 		\item Run a Greedy method up to $K$ iterations (parameter) to obtain a partial solution $s^{ps}$ (therefore, $|s^{ps}| = K$);
@@ -338,19 +329,18 @@ The choice of vertices to be removed is carefully designed and depends on geomet
       
       After conducting preliminary results, we decided to use the following parameters for our algorithms:
       \begin{itemize}
-      	\item Greedy + Shaking parameters:  $\texttt{DIST} = 5 \cdot \max_{i=0,...,n-1} d(v_i, v_{i+1})$, where $d$ represents the Euclidean distance, and $\texttt{OFFSET} = 0.3$,
-        \item Greedy + CPLEX parameters: $K = 0.05 \cdot n$. 
+        \item \textsc{Greedy + Cplex} parameters: $K = 0.05 \cdot n$. 
       \end{itemize}
-     The benchmark sets and the executable file of this project are provided at \href{link}{link}.
+     The benchmark sets and the executable file of our software for this project are provided at \href{link}{link}.
 	\subsection{Results and Discussion}
         The following algorithms are included in our computation:
         \begin{itemize}
-        	\item  exact approaches: CP and ILP approach.The later is, henceforth, called \textsc{CPLEX};
-        \end{itemize}  and 9 heuristic approaches: 
+        	\item  exact approaches: CP and ILP approach.The later is, henceforth, called \textsc{Cplex};
+        \end{itemize}  and 6 heuristic approaches: 
            \begin{itemize}
            	\item three pure greedy methods, guided by $g_1$, $g_2$ and $g_3$ greedy criterion. We label them by \textsc{Greedy-1}, \textsc{Greedy-2} and \textsc{Greedy-3}, respectively;
-            \item three \textsc{Greedy+Shaking} variants, henceforth labeled by \textsc{Greedy}-$i$+Shaking, $i=1,2,3$, where $i$ stands for heuristic $g_i$ involved in the method;
-            \item three \textsc{Greedy+Cplex} variants, henceforth labeled by  \textsc{Greedy}-$i$+CPLEX, $i=1,2,3$, 
+            %\item three \textsc{Greedy+Shaking} variants, henceforth labeled by \textsc{Greedy}-$i$+Shaking, $i=1,2,3$, where $i$ stands for heuristic $g_i$ involved in the method;
+            \item three \textsc{Greedy+Cplex} variants, henceforth labeled by  \textsc{Greedy}-$i$+\textsc{Cplex}, $i=1,2,3$, 
             where $i$ stands for heuristic $g_i$ involved as the greedy criterion of the hybrid;
            \end{itemize}
          
