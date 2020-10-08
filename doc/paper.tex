@@ -327,7 +327,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
      	 \item \emph{small} instances:\fxnote{TODO:Milan: main characteristics, why they differ from others}
      	 \item \emph{large} instances: \fxnote{TODO: Milan: main characteristics, why they differ from others}
      \end{itemize}
-     For small and large instances, one polygon for each $n \in\{8,10,...,200\}$ has been generated, which makes 100 instances per each benchmark set. In overall, we have 200 polygons which vertices with two different weights, which gives us, in overall, 400 problem instances.
+     For small and large instances, one polygon for each $n \in\{8,10,...,200\}$ has been generated, which makes 96 instances per each benchmark set. In overall, we have 192 polygons which vertices with two different weights, which gives us, in overall, 384 problem instances.
      \subsection{Settings and the choice of the Parameters}
       All variants of our algorithms were implemented in C++ with g++~7.4 and the experiments were conducted in single-threaded mode on a machine with an Intel Xeon E5-2640 processor with 2.40 GHz and a memory limit of 8GB. The maximum computation time of each of our algorithms was set to 5 min. 
       
@@ -348,8 +348,8 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
             where $i$ stands for heuristic $g_i$ involved as the greedy criterion of the hybrid;
            \end{itemize}
          From our results, we noticed that there is no significant difference between the results of \textsc{Greedy-2} and \textsc{Greedy-3}. Therefore, we report only the results of \textsc{Greedy-2} algorithm.
-         Summarized numerical results for all of our algorithm variants are displayed in Table~\ref{tab:t_w0} and Table~\ref{tab:t_w1} for topollogically-based benchmarks and point-based benchmarks, respectively. 
-         
+         Summarized numerical results for all of our algorithm variants are displayed in Table~\ref{tab: t_w0} and Table~\ref{tab: t_w1} for topollogically-based benchmarks and point-based benchmarks, respectively. Each of the tables is additionally  subdivided by a vertical line into two parts, depending on the case if we consider \emph{small} or \emph{large} polygons for a specific weight. 
+         For each of the algorithm  we reported average quality and average standard deviation ($\sigma$) over all instances (96 instances) of the considered subgroup. If an asterisk is given, i means taht optimality is proven for all instances of considered subgroup. 
          \begin{table}
          \centering
          \begin{tabular}{ |p{4cm}|p{1.5cm}p{1cm}|p{1.5cm} p{1cm} |  }
@@ -361,18 +361,18 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
             \multicolumn{2}{|c|}{$Large$} \\
             \hline	
          	Algorithm  & $|\bar{s}|$ & $\bar{\sigma}$ & $|\bar{s}|$ & $\bar{\sigma}$  \\ \hline \hline
-            \textsc{Cplex} & 15.93 & 0.0 & & \\ \hline
-            \textsc{Cp} &  16.04 & 0.0 & & \\ \hline
-         	\textsc{Greeedy-1} & 22.04  & & & \\ \hline
-         	\textsc{Greeedy-2} & 19.97  & & & \\ \hline
-         	\textsc{Greeedy-1 + Cplex} & 18.49 & & & \\ \hline
-         	\textsc{Greeedy-2 + Cplex} & 18.39 & & & \\ \hline
+            \textsc{Cplex} & 15.93* & 8.12 & 2.62* & 1.38 \\ \hline
+            \textsc{Cp} &  16.04 & 8.24 &  2.62*  & 1.38\\ \hline
+         	\textsc{Greeedy-1} & 22.04  & 12.02 & 3.38   & 1.59 \\ \hline
+         	\textsc{Greeedy-2} & 19.97  & 9.60  &  3.51 & 1.80\\ \hline
+         	\textsc{Greeedy-1 + Cplex}  & 18.49 &  9.56  & 3.34 & 1.41 \\ \hline
+         	\textsc{Greeedy-2 + Cplex}  & 18.39 & 8.96 &  3.32 & 1.29 \\ \hline
           
          	\hline
          \end{tabular}
-         \caption{Different combinations of the algorithms.}
+         \caption{Results of different combinations of the algorithms.} \label{tab: t_w0}
         \end{table}
-    
+     
        \begin{table}
     	\centering
     	\begin{tabular}{ |p{4cm}|p{1.5cm}p{1cm}|p{1.5cm} p{1cm} |  }
@@ -384,23 +384,24 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
     		\multicolumn{2}{|c|}{$Large$} \\
     		\hline	
     		Algorithm  & $|\bar{s}|$ & $\bar{\sigma}$ & $|\bar{s}|$ & $\bar{\sigma}$  \\ \hline \hline
-    		\textsc{Cplex} & & & & \\ \hline
-    		\textsc{Cp} & & & & \\ \hline
-    		\textsc{Greeedy-1} & & & & \\ \hline
-    		\textsc{Greeedy-2} & & & & \\ \hline
- 
-    		\textsc{Greeedy-1 + Cplex} & & & & \\ \hline
-    		\textsc{Greeedy-2 + Cplex} & & & & \\ \hline
+    		\textsc{Cplex} & 36.03* & 19.04 & 6.72* & 3.07 \\ \hline
+    		\textsc{Cp} & 36.03* & 19.04 & 6.72* &  3.07 \\ \hline
+    		\textsc{Greeedy-1} &39.28  & 19.55 & 6.76 & 3.06 \\ \hline
+    		\textsc{Greeedy-2} & 40.92 & 19.54 & 6.76 & 3.06 \\ \hline
+    		\textsc{Greeedy-1 + Cplex} & 37.78 & 19.59 &  6.72 & 3.07 \\ \hline
+    		\textsc{Greeedy-2 + Cplex} & 37.31 & 19.13 &  6.72 & 3.07 \\ \hline
     	 
     		\hline
     	\end{tabular}
-    	\caption{Different combinations of the algorithms.}
+    	\caption{Result of different combinations of the algorithms.} \label{tab: t_w1}
     \end{table}
         From the numerical results, we observe the following conclusions:
         \begin{itemize}
-        	\item \fxnote{TODO}
+        	\item  For the topollogically--based benchmarks and the exact approaches, \textsc{Cplex} achieved best results among other approaches. moreover, Cplex could prove optimallity of all (192) instances, while \textsc{Cp} could not. It is expecially noticed for small polygons, where it seems hard for \textsc{Cp} to prove optimality. 
+        	\item For the point--based benchmark set and the exact approaches, \textsc{Cplex} again show its power, since it could prove all instances to optimallity, which is also the case of \textsc{Cp}. 
+        	\item  For the topollogically--based benchmarks and the heuristic approaches\fxnote{TODO...}
         \end{itemize} 
-         
+          \fxnote{TODO: generisati plotove za vremena svakog od algoritama (da se vidi da je greedy brzi -- nadamo se)}
          
 	\section{Conclusions and Future Work}
 	
