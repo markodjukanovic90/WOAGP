@@ -314,7 +314,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
 	\end{comment}
 	
 	\section{Computational Results}
-	We used the instance of the specific OAGP up to a 200 vertices, and assigned the weights to each vertex of polygons. We included two kind of weights into these benchmarks:
+	The instances of the specific OAGP with up to a 200 vertices are used in our experiments to which a weight to each vertex of polygons is assigned. We included two kind of weights into these benchmarks:
 	\begin{itemize}
 		\item \emph{topologically-based benchmarks}. For each vertex $i$ of polygon $P$ let us denote by $l_i$ and $l_{i+1}$ the lengths of edges that comes out of vertex $i$. Then, $w_i := \frac{l_i + l_{i+1}}{2}$. This way of assigning weights is augmented by the fact that if the the arithmetic length of both edges that comes out of vertex $i$ is longer, it is expected that vertex is a guard can see a larger pieces of polygon $P$. This implies that the range of camera $i$ has to be larger, which again means that it has a higher price. In case of the second smaller edge, we add the arithmetic mean for the both lengths as a price of the vertex.  
 		\item \emph{point-based benchmarks:} For each vertex $j$, we consider the number of points in $D(P)$ that are visible from the given vertex $(|V(j)|)$. Based on this number, we assign prices to the vertices on the following way:
