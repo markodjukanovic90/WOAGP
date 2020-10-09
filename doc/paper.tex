@@ -84,31 +84,24 @@
 	%\mainmatter  % start of an individual contribution
 	
 	% first the title is needed
-	\title{Measuring efficiency of the greedy-like heuristics for solving  the Weighted Orthogonal Art Gallery Problem under regular grid discretization}
+	\title{Performance evaluation of two greedy-like heuristics for solving  the Weighted Orthogonal Art Gallery Problem under regular grid discretization}
 	
 	%
-	%  \author{--}
-	%
-	
-	%  \institute{%$^1$Institute of Logic and Computation, TU Wien,
-	%Vienna, Austria,\\
-	%	       $^2$ Artificial Intelligence Research Institute (IIIA-CSIC),\\ \normalsize Campus UAB, Bellaterra, Spain \\
-	%\institute{Springer-Verlag, Computer Science Editorial,\\
-	%Tiergartenstr. 17, 69121 Heidelberg, Germany\\
-	%\mailsa\\
-	%\mailsb\\
-	%\mailsc\\
-	%\url{http://www.springer.com/lncs}
-	%}
+	\author[1]{Milan Predojevi\'c}
+\author[1]{Marko Djukanovi\'c}
+\author[1]{Milana Grbi\'c}
+\author[1]{Dragan Mati\'c}
+    \address[1]{Faculty of Natural Science and Mathematics, University of Banja Luka, Bosnia and Herzegovina}
+
 	\begin{abstract}
-		In this paper...
+		In this paper we deal with the Weighted Orthogonal Art Gallery Problem under the regular grid discretization. We propose a novel greedy approach which is based on balancing the trade off between the total sum of guards' costs and the total number of not yet covered points from the discretization. This new approach and an existing greedy algorithm are further  hybridized with the Integer Linear programming (ILP), originally formulated for the well known Minimum Set Cover problem. Experimental results performed on two classes of real--like weighted instances show that the proposed methods \fxnote{treba zavrsiti ovu recenicu}
 	\end{abstract}
 	\maketitle
 	
 	
 	\section{Introduction}\label{sec:introduction}
 	
-	For a given polygon $P$, the \emph{Art Gallery Problem} (AGP) asks for a set of points $G$ of minimal cardinality,  such that for each point $y \in P$ there is $x \in G$ such that $xy \subset P$. We say that the point $y$ is covered by the point $x$, or $y$ is visible from $x$. Set $G$ is called \emph{guard set} of $P$ and the points from $G$ as \emph{guards}. In the \emph{Orthogonal Art Gallery Problem} (OAGP) we suppose that edges of the polygon are only horizontal and vertical w.r.t. the axes, i.e.  the angles allowed between adjacent edges are  $90^{\circ}$ or $270^{\circ}$. The original AGP was initially stated by Victor  Klee in 1973.~\cite{o1987art}.  The problem is motivated from installing the cameras inside a building (or gallery) such that the whole area of the building is covered. Orthogonality constraint naturally comes out from the orthogonality of the walls in buildings. Kahn et al.~\cite{kahn1983traditional} formulated and proofed that 	$\lfloor \frac{n}{4} \rfloor$ guards are  sufficient to cover an orthogonal polygon with $n$ vertices.      In this study, we are interested in the variant of the OAGP which allows only that guards are positioned at the vertices of polygon $P$. This restricted problem is known to be $\mathcal{NP}$--hard~\cite{schuchardt1995two,katz2008guarding}.  When it comes to the real situations (like installing the cameras in a building), it is justified to assume that the prices of cameras are not equal and may depends on several factors, like the quality of a camera   (respecting its range of spectrum of view)  or installation price at some specific parts of the building (like corners or tight places).  In the \emph{Weighted Orthogonal Art Gallery Problem} (WOAGP), which we finally consider in this paper, the task is to place guards on some vertices of the orthogonal polygon which cover all points from $P$, such that the total sum of prices assigned to the chosen vertices is minimal. \fxnote{Marko: Ovo nije nas problem, nas je relaksiraniji, posmatramo ga nad diskretizacijom. Mislim da to treba odmah naglasiti ovdje i razlog asto uzimamo ovu diskretizaciju...}
+	For a given polygon $P$, the \emph{Art Gallery Problem} (AGP) asks for a set of points $G$ of minimal cardinality,  such that for each point $y \in P$ there is $x \in G$ such that $xy \subset P$. We say that the point $y$ is covered by the point $x$, or $y$ is visible from $x$. Set $G$ is called \emph{guard set} of $P$ and the points from $G$ as \emph{guards}. In the \emph{Orthogonal Art Gallery Problem} (OAGP) we suppose that edges of the polygon are only horizontal and vertical w.r.t. the axes, i.e.  the angles allowed between adjacent edges are  $90^{\circ}$ or $270^{\circ}$. The original AGP was initially stated by Victor  Klee in 1973.~\cite{o1987art}.  The problem is motivated from installing the cameras inside a building (or gallery) such that the whole area of the building is covered. Orthogonality constraint naturally comes out from the orthogonality of the walls in buildings. Kahn et al.~\cite{kahn1983traditional} formulated and proofed that 	$\lfloor \frac{n}{4} \rfloor$ guards are  sufficient to cover an orthogonal polygon with $n$ vertices.      In this study, we are interested in the variant of the OAGP which allows only that guards are positioned at the vertices of polygon $P$. This restricted problem is known to be $\mathcal{NP}$--hard~\cite{schuchardt1995two,katz2008guarding}.  When it comes to the real situations (like installing the cameras in a building), it is justified to assume that the prices of cameras are not equal and may depends on several factors, like the quality of a camera   (respecting its range of spectrum of view)  or installation price at some specific parts of the building (like corners or tight places).  In the \emph{Weighted Orthogonal Art Gallery Problem} (WOAGP) the task is to place guards on some vertices of the orthogonal polygon which cover all points from $P$, such that the total sum of prices assigned to the chosen vertices is minimal. In this paper we consider WOAGP problem under the regular grid discretization of $P$, which we describe in Subsection~\ref{sec:regulardiscretization}. 
 	
 	It is well known that AGP can be reduced to \emph{the Minimum Set Cover Problem} (MSCP) by a discretization of the set of all points of the polygon $P$. The appropriate discretization should be performed in such a way that if each point from the discretized set $D(P)$ is covered, then the whole polygon $P$ is covered. After the discretization is made, for each vertex of the polygon $P$, a set of visible points from $D(P)$ is determined. In that way, the problem of determining the minimum number of guards covering the entire polygon is reduced to determining the minimum number of subsets of points, such that each point from $D(P)$ is included in at least one of the chosen subsets, which is MSCP. Analogously, WOAGP can be reduced to the \emph{Weighted Minimum Set Cover Problem} (WMSCP).
 	
@@ -116,23 +109,23 @@
 	more difficult to guard. The same problem is solved   in ~\cite{tomas2006visibility} by applying successive approximations from  ~\cite{tomas2003approximation}.
 	Tozoni et a. ~\cite{tozoni2013practical,tozoni2016algorithm}  presented an exact \emph{Integer Linear Programming}  (ILP)-based  algorithm, which iteratively generates upper and lower bounds through the resolution of discretized space of the AGP. Although many variants AGP are present in literature, WOAGP has not been so intensively studied, which motivated us to consider this problem.
 	A comprehensive analysis of various greedy-like heuristics for the WMSCP was presented in \cite{vasko2016best}.
-	More detailed overview of the extensive literature regarding SCP and AGP is out of the scope of this paper and for further reading we suggest review papers ~\cite{caprara2000algorithms,ren2010new,ghosh2010approximation2}. 
+	More detailed overview of the extensive literature regarding SCP and AGP is out of the scope of this paper and for further reading we suggest review papers ~\cite{caprara2000algorithms,ren2010new,ghosh2010approximation2}.
 
 	
 	\subsection{Main contributions}
 	The main contributions of this paper are:
 	\begin{itemize}
 		\item We developed a novel greedy approach which is based on balancing the trade off between the total sum of guards' costs and the total number of not yet covered points from the discretization.
-	 
+	
 		\item Both an existing and the novel greedy algorithms are hybridized with the ILP.
 		\item We considered different types of weights for our benchmarks, based on an approximation of the costs in real situations.
-		\item In a comprehensive computational experiment, \fxnote{TODO: popraviti} different variants of approximative algorithms we tested, analysed, and their efficiency checked. The methods are then compared to the exact approaches ILP and \emph{Constraint Programming} (CP) w.r.t. the quality of obtained heuristic solutions as well as runtimes.
+		\item In a comprehensive computational experiment,  we tested, analysed and check the efficiency of different variants of the considered algorithms. The methods are then compared to the exact approaches ILP and \emph{Constraint Programming} (CP) w.r.t. the quality of obtained heuristic solutions as well as runtimes.
 	\end{itemize}
 
 	
-	\subsection{The Regular Discretization of Polygon}  
-	The discretization $D(P)$ of the polygon $P$ is built as follows. Consider the regular grid with resolution $\bigtriangleup_{x}\times\bigtriangleup_{y}$ starting at the lower left corner of the bounding box of polygon $P$ which height and weight are defined as follow: 
- 
+	\subsection{The Regular Grid Discretization of Polygon}\label{sec:regulardiscretization}
+	The discretization $D(P)$ of the polygon $P$ is built as follows. Consider the regular grid with resolution $\bigtriangleup_{x}\times\bigtriangleup_{y}$ starting at the lower left corner of the bounding box of polygon $P$ which height and weight are defined as follow:
+
 	\begin{equation}
          \bigtriangleup_{x}=\min\{ |u_{x}-v_{x}|\mid u_{x}\neq v_{x}\} \mbox{ and }
          \bigtriangleup_{y}=\min\{ |u_{y}-v_{y}|\mid u_{y}\neq v_{y}\},
@@ -183,7 +176,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
 
 	where $V(j)$ is the set of all points from $D(P)$ that are visible from $j$-th vertex of $P$.
 	Set $Z = \{j \in V\mid x_i=1\}$ represents a solution of the problem w.r.t. discretization $D(P)$ of polygon $P$.
-	Constraint~(\ref{eq:const-3}) enforces that any point $p_i \in D(P)$ will be visible from at least one guard from $Z$. 
+	Constraint~(\ref{eq:const-3}) enforces that any point $p_i \in D(P)$ will be visible from at least one guard from $Z$.
 	
 	In order to solve this model, we apply a general purpose solver \textsc{Cplex}~\cite{lima2010ibm}.
 	\subsection{Constraint programming model} An equivalent CP model was implemented and tested by IBM ILOG CP Optimizer~\cite{laborie2018ibm}. In this case,  Constraint~(\ref{eq:const-3}) is transformed into
@@ -209,36 +202,28 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
 			\EndWhile
 		\end{algorithmic}
 	\end{algorithm}
-	\subsubsection{An existing greedy method} 
+	\subsubsection{An existing greedy method}
 	
 	%  \subsection{Greedy Criterion based on Price-per-Unit}
 	Concerning the greedy heuristic for the literature for solving WMSC problem~\cite{chvatal1979greedy, lovasz1975ratio}, one of the most efficient greedy heuristic was based on the following greedy rule:
 	\begin{align}\label{eq:Lovasz}
-	q_1(s^p, p_i) = \frac{w_{p_i}}{ f(s^p \cup \{p_i\})  - f(s^p)},
+	g_1(s^p, p_i) = \frac{w_{p_i}}{ f(s^p \cup \{p_i\})  - f(s^p)},
 	\end{align}
-	where $f(s^p) = |\bigcup_{s \in s^p} s |$.
+	where 
+\begin{equation}\label{eq:sp}
+    f(s^p) = |\bigcup_{s \in s^p} s |.
+    \end{equation}
 	This heuristic is also an approximation algorithm with $O(\log(n))$ approximation factor.
 	
-	\subsubsection{A Novel Greedy Heuristic} 
-	In this subsection we present a novel greedy function, which is used in the greedy algorithm. First, we introduce a term  ``incorrect point''; for a point from $D(P)$ we say that it is incorrect if it is not covered by any guard from a current partial solution $s^{ps}$. Let us denote by $incorrect_{total}$ the total number of incorrect points from discretization $D(P)$ for the current partial solution.  Let $w_{total}$ be the total sum of all weights among all vertices and $|D(P)|$ be the cardinality of discretization set. The greedy function for the given partial solution $s^{ps}$ and the guard $v$ takes into account both the value of the objective function of the WOAGP  applied to the partial solution when guard $v$ is included in $s^{ps}$ and the total number of incorrect points, given by the formula:
+	\subsubsection{A Novel Greedy Heuristic}
+	In this subsection we present a novel greedy function, which is used in the greedy algorithm. First, we introduce a term  ``incorrect point''; for a point from $D(P)$ we say that it is incorrect if it is not covered by any guard from a current partial solution $s^{ps}$. Let us denote by $incorrect_{total}(s^{sp})$ the total number of incorrect points from discretization $D(P)$ for the current partial solution. Note that  $incorrect_{total}(s^{ps}) = |D(P)|-f(s^{ps})$, where $f(s^{ps})$ is defined in (\ref{eq:sp}) and $|D(P)|$ is hte cardinality of discretization set . Let $w_{total}$ be the total sum of all weights among all vertices. The greedy function for the given partial solution $s^{ps}$ and the guard $v$ takes into account both the value of the objective function of the WOAGP  applied to the partial solution when guard $v$ is included in $s^{ps}$ and the total number of incorrect points, given by the formula:
 	\begin{equation}\label{eq:greedyfun2}
-	%$$obj(s^{ps}; v)  =    \frac{\sum_{i \in s^{ps} \cup \{v\}\}} w_i}{w_{total}}+ incorrect_{total}$$
-	g(s^{ps}; v) = \alpha \cdot \sum_{i \in s^{ps} \cup \{v\}} w_i+ \beta \cdot {incorrect_{total}}
+    g_2(s^{ps}; v)  =    \frac{\sum_{i \in s^{ps} \cup \{v\}} w_i}{w_{total}}+ \frac{incorrect_{total}(s^{ps}\cup v)}{|D(P)|}.
 	\end{equation}
-	where $\alpha$ and $\beta$ are positive real parameters.
 	
-	Although many combination of parameters $ \alpha $ and $\beta$ may be used, in our investigation we used parameter $\alpha$  only to normalize the sum of prices, i.e. $\alpha = \frac{1}{w_{total}}$ and two values for $\beta$: $\beta = 1$ and $\beta = \frac{1}{|D(P)|}$. Thus, we consider two variants of the greedy function:
-	\begin{equation}\label{eq:greedyfun3}
-	g_2(s^{ps}; v)  =  \frac{\sum_{i \in s^{ps} \cup \{v\}\}} w_i}{w_{total}}+ incorrect_{total}
-	\end{equation}
-	and
-	\begin{equation}\label{eq:greedyfun4}
-	g_3(s^{ps}; v)  =    \frac{\sum_{i \in s^{ps} \cup \{v\}\}} w_i}{w_{total}}+ \frac{incorrect_{total}}{|D(P)|}
-	\end{equation}
-	From Equation (\ref{eq:greedyfun3}) one can see that the greedy function $g_2$ mainly depends on the second term, since the value of the first one is not greater than 1. On other words, this function prefers such guards  whose inclusion in the partial solution covers more points. On the other hand, if the inclusion of some two guards covers the same number of points, then the function suggests  the guard with lower cost. At the earliest stages of the greedy algorithm this approach will prefer those guards which cover more points of the not-yet-covered points from $D(P)$, while in a later stage, when less points remain uncovered, the function prefers the guards with lower cost. 
 	
-	In the Equation  (\ref{eq:greedyfun4}) the second term is also normalized and the trade off between two terms is more balanced.
-	In this case, the algorithm does not  ultimately prefer any of criteria for choosing next vertex. Instead,  \fxnote{TODO...}
+
+	In the Equation  (\ref{eq:greedyfun2}) both terms are normalized in order to better balance trade off between two factors which influence on the search. The algorithm does not  ultimately prefer any of criteria for choosing next vertex. Although it cannot be a rule, it is justified to suppose that the second term has a more influence on the choice of the next vertex in earlier phases of the algorithm execution. At the beginning, more points are uncovered and the algorithm will choose such vertices which cover larger area of the polygon. At the end of algorithm, it could be expected that the first term plays more significant role, since the total number of uncovered points is small.
 	
 	
 	Ties occurred in the search are broken by using  price-per-unit heuristic which is stated as follows.
@@ -247,22 +232,22 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
 	g(s^{ps}, v_i) = \frac{w_{i}}{|Surf({v_i})|},
 	\end{align}
 	and vertex $v^*$ that minimizes $g(s^{ps}, v_i)$ is chosen as an extension of the current partial solution.
-	In our experimental studies, we found out that this heuristic does not perform well on its own, but presents a reasonable tie-breaking mechanism and is able to boost quality of our greedy heuristics which includes criteria~(\ref{eq:greedyfun3}) and (\ref{eq:greedyfun4}).
-	\subsubsection{Partial calculation of objective function}
+	In our experimental studies, we found out that this heuristic does not perform well on its own, but presents a reasonable tie-breaking mechanism and is able to boost quality of our greedy heuristics which includes criterion (\ref{eq:greedyfun2}).
+	\subsubsection{Partial calculation of greedy functions}
 	
-	In order to enable fast calculation of greedy functions described in previous subsections, we introduce several useful structures and auxiliary functions:
+	In order to enable fast calculation of greedy functions described in previous subsections, we noticed that it could be useful to allow fast updating of the number of uncovered vertices. Therefore, we introduced several useful structures and auxiliary functions:
 	\begin{itemize}
-		\item structure \texttt{map<Point,list<Point>> Visibility} -- for each point of $D(P)$, we provide the list of guards which are visible from that point;
+		%\item structure \texttt{map<Point,list<Point>> Visibility} -- for each point of $D(P)$, we provide the list of guards which are visible from that point;
 		\item structure \texttt{map<Point,int> numberOfGuards} -- for each point from $D(P)$,  we keep the number of Guards in solution which are visible from that point;
 		\item structure \texttt{set<Point> CoveredPoints} -- set of points covered by the partial solution;
-		\item function \texttt{updateCoveredPointsAdd (vertex v)} -- does the update of  structures \texttt{CoveredPoints} and \texttt{numberOfGuards} by considering all new points which are covered by vertex \texttt{v}, when \texttt{v} is added to solution; pseudocode of the procedure is shown in Algorithm \ref{alg:updateCoveredPointsAdd}. Its time complexity is $O(n)$.  
-		%\item function \texttt{updateCoveredPointsRemove(vertex v)} -- updates  structures \texttt{CoveredPoints} and \texttt{numberOfGuards} by removing all points which are covered by \texttt{v}, when \texttt{v} is removed from partial solution.
+		\item function \texttt{updateCoveredPointsAdd (vertex v)} -- does the update of  structures \texttt{CoveredPoints} and \texttt{numberOfGuards} by considering all new points which are covered by vertex $v$, when $v$  is added to solution; pseudocode of the procedure is shown in Algorithm \ref{alg:updateCoveredPointsAdd}. 
+		\item function \texttt{updateCoveredPointsRemove(vertex v)} -- updates  structures \texttt{CoveredPoints} and \texttt{numberOfGuards} by removing all points which are covered by $v$ , when $v$ is removed from partial solution; pseudocode  is shown in Algorithm \ref{alg:updateCoveredPointsRemove}.
 	\end{itemize}
-
+ Although the time complexity of both functions is $O(|D(P)|)$, from Algorithms \ref{alg:updateCoveredPointsAdd} and \ref{alg:updateCoveredPointsRemove} it can be seen that they only depends on the number of points covered by the current vertex, which is expected to be significantly less than the upper bound. These two functions allow fast calculation of the functions $f$ and  $incorrect_{total}$: a candidate vertex $v$ is temporary added to the partial solution, new status is checked and the vertex is then removed from the solution.
 	\begin{algorithm}[!t]
           	\caption{Function updateCoveredPointsAdd}\label{alg:updateCoveredPointsAdd}
           	\begin{algorithmic}[1]
-          		\State \textbf{Input:} vertex $v$
+          		\State \textbf{Input:} vertex $v$, $s[v]$:  list of points covered by $v$
           		\State \textbf{Output:} updated structures: coveredPoints and numberOfGuards
           		\For{$p$ in $S[v]$}
           		\State coveredPoints.insert($p$)
@@ -270,13 +255,13 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
           		\EndFor
           	\end{algorithmic}
           \end{algorithm}
-            
-          \begin{comment}
-            
+
+          %\begin{comment}
+
             \begin{algorithm}[!t]
-          	\caption{Function updateCoveredPointsAdd}\label{alg:updateCoveredPointsRemove}
+          	\caption{Function updateCoveredPointsRemove}\label{alg:updateCoveredPointsRemove}
           	\begin{algorithmic}[1]
-          		\State \textbf{Input:} vertex $v$
+          		\State \textbf{Input:} vertex $v$, $s[v]$:  list of points covered by $v$
           		\State \textbf{Output:} updated structures coveredPoints and numberOfGuards
           		\For{$p \in S[v]$}
           		\State numberOfGuards.find($p$).second-- --
@@ -286,8 +271,8 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
           		\EndFor
           	\end{algorithmic}
           \end{algorithm}
-	  \end{comment} 
-\subsubsection{A Hybrid of the \textsc{Greedy + Cplex}}  
+	 % \end{comment}
+\subsubsection{A Hybrid of the \textsc{Greedy + Cplex}}
 	The performance of \textrm{Cplex}  soon or later degrades w.r.t. instance size since the prolem is NP--hard. On the other hand, in the later stage, there is an increased chance for Greedy to worsen the final greedy solution due to a high number of components which are similar to be chosen for extension. So, it makes sense to combine  partial solutions generated with a Greedy procedure over a few interactions  and only then to use CPLEX to do the completion of the partial solution. In details, our approach consists of the following steps:
 	\begin{enumerate}
 		\item Run a Greedy method up to $K$ iterations (parameter) to obtain a partial solution $s^{ps}$ (therefore, $|s^{ps}| = K$);
@@ -316,7 +301,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
 	\section{Computational Results}
 	The instances of the specific OAGP with up to a 200 vertices are used in our experiments to which a weight to each vertex of polygons is assigned. We included two kind of weights into these benchmarks:
 	\begin{itemize}
-		\item \emph{topologically-based benchmarks}. For each vertex $i$ of polygon $P$ let us denote by $l_i$ and $l_{i+1}$ the lengths of edges that comes out of vertex $i$. Then, $w_i := \frac{l_i + l_{i+1}}{2}$. This way of assigning weights is augmented by the fact that if the the arithmetic length of both edges that comes out of vertex $i$ is longer, it is expected that vertex is a guard can see a larger pieces of polygon $P$. This implies that the range of camera $i$ has to be larger, which again means that it has a higher price. In case of the second smaller edge, we add the arithmetic mean for the both lengths as a price of the vertex.  
+		\item \emph{topologically-based benchmarks}. For each vertex $i$ of polygon $P$ let us denote by $l_i$ and $l_{i+1}$ the lengths of edges that comes out of vertex $i$. Then, $w_i := \frac{l_i + l_{i+1}}{2}$. This way of assigning weights is augmented by the fact that if the the arithmetic length of both edges that comes out of vertex $i$ is longer, it is expected that vertex is a guard can see a larger pieces of polygon $P$. This implies that the range of camera $i$ has to be larger, which again means that it has a higher price. In case of the second smaller edge, we add the arithmetic mean for the both lengths as a price of the vertex.
 		\item \emph{point-based benchmarks:} For each vertex $j$, we consider the number of points in $D(P)$ that are visible from the given vertex $(|V(j)|)$. Based on this number, we assign prices to the vertices on the following way:
 		\begin{equation}
 		w_j = n \cdot \frac{|V(j)|}{|D(P)|}, j=1,...,n.
@@ -329,27 +314,27 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
      \end{itemize}
      For small and large instances, one polygon for each $n \in\{8,10,...,200\}$ has been generated, which makes 96 instances per each benchmark set. In overall, we have 192 polygons which vertices with two different weights, which gives us, in overall, 384 problem instances.
      \subsection{Settings and the choice of the Parameters}
-      All variants of our algorithms were implemented in C++ with g++~7.4 and the experiments were conducted in single-threaded mode on a machine with an Intel Xeon E5-2640 processor with 2.40 GHz and a memory limit of 8GB. The maximum computation time of each of our algorithms was set to 5 min. 
-      
+      All variants of our algorithms were implemented in C++ with g++~7.4 and the experiments were conducted in single-threaded mode on a machine with an Intel Xeon E5-2640 processor with 2.40 GHz and a memory limit of 8GB. The maximum computation time of each of our algorithms was set to 5 min.
+
       After conducting preliminary results, we decided to use the following parameters for our algorithms:
       \begin{itemize}
-        \item \textsc{Greedy + Cplex} parameters: $K = 0.05 \cdot n$. 
+        \item \textsc{Greedy + Cplex} parameters: $K = 0.05 \cdot n$.
       \end{itemize}
      The benchmark sets and the executable file of our software for this project are provided at \href{link}{link}.
 	\subsection{Results and Discussion}
         The following algorithms are included in our computation:
         \begin{itemize}
         	\item  exact approaches: CP and ILP approach.The later is, henceforth, called \textsc{Cplex};
-        \end{itemize}  and 6 heuristic approaches: 
+        \end{itemize}  and 6 heuristic approaches:
            \begin{itemize}
            	\item three pure greedy methods, guided by $g_1$, $g_2$ and $g_3$ greedy criterion. We label them by \textsc{Greedy-1}, \textsc{Greedy-2} and \textsc{Greedy-3}, respectively;
             %\item three \textsc{Greedy+Shaking} variants, henceforth labeled by \textsc{Greedy}-$i$+Shaking, $i=1,2,3$, where $i$ stands for heuristic $g_i$ involved in the method;
-            \item three \textsc{Greedy+Cplex} variants, henceforth labeled by  \textsc{Greedy}-$i$+\textsc{Cplex}, $i=1,2,3$, 
+            \item three \textsc{Greedy+Cplex} variants, henceforth labeled by  \textsc{Greedy}-$i$+\textsc{Cplex}, $i=1,2,3$,
             where $i$ stands for heuristic $g_i$ involved as the greedy criterion of the hybrid;
            \end{itemize}
          From our results, we noticed that there is no significant difference between the results of \textsc{Greedy-2} and \textsc{Greedy-3}. Therefore, we report only the results of \textsc{Greedy-2} algorithm.
-         Summarized numerical results for all of our algorithm variants are displayed in Table~\ref{tab: t_w0} and Table~\ref{tab: t_w1} for topollogically-based benchmarks and point-based benchmarks, respectively. Each of the tables is additionally  subdivided by a vertical line into two parts, depending on the case if we consider \emph{small} or \emph{large} polygons for a specific weight. 
-         For each of the algorithm  we reported average quality and average standard deviation ($\sigma$) over all instances (96 instances) of the considered subgroup. If an asterisk is given, i means taht optimality is proven for all instances of considered subgroup. 
+         Summarized numerical results for all of our algorithm variants are displayed in Table~\ref{tab: t_w0} and Table~\ref{tab: t_w1} for topollogically-based benchmarks and point-based benchmarks, respectively. Each of the tables is additionally  subdivided by a vertical line into two parts, depending on the case if we consider \emph{small} or \emph{large} polygons for a specific weight.
+         For each of the algorithm  we reported average quality and average standard deviation ($\sigma$) over all instances (96 instances) of the considered subgroup. If an asterisk is given, i means taht optimality is proven for all instances of considered subgroup.
          \begin{table}
          \centering
          \begin{tabular}{ |p{4cm}|p{1.5cm}p{1cm}|p{1.5cm} p{1cm} |  }
@@ -367,12 +352,12 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
          	\textsc{Greeedy-2} & 19.97  & 9.60  &  3.51 & 1.80\\ \hline
          	\textsc{Greeedy-1 + Cplex}  & 18.49 &  9.56  & 3.34 & 1.41 \\ \hline
          	\textsc{Greeedy-2 + Cplex}  & 18.39 & 8.96 &  3.32 & 1.29 \\ \hline
-          
+
          	\hline
          \end{tabular}
          \caption{Results of different combinations of the algorithms.} \label{tab: t_w0}
         \end{table}
-     
+
        \begin{table}
     	\centering
     	\begin{tabular}{ |p{4cm}|p{1.5cm}p{1cm}|p{1.5cm} p{1cm} |  }
@@ -390,19 +375,19 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
     		\textsc{Greeedy-2} & 40.92 & 19.54 & 6.76 & 3.06 \\ \hline
     		\textsc{Greeedy-1 + Cplex} & 37.78 & 19.59 &  6.72 & 3.07 \\ \hline
     		\textsc{Greeedy-2 + Cplex} & 37.31 & 19.13 &  6.72 & 3.07 \\ \hline
-    	 
+    	
     		\hline
     	\end{tabular}
     	\caption{Result of different combinations of the algorithms.} \label{tab: t_w1}
     \end{table}
         From the numerical results, we observe the following conclusions:
         \begin{itemize}
-        	\item  For the topollogically--based benchmarks and the exact approaches, \textsc{Cplex} achieved best results among other approaches. moreover, Cplex could prove optimallity of all (192) instances, while \textsc{Cp} could not. It is expecially noticed for small polygons, where it seems hard for \textsc{Cp} to prove optimality. 
-        	\item For the point--based benchmark set and the exact approaches, \textsc{Cplex} again show its power, since it could prove all instances to optimallity, which is also the case of \textsc{Cp}. 
+        	\item  For the topollogically--based benchmarks and the exact approaches, \textsc{Cplex} achieved best results among other approaches. moreover, Cplex could prove optimallity of all (192) instances, while \textsc{Cp} could not. It is expecially noticed for small polygons, where it seems hard for \textsc{Cp} to prove optimality.
+        	\item For the point--based benchmark set and the exact approaches, \textsc{Cplex} again show its power, since it could prove all instances to optimallity, which is also the case of \textsc{Cp}.
         	\item  For the topollogically--based benchmarks and the heuristic approaches\fxnote{TODO...}
-        \end{itemize} 
+        \end{itemize}
           \fxnote{TODO: generisati plotove za vremena svakog od algoritama (da se vidi da je greedy brzi -- nadamo se)}
-         
+
 	\section{Conclusions and Future Work}
 	
 	
