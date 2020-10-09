@@ -174,7 +174,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
 	0, \mbox{otherwise},
 	\end{cases}$ \\
 
-	where $V(j)$ is the set of all points from $D(P)$ that are visible from $j$-th vertex of $P$.
+	where $V(j)$ is the set of all points from $D(P)$ that are visible from $j$-th vertex of polygon $P$.
 	Set $Z = \{j \in V\mid x_i=1\}$ represents a solution of the problem w.r.t. discretization $D(P)$ of polygon $P$.
 	Constraint~(\ref{eq:const-3}) enforces that any point $p_i \in D(P)$ will be visible from at least one guard from $Z$.
 	
@@ -183,7 +183,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
 	\begin{equation}
 	\bigvee_{ j \in V } (a_{ij} \wedge x_j) = 1,
 	\end{equation}
-	whereas the other constraints and the objective function are the same like in the above MIP model. Note that CP appraoch works in a branch-and-bound manner employing a constraint propagation and variable domain filtering~\cite{rossi2006handbook}.
+	whereas the other constraints and the objective function are the same like in the above ILP model. Note that CP appraoch works in a branch-and-bound manner employing a constraint propagation and variable domain filtering~\cite{rossi2006handbook}.
 	\section{Algorithmic Approaches for WOAGP}
 	\subsection{Greedy approaches for solving WOAGP}
  Greedy algorithms produce a solution of reasonable quality within a short interval of time and are, in essence, easy to implement. Efficiency of such  heuristic is related to a greedy criterion utilized to expand current (non-complete, i.e., partial) solution to complete one. Among all candidates (solution components for expansion, that is not-yet-considered guards) to extend current partial solution,  we choose one with the smallest greedy value and add it to the current solution until it becomes complete (i.e., it covers all  points from $D(P)$).
@@ -211,7 +211,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
 	\end{align}
 	where
 \begin{equation}\label{eq:sp}
-    f(s^{ps}) = |\bigcup_{i \in s^{ps}} S_i |.
+    f(s^{ps}) = \left|\bigcup_{i \in s^{ps}} S_i \right|.
     \end{equation}
 	This heuristic  also ensures an approximation with $O(\log(n))$ approximation factor.
 	
@@ -227,7 +227,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
 	Ties occurred in the search are broken by using  price-per-unit heuristic which is stated as follows.
 	For each not yet considered vertex $v_i$, we denote the region of polygon $P$ that is visible from $v_i$ by $\emph{Surf}(v_j)$. As the next candidate to extend $s^{ps}$, we choose such a guard,  with the smallest ratio between the price and the visible surface area. More precisely, this  criterion is given as:
 	\begin{align}
-	g'(s^{ps}, v_i) = \frac{w_{i}}{|Surf({v_i})|},
+	g'(s^{ps}, v_i) = \frac{w_{i}}{|\emph{Surf}({v_i})|},
 	\end{align}
 
 	In our experimental studies, we found out that this heuristic does not perform well on its own, but it represents a reasonable tie-breaking mechanism which boosts quality of the aforementioned greedy heuristics.
@@ -243,7 +243,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
 	\end{itemize}
  Although the time complexity of both functions is $O(|D(P)|)$, from Algorithms \ref{alg:updateCoveredPointsAdd} and \ref{alg:updateCoveredPointsRemove} it can be noticed that they only depends on the number of points covered by the current vertex, which is expected to be significantly lower than $|D(P)|$. These two functions allow fast calculation of the functions $f$ and  $incorrect_{total}$: a candidate vertex $v$ is temporary added to the partial solution, new status is checked and the vertex is then removed from the solution.
 	\begin{algorithm}[!t]
-          	\caption{Function updateCoveredPointsAdd}\label{alg:updateCoveredPointsAdd}
+          	\caption{Function \texttt{updateCoveredPointsAdd}}\label{alg:updateCoveredPointsAdd}
           	\begin{algorithmic}[1]
           		\State \textbf{Input:} vertex $v$, $s[v]$:  list of points covered by $v$
           		\State \textbf{Output:} updated structures: coveredPoints and numberOfGuards
@@ -257,7 +257,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
           %\begin{comment}
 
             \begin{algorithm}[!t]
-          	\caption{Function updateCoveredPointsRemove}\label{alg:updateCoveredPointsRemove}
+          	\caption{Function \texttt{updateCoveredPointsRemove}}\label{alg:updateCoveredPointsRemove}
           	\begin{algorithmic}[1]
           		\State \textbf{Input:} vertex $v$, $s[v]$:  list of points covered by $v$
           		\State \textbf{Output:} updated structures coveredPoints and numberOfGuards
@@ -270,13 +270,13 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
           	\end{algorithmic}
           \end{algorithm}
 	 % \end{comment}
-\subsubsection{A Hybrid of the \textsc{Greedy + Cplex}}
+\subsubsection{A Hybrid of the \textsc{Greedy + \textsc{Cplex}}}
 	The performance of \textsc{Cplex}  sooner or later degrades w.r.t. instance size due to the complexity of the problem. On the other hand, in the later stage, there is an increased chance for Greedy to worsen the obtained greedy solution. So, it makes sense to combine  partial solutions generated with a Greedy procedure over a few iterations  and only then to make use the \textsc{Cplex} to do the completion of the partial solution. In details, our approach consists of the following steps:
 	\begin{enumerate}
 		\item Run a Greedy method up to $K$ iterations (parameter) to obtain a partial solution $s^{ps}$ (therefore, $|s^{ps}| = K$);
-		\item Take solution $s^{ps}$ and make it complete by solving a corresponding submodel via CPLEX:
+		\item Take solution $s^{ps}$ and make it complete by solving a corresponding submodel via \textsc{Cplex}:
 		\begin{itemize}
-			\item CPLEX solves corresponding sub-model which is formed by adding constraints $x_{i} = 1$, for all $v_i \in s^{ps}$ into the existing WOAGP model;
+			\item \textsc{Cplex} solves corresponding sub-model which is formed by adding constraints $x_{i} = 1$, for all $v_i \in s^{ps}$ into the existing WOAGP model;
 			\item a complete solution $\bar {s^p}$ is obtained;
 		\end{itemize}
 		\item Return $f(\bar {s^p})$.
@@ -303,8 +303,8 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
      	 \item \emph{MinArea} instances:\fxnote{TODO:Milan: main characteristics, why they differ from others}
      	 \item \emph{FAT} instances: \fxnote{TODO: Milan: main characteristics, why they differ from others}
      \end{itemize}
-     For small and large instances, one polygon for each $n \in\{8,10,...,200\}$ has been generated, which makes 96 instances per each benchmark set. In overall, we have 192 polygons which vertices with two different weights, which gives us, in overall, 384 problem instances.
-	The instances of the specific OAGP with up to a 200 vertices are used in our experiments to which a weight to each vertex of polygons is assigned. We included two kind of weights into these benchmarks:
+     For \emph{MinArea} and \emph{FAT} instances, one polygon for each $n \in\{8,10,...,200\}$ has been generated, which makes 96 instances per each benchmark set. In overall, we have 192 polygons. 
+	We included two kind of weights into each of (192) polygons:
 	\begin{itemize}
 		\item \emph{topologically-based benchmarks}. For each vertex $i$ of polygon $P$ let us denote by $l_i$ and $l_{i+1}$ the lengths of edges that comes out of vertex $i$. Then, $w_i := \frac{l_i + l_{i+1}}{2}$. This way of assigning weights is augmented by the fact that if the the arithmetic length of both edges that comes out of vertex $i$ is longer, it is expected that vertex is a guard can see a larger pieces of polygon $P$. This implies that the range of camera $i$ has to be larger, which again means that it has a higher price. In case of the second smaller edge, we add the arithmetic mean for the both lengths as a price of the vertex.
 		\item \emph{point-based benchmarks:} For each vertex $j$, we consider the number of points in $D(P)$ that are visible from the given vertex $(|V(j)|)$. Based on this number, we assign prices to the vertices on the following way:
@@ -318,7 +318,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
 
       After conducting preliminary results, we decided to use the following parameters for our algorithms:
       \begin{itemize}
-        \item \textsc{Greedy + Cplex} parameters: $K = 0.05 \cdot n$.
+        \item \textsc{Greedy + \textsc{Cplex}} parameters: $K = 0.05 \cdot n$.
       \end{itemize}
      The benchmark sets and the executable file of our software for this project are provided at \href{link}{link}.
 	\subsection{Results and Discussion}
@@ -350,8 +350,8 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
             \textsc{Cp} &  16.04 & 8.24 &  2.62*  & 1.38\\ \hline
          	\textsc{Greeedy-1} & 22.04  & 12.02 & 3.38   & 1.59 \\ \hline
          	\textsc{Greeedy-2} & 19.97  & 9.60  &  3.51 & 1.80\\ \hline
-         	\textsc{Greeedy-1 + Cplex}  & 18.49 &  9.56  & 3.34 & 1.41 \\ \hline
-         	\textsc{Greeedy-2 + Cplex}  & 18.39 & 8.96 &  3.32 & 1.29 \\ \hline
+         	\textsc{Greeedy-1 + \textsc{Cplex}}  & 18.49 &  9.56  & 3.34 & 1.41 \\ \hline
+         	\textsc{Greeedy-2 + \textsc{Cplex}}  & 18.39 & 8.96 &  3.32 & 1.29 \\ \hline
 
          	\hline
          \end{tabular}
@@ -373,8 +373,8 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
     		\textsc{Cp} & 36.03* & 19.04 & 6.72* &  3.07 \\ \hline
     		\textsc{Greeedy-1} &39.28  & 19.55 & 6.76 & 3.06 \\ \hline
     		\textsc{Greeedy-2} & 40.92 & 19.54 & 6.76 & 3.06 \\ \hline
-    		\textsc{Greeedy-1 + Cplex} & 37.78 & 19.59 &  6.72 & 3.07 \\ \hline
-    		\textsc{Greeedy-2 + Cplex} & 37.31 & 19.13 &  6.72 & 3.07 \\ \hline
+    		\textsc{Greeedy-1 + \textsc{Cplex}} & 37.78 & 19.59 &  6.72 & 3.07 \\ \hline
+    		\textsc{Greeedy-2 + \textsc{Cplex}} & 37.31 & 19.13 &  6.72 & 3.07 \\ \hline
     	
     		\hline
     	\end{tabular}
@@ -382,7 +382,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
     \end{table}
         From the numerical results, we observe the following conclusions:
         \begin{itemize}
-        	\item  For the topollogically--based benchmarks and the exact approaches, \textsc{Cplex} achieved best results among other approaches. moreover, Cplex could prove optimallity of all (192) instances, while \textsc{Cp} could not. It is expecially noticed for small polygons, where it seems hard for \textsc{Cp} to prove optimality.
+        	\item  For the topollogically--based benchmarks and the exact approaches, \textsc{Cplex} achieved best results among other approaches. moreover, \textsc{Cplex} could prove optimallity of all (192) instances, while \textsc{Cp} could not. It is expecially noticed for small polygons, where it seems hard for \textsc{Cp} to prove optimality.
         	\item For the point--based benchmark set and the exact approaches, \textsc{Cplex} again show its power, since it could prove all instances to optimallity, which is also the case of \textsc{Cp}.
         	\item  For the topollogically--based benchmarks and the heuristic approaches\fxnote{TODO...}
         \end{itemize}
