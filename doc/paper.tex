@@ -336,9 +336,11 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
         
          Summarized numerical results for all of our algorithm variants are displayed in Table~\ref{tab: t_w0} and Table~\ref{tab: t_w1} for topollogically-based benchmarks and point-based benchmarks, respectively. Each of the tables is additionally  subdivided by a vertical line into two parts, depending on the case if we consider \emph{small} or \emph{large} polygons for a specific weight.
          For each of the algorithm  we reported average quality and average standard deviation ($\sigma$) over all instances (96 instances) of the considered subgroup. If an asterisk is given, i means taht optimality is proven for all instances of considered subgroup.
-     
+    
      \begin{table}[]
-     	\begin{tabular}{l|lllllll|}
+     	\centering
+     	 \scalebox{0.85}{
+     	\begin{tabular}{l|lllllll}
      		Alg.           & $\bar{|s|}$ & $\bar{t}[s]$ &   $\bar{|g|}$ &optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
      		\textsc{Cplex}            & 15.93  & 0.15    & 18.93     & 97/97     & 0.00    & N/A        & N/A      \\
      		\textsc{Cp}               & 16.04  & 98.22   & 18.96     & 67/97     & 0.02    & N/A        & N/A      \\
@@ -346,10 +348,12 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
      		\textsc{Greedy-2}          & 19.97  & 0.00    & 20.14     & 0/97      & 0.44    & 0/97       & 0.20     \\
      		   \textsc{Greedy-1+Cplex}  & 18.49  & 0.07    & 21.19     & 2/97      & 0.30    & 57/97      & 0.06     \\
      		   \textsc{Greedy-2+Cplex} & 18.39  & 0.00    & 19.59     & 0/97      & 0.26    & 53/97      & 0.04  \\ \hline 
-     	\end{tabular}
+     	\end{tabular}}
      \end{table}
  
       \begin{table}[]
+      	\centering
+      	\scalebox{0.85}{
       	\begin{tabular}{l|lllllll}
       		Alg.           & $\bar{|s|}$ & $\bar{t}[s]$ &  $ \bar{|g|}$ &optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
       		\textsc{Cplex}            & 36.03  & 0.00    & 18.93     & 97/97     & 0.00    & N/A        & N/A      \\
@@ -358,10 +362,12 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
       		\textsc{Greedy-2}          & 40.92  & 0.00    & 20.96     & 0/97      & 0.51    & 0/97       & 0.40     \\
       		   \textsc{Greedy-1+Cplex}  & 37.78  & 0.01    & 19.41     & 4/97      & 0.21    & 19/97      & 0.08     \\
       		   \textsc{Greedy-2+Cplex} & 37.31  & 0.00    & 19.58     & 2/97      & 0.15    & 81/97      & 0.19   \\ \hline  
-      	\end{tabular}
+      	\end{tabular}}
       \end{table}
   
      \begin{table}[]
+      \centering
+       \scalebox{0.85}{
      	\begin{tabular}{l|lllllll}
      		Alg.           & $\bar{|s|}$ & $\bar{t}[s]$ &   $\bar{|g|}$ &optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
      		\textsc{Cplex}            & 2.62   & 0.02    & 7.32      & 97/97     & 0.00    & N/A        & N/A      \\
@@ -370,10 +376,12 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
      		\textsc{Greedy-2}          & 3.52   & 0.32    & 6.61      & 2/97      & 0.10    & 28/97      & 0.08     \\
      		   \textsc{Greedy-1+Cplex}  & 3.34   & 0.35    & 8.91      & 4/97      & 0.08    & 25/97      & 0.04     \\
      		   \textsc{Greedy-2+Cplex} & 3.32   & 0.33    & 6.81      & 6/97      & 0.08    & 25/97      & 0.04  \\ \hline   
-     	\end{tabular}
+     	\end{tabular}}
      \end{table}
  
     \begin{table}[]
+    	\centering
+    	\scalebox{0.85}{
  	  \begin{tabular}{l|lllllll}
  		Alg.           & $\bar{|s|}$ & $\bar{t}[s]$ &   $\bar{|g|}$ & optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
  		\textsc{Cplex}            & 6.72   & 0.02    & 6.44      & 97/97     & 0.00    & N/A        & N/A      \\
@@ -382,7 +390,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
  		\textsc{Greedy-2}          & 6.77   & 0.31    & 6.49      & 92/97     & 0.02    & 92/97      & 0.04     \\
  		   \textsc{Greedy-1+Cplex}  & 6.73   & 0.32    & 6.45      & 96/97     & 0.01    & 96/97      & 0.03     \\
  		   \textsc{Greedy-2+Cplex} & 7.42   & 0.31    & 6.46      & 90/97     & 0.33    & 92/97      & 0.33    \\ \hline
- 	\end{tabular}
+ 	\end{tabular}}
    \end{table}
   
         From the numerical results, we observe the following conclusions:
