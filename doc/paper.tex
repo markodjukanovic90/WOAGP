@@ -306,8 +306,8 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
      For \emph{MinArea} and \emph{FAT} instances, one polygon for each $n \in\{8,10,...,200\}$ has been generated, which makes 96 instances per each benchmark set. In overall, we have 192 polygons. 
 	We included two kind of weights into each of (192) polygons:
 	\begin{itemize}
-		\item \emph{topologically-based benchmarks}. For each vertex $i$ of polygon $P$ let us denote by $l_i$ and $l_{i+1}$ the lengths of edges that comes out of vertex $i$. Then, $w_i := \frac{l_i + l_{i+1}}{2}$. This way of assigning weights is augmented by the fact that if the the arithmetic length of both edges that comes out of vertex $i$ is longer, it is expected that vertex is a guard can see a larger pieces of polygon $P$. This implies that the range of camera $i$ has to be larger, which again means that it has a higher price. In case of the second smaller edge, we add the arithmetic mean for the both lengths as a price of the vertex.
-		\item \emph{point-based benchmarks:} For each vertex $j$, we consider the number of points in $D(P)$ that are visible from the given vertex $(|V(j)|)$. Based on this number, we assign prices to the vertices on the following way:
+		\item \emph{topologically-based related weights}. For each vertex $i$ of polygon $P$ let us denote by $l_i$ and $l_{i+1}$ the lengths of edges that comes out of vertex $i$. Then, $w_i := \frac{l_i + l_{i+1}}{2}$. This way of assigning weights is augmented by the fact that if the the arithmetic length of both edges that comes out of vertex $i$ is longer, it is expected that vertex is a guard can see a larger pieces of polygon $P$. This implies that the range of camera $i$ has to be larger, which again means that it has a higher price. In case of the second smaller edge, we add the arithmetic mean for the both lengths as a price of the vertex.
+		\item \emph{point-based related weights:} For each vertex $j$, we consider the number of points in $D(P)$ that are visible from the given vertex $(|V(j)|)$. Based on this number, we assign prices to the vertices on the following way:
 		\begin{equation}
 		w_j = n \cdot \frac{|V(j)|}{|D(P)|}, j=1,...,n.
 		\end{equation}
@@ -316,70 +316,75 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
      \subsection{Settings and the choice of the Parameters}
       All variants of our algorithms were implemented in C++ with g++~7.4 and the experiments were conducted in single-threaded mode on a machine with an Intel Xeon E5-2640 processor with 2.40 GHz and a memory limit of 8GB. The maximum computation time of each of our algorithms was set to 5 min.
 
-      After conducting preliminary results, we decided to use the following parameters for our algorithms:
-      \begin{itemize}
-        \item \textsc{Greedy + \textsc{Cplex}} parameters: $K = 0.05 \cdot n$.
-      \end{itemize}
+      After conducting preliminary results, for
+        \textsc{Greedy + \textsc{Cplex}} we decided to set up $K = 0.05 \cdot n$.
+
      The benchmark sets and the executable file of our software for this project are provided at \href{link}{link}.
 	\subsection{Results and Discussion}
         The following algorithms are included in our computation:
         \begin{itemize}
         	\item  exact approaches: CP and ILP approach.The later is, henceforth, called \textsc{Cplex};
-        \end{itemize}  and 6 heuristic approaches:
+            \item and 4 heuristic approaches:
            \begin{itemize}
-           	\item three pure greedy methods, guided by $g_1$, $g_2$ and $g_3$ greedy criterion. We label them by \textsc{Greedy-1}, \textsc{Greedy-2} and \textsc{Greedy-3}, respectively;
+           	\item two pure greedy methods, guided by $g_1$ and $g_2$, labeled as \textsc{Greedy-1}, \textsc{Greedy-2} and \textsc{Greedy-3}, respectively;
             %\item three \textsc{Greedy+Shaking} variants, henceforth labeled by \textsc{Greedy}-$i$+Shaking, $i=1,2,3$, where $i$ stands for heuristic $g_i$ involved in the method;
-            \item three \textsc{Greedy+Cplex} variants, henceforth labeled by  \textsc{Greedy}-$i$+\textsc{Cplex}, $i=1,2,3$,
-            where $i$ stands for heuristic $g_i$ involved as the greedy criterion of the hybrid;
-           \end{itemize}
-         From our results, we noticed that there is no significant difference between the results of \textsc{Greedy-2} and \textsc{Greedy-3}. Therefore, we report only the results of \textsc{Greedy-2} algorithm.
+            \item two \textsc{Greedy+Cplex} variants, henceforth labeled by  \textsc{Greedy-1}+\textsc{Cplex} and 
+            \textsc{Greedy-2}+\textsc{Cplex}. 
+        \end{itemize}
+    \end{itemize}
+            
+        
          Summarized numerical results for all of our algorithm variants are displayed in Table~\ref{tab: t_w0} and Table~\ref{tab: t_w1} for topollogically-based benchmarks and point-based benchmarks, respectively. Each of the tables is additionally  subdivided by a vertical line into two parts, depending on the case if we consider \emph{small} or \emph{large} polygons for a specific weight.
          For each of the algorithm  we reported average quality and average standard deviation ($\sigma$) over all instances (96 instances) of the considered subgroup. If an asterisk is given, i means taht optimality is proven for all instances of considered subgroup.
-         \begin{table}
-         \centering
-         \begin{tabular}{ |p{4cm}|p{1.5cm}p{1cm}|p{1.5cm} p{1cm} |  }
-         	\hline
-         	\multicolumn{5}{|c|}{Avg. results on the topollogically-based benchmarks.} \\
-         	\hline
-            \multicolumn{1}{|c|}{}&
-            \multicolumn{2}{|c|}{$Small$}&
-            \multicolumn{2}{|c|}{$Large$} \\
-            \hline	
-         	Algorithm  & $|\bar{s}|$ & $\bar{\sigma}$ & $|\bar{s}|$ & $\bar{\sigma}$  \\ \hline \hline
-            \textsc{Cplex} & 15.93* & 8.12 & 2.62* & 1.38 \\ \hline
-            \textsc{Cp} &  16.04 & 8.24 &  2.62*  & 1.38\\ \hline
-         	\textsc{Greeedy-1} & 22.04  & 12.02 & 3.38   & 1.59 \\ \hline
-         	\textsc{Greeedy-2} & 19.97  & 9.60  &  3.51 & 1.80\\ \hline
-         	\textsc{Greeedy-1 + \textsc{Cplex}}  & 18.49 &  9.56  & 3.34 & 1.41 \\ \hline
-         	\textsc{Greeedy-2 + \textsc{Cplex}}  & 18.39 & 8.96 &  3.32 & 1.29 \\ \hline
-
-         	\hline
-         \end{tabular}
-         \caption{Results of different combinations of the algorithms.} \label{tab: t_w0}
-        \end{table}
-
-       \begin{table}
-    	\centering
-    	\begin{tabular}{ |p{4cm}|p{1.5cm}p{1cm}|p{1.5cm} p{1cm} |  }
-    		\hline
-    		\multicolumn{5}{|c|}{Avg. results on the point-based benchmarks.} \\
-    		\hline
-    		\multicolumn{1}{|c|}{}&
-    		\multicolumn{2}{|c|}{$Small$}&
-    		\multicolumn{2}{|c|}{$Large$} \\
-    		\hline	
-    		Algorithm  & $|\bar{s}|$ & $\bar{\sigma}$ & $|\bar{s}|$ & $\bar{\sigma}$  \\ \hline \hline
-    		\textsc{Cplex} & 36.03* & 19.04 & 6.72* & 3.07 \\ \hline
-    		\textsc{Cp} & 36.03* & 19.04 & 6.72* &  3.07 \\ \hline
-    		\textsc{Greeedy-1} &39.28  & 19.55 & 6.76 & 3.06 \\ \hline
-    		\textsc{Greeedy-2} & 40.92 & 19.54 & 6.76 & 3.06 \\ \hline
-    		\textsc{Greeedy-1 + \textsc{Cplex}} & 37.78 & 19.59 &  6.72 & 3.07 \\ \hline
-    		\textsc{Greeedy-2 + \textsc{Cplex}} & 37.31 & 19.13 &  6.72 & 3.07 \\ \hline
-    	
-    		\hline
-    	\end{tabular}
-    	\caption{Result of different combinations of the algorithms.} \label{tab: t_w1}
-    \end{table}
+     
+     \begin{table}[]
+     	\begin{tabular}{l|lllllll|}
+     		Alg.           & $\bar{|s|}$ & $\bar{t}[s]$ &   $\bar{|g|}$ &optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
+     		\textsc{Cplex}            & 15.93  & 0.15    & 18.93     & 97/97     & 0.00    & N/A        & N/A      \\
+     		\textsc{Cp}               & 16.04  & 98.22   & 18.96     & 67/97     & 0.02    & N/A        & N/A      \\
+     		\textsc{Greedy-1}             & 22.63  & 0.00    & 26.28     & 0/97      & 0.79    & 3/97       & 7.61     \\
+     		\textsc{Greedy-2}          & 19.97  & 0.00    & 20.14     & 0/97      & 0.44    & 0/97       & 0.20     \\
+     		   \textsc{Greedy-1+Cplex}  & 18.49  & 0.07    & 21.19     & 2/97      & 0.30    & 57/97      & 0.06     \\
+     		   \textsc{Greedy-2+Cplex} & 18.39  & 0.00    & 19.59     & 0/97      & 0.26    & 53/97      & 0.04  \\ \hline 
+     	\end{tabular}
+     \end{table}
+ 
+      \begin{table}[]
+      	\begin{tabular}{l|lllllll}
+      		Alg.           & $\bar{|s|}$ & $\bar{t}[s]$ &  $ \bar{|g|}$ &optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
+      		\textsc{Cplex}            & 36.03  & 0.00    & 18.93     & 97/97     & 0.00    & N/A        & N/A      \\
+      		\textsc{Cp}               & 36.03  & 18.95   & 18.93     & 97/97     & 0.00    & N/A        & N/A      \\
+      		\textsc{Greedy-1}             & 39.28  & 0.00    & 20.15     & 2/97      & 0.35    & 4/97       & 0.24     \\
+      		\textsc{Greedy-2}          & 40.92  & 0.00    & 20.96     & 0/97      & 0.51    & 0/97       & 0.40     \\
+      		   \textsc{Greedy-1+Cplex}  & 37.78  & 0.01    & 19.41     & 4/97      & 0.21    & 19/97      & 0.08     \\
+      		   \textsc{Greedy-2+Cplex} & 37.31  & 0.00    & 19.58     & 2/97      & 0.15    & 81/97      & 0.19   \\ \hline  
+      	\end{tabular}
+      \end{table}
+  
+     \begin{table}[]
+     	\begin{tabular}{l|lllllll}
+     		Alg.           & $\bar{|s|}$ & $\bar{t}[s]$ &   $\bar{|g|}$ &optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
+     		\textsc{Cplex}            & 2.62   & 0.02    & 7.32      & 97/97     & 0.00    & N/A        & N/A      \\
+     		\textsc{Cp}               & 2.62   & 8.17    & 7.32      & 97/97     & 0.00    & N/A        & N/A      \\
+     		\textsc{Greedy-1}             & 3.39   & 0.35    & 7.81      & 0/97      & 0.09    & 23/97      & 0.05     \\
+     		\textsc{Greedy-2}          & 3.52   & 0.32    & 6.61      & 2/97      & 0.10    & 28/97      & 0.08     \\
+     		   \textsc{Greedy-1+Cplex}  & 3.34   & 0.35    & 8.91      & 4/97      & 0.08    & 25/97      & 0.04     \\
+     		   \textsc{Greedy-2+Cplex} & 3.32   & 0.33    & 6.81      & 6/97      & 0.08    & 25/97      & 0.04  \\ \hline   
+     	\end{tabular}
+     \end{table}
+ 
+    \begin{table}[]
+ 	  \begin{tabular}{l|lllllll}
+ 		Alg.           & $\bar{|s|}$ & $\bar{t}[s]$ &   $\bar{|g|}$ & optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
+ 		\textsc{Cplex}            & 6.72   & 0.02    & 6.44      & 97/97     & 0.00    & N/A        & N/A      \\
+ 		\textsc{Cp}               & 6.72   & 0.36    & 6.44      & 97/97     & 0.00    & N/A        & N/A      \\
+ 		\textsc{Greedy-1}             & 6.77   & 0.31    & 6.49      & 92/97     & 0.02    & 92/97      & 0.04     \\
+ 		\textsc{Greedy-2}          & 6.77   & 0.31    & 6.49      & 92/97     & 0.02    & 92/97      & 0.04     \\
+ 		   \textsc{Greedy-1+Cplex}  & 6.73   & 0.32    & 6.45      & 96/97     & 0.01    & 96/97      & 0.03     \\
+ 		   \textsc{Greedy-2+Cplex} & 7.42   & 0.31    & 6.46      & 90/97     & 0.33    & 92/97      & 0.33    \\ \hline
+ 	\end{tabular}
+   \end{table}
+  
         From the numerical results, we observe the following conclusions:
         \begin{itemize}
         	\item  For the topollogically--based benchmarks and the exact approaches, \textsc{Cplex} achieved best results among other approaches. moreover, \textsc{Cplex} could prove optimallity of all (192) instances, while \textsc{Cp} could not. It is expecially noticed for small polygons, where it seems hard for \textsc{Cp} to prove optimality.
