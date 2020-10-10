@@ -303,8 +303,8 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
      	 \item \emph{MinArea} instances:\fxnote{TODO: Milan: main characteristics, why they differ from others}
      	 \item \emph{FAT} instances: \fxnote{TODO: Milan: main characteristics, why they differ from others}
      \end{itemize}
-     For \emph{MinArea} and \emph{FAT} instances, one polygon for each $n \in\{8,10,...,200\}$ has been generated, which makes 97 instances per each benchmark set. In overall, we have 194 polygons. 
-	We included two kind of weights into each of (194) polygons:
+     For each benchmark set -- \emph{MinArea} and \emph{FAT} instances -- one polygon for each $n \in\{8,10,...,200\}$ has been generated, which makes 97 instances per each benchmark set. In overall, we have 194 polygons. 
+	We included two kind of weights into each of (194) instances:
 	\begin{itemize}
 		\item \emph{topologically-based related weights} ($W0$): For each vertex $v_i$ of polygon $P$ we denote by $l_i$ and $l_{i+1}$ the lengths of two edges that come out of the vertex $v_i$. Then, we set $w_i := \frac{l_i + l_{i+1}}{2}$. This way of assigning weights is augmented by the fact that if the the arithmetic length of both edges that comes out of vertex $i$ is longer, it is expected that a guard can see a larger pieces of polygon $P$. This implies that the spectrum of camera installed at $v_i$ has to be larger, which implies that it should be of a higher quality, i.e,. a higher price. In case that we have the second edge begin smaller, we consider arithmetic mean of the both lengths as the weight of the vertex.
 		\item \emph{point-based related weights} ($W1$): For each vertex $j$, we consider the number of points in $D(P)$ that are visible from the given vertex $(|V(j)|)$. Based on this, we assign prices to each vertex on the following way:
@@ -335,20 +335,20 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
             
         
          Summarized numerical results for each of our 6 variants of our algorithm are displayed 
-         in Tables~\ref{small_wo} --\ref{large_w1}. For each table, the average results are reported for each subset of instances grouped w.r.t. a specific kind of instances and a specific weight (97 instances per each group). Each of the tables list the considered algorithms in the first column. Starting with column two,  each of the lines provide detailed statistics for respective algorithm.  The statistics report: the average solution quality ($\bar{|s|}$), the average time ($\bar{t}[s]$), the average number of guards which are included in each of the solutions ( $\bar{|g|}$), the number of solutions which match to the optimum solutions (\#hitsMinH), standard deviation of the obtained solutions w.r.t. optimal solutions ($\sigma(Opt)$), then the number of minimal solutions w.r.t. the four heuristics achieved by the respective algorithm (\#hitsMinH), standard deviation w.r.t. best solutions achieved by the four heuristic algorithms   ($\sigma(MinH)$).  An asterisk in front of a number means that the exact approach  could prove optimality in all cases.      
+         in Tables~\ref{small_wo} --\ref{large_w1}. For each table, the average results are reported for each subset of instances grouped w.r.t. a specific kind of instances and a specific weight (97 instances per each group). Each of the tables list the considered algorithms in the first column. Starting with column two,  each of the lines provide detailed statistics for respective algorithm.  The statistics report: the average solution quality ($\overline{|s|}$), the average time ($\overline{t}[s]$), the average number of guards which are included in each of the solutions ( $\overline{|g|}$), the number of solutions which match to the optimum solutions (\#hitsMinH), standard deviation of the obtained solutions w.r.t. optimal solutions ($\sigma(Opt)$), then the number of minimal solutions w.r.t. the four heuristics achieved by the respective algorithm (\#hitsMinH), standard deviation w.r.t. best solutions achieved by the four heuristic algorithms   ($\sigma(MinH)$).  An asterisk in front of a number means that the exact approach  could prove optimality in all cases.      
          
     
      \begin{table}[]
      	\centering
      	 \scalebox{0.83}{
      	\begin{tabular}{l|lllllll}    \hline
-     		Alg.           & $\bar{|s|}$ & $\bar{t}[s]$ &   $\bar{|g|}$ &optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
+     		Alg.           & $\overline{|s|}$ & $\overline{t}[s]$ &   $\overline{|g|}$ &optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
      		\textsc{Cplex}            & *15.93  & 0.152    & 18.93     & 97/97     & 0.00    & N/A        & N/A      \\
-     		\textsc{Cp}               & 16.04  & 98.215   & 18.96     & 67/97     & 0.02    & N/A        & N/A      \\
-     		\textsc{Greedy-1}             & 22.63  & 0.002    & 26.28     & 0/97      & 0.79    & 3/97       & 7.61     \\
-     		\textsc{Greedy-2}          & 19.97  & 0.002    & 20.14     & 0/97      & 0.44    & 0/97       & 0.20     \\
-     		   \textsc{Greedy-1+Cplex}  & 18.49  & 0.073    & 21.19     & 2/97      & 0.30    & 57/97      & 0.06     \\
-     		   \textsc{Greedy-2+Cplex} & 18.39  & 0.004    & 19.59     & 0/97      & 0.26    & 53/97      & 0.04  \\ \hline 
+     		\textsc{Cp}               & 16.04  & 98.215   & 18.96     & 67/97     & 0.02    & N/A        & N/A      \\ \hline
+     		\textsc{Greedy-1}             & 22.63  & \textbf{0.002}    & 26.28     & 0/97      & 0.79    & 3/97       & 7.61     \\
+     		\textsc{Greedy-2}          & 19.97  & \textbf{0.002}    & 20.14     & 0/97      & 0.44    & 0/97       & 0.20     \\
+     		   \textsc{Greedy-1+Cplex}  & 18.49  & 0.073    & 21.19     & \textbf{2/97}      & 0.30    & \textbf{57/97}      & \textbf{0.06}     \\
+     		   \textsc{Greedy-2+Cplex} & \textbf{18.39}  & 0.004    & \textbf{19.59}     & 0/97      & \textbf{0.26}    & 53/97      & 0.04  \\ \hline 
      	\end{tabular}}
         \caption{The results on the benchmark set $MinArea$ for the type of weight $W0$.}\label{small_wo}
      \end{table}
@@ -357,13 +357,13 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
       	\centering
       	\scalebox{0.83}{
       	\begin{tabular}{l|lllllll} \hline
-      		Alg.           & $\bar{|s|}$ & $\bar{t}[s]$ &  $ \bar{|g|}$ &optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
+      		Alg.           & $\overline{|s|}$ & $\overline{t}[s]$ &  $ \overline{|g|}$ &optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
       		\textsc{Cplex}            & *36.03  & 0.003   & 18.93     & 97/97     & 0.00    & N/A        & N/A      \\
-      		\textsc{Cp}               & *36.03  & 18.953   & 18.93     & 97/97     & 0.00    & N/A        & N/A      \\
-      		\textsc{Greedy-1}             & 39.28  & 0.001    & 20.15     & 2/97      & 0.35    & 4/97       & 0.24     \\
-      		\textsc{Greedy-2}          & 40.92  & 0.001    & 20.96     & 0/97      & 0.51    & 0/97       & 0.40     \\
-      		   \textsc{Greedy-1+Cplex}  & 37.78  & 0.006    & 19.41     & 4/97      & 0.21    & 19/97      & 0.08     \\
-      		   \textsc{Greedy-2+Cplex} & 37.31  & 0.003    & 19.58     & 2/97      & 0.15    & 81/97      & 0.19   \\ \hline  
+      		\textsc{Cp}               & *36.03  & 18.953   & 18.93     & 97/97     & 0.00    & N/A        & N/A      \\ \hline
+      		\textsc{Greedy-1}             & 39.28  & \textbf{0.001}    & 20.15     & 2/97      & 0.35    & 4/97       & 0.24     \\
+      		\textsc{Greedy-2}          & 40.92  & \textbf{0.001}    & 20.96     & 0/97      & 0.51    & 0/97       & 0.40     \\
+      		   \textsc{Greedy-1+Cplex}  & 37.78  & 0.006    & 19.41     & \textbf{4/97}      & 0.21    & 19/97      & \textbf{0.08}     \\
+      		   \textsc{Greedy-2+Cplex} & \textbf{37.31}  & 0.003    & \textbf{19.58}     & 2/97      & \textbf{0.15}    & \textbf{81/97}     & {0.19}   \\ \hline  
       	\end{tabular}}
          \caption{The results on the bemchmark set $MinArea$ for the  type of weight $W1$.}\label{small_w1}
       \end{table}
@@ -372,28 +372,28 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
       \centering
        \scalebox{0.85}{
      	\begin{tabular}{l|lllllll} \hline
-     		Alg.           & $\bar{|s|}$ & $\bar{t}[s]$ &   $\bar{|g|}$ &optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
+     		Alg.           & $\overline{|s|}$ & $\overline{t}[s]$ &   $\overline{|g|}$ &optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
      		\textsc{Cplex}            & *2.62   & 0.02    & 7.32      & 97/97     & 0.00    & N/A        & N/A      \\
-     		\textsc{Cp}               & *2.62   & 8.17    & 7.32      & 97/97     & 0.00    & N/A        & N/A      \\
+     		\textsc{Cp}               & *2.62   & 8.17    & 7.32      & 97/97     & 0.00    & N/A        & N/A      \\ \hline
      		\textsc{Greedy-1}             & 3.39   & 0.35    & 7.81      & 0/97      & 0.09    & 23/97      & 0.05     \\
-     		\textsc{Greedy-2}          & 3.52   & 0.32    & 6.61      & 2/97      & 0.10    & 28/97      & 0.08     \\
-     		   \textsc{Greedy-1+Cplex}  & 3.34   & 0.35    & 8.91      & 4/97      & 0.08    & 25/97      & 0.04     \\
-     		   \textsc{Greedy-2+Cplex} & 3.32   & 0.33    & 6.81      & 6/97      & 0.08    & 25/97      & 0.04  \\ \hline   
+     		\textsc{Greedy-2}          & 3.52   & \textbf{0.32}    & 6.61      & 2/97      & 0.10    & \textbf{28/97}      & 0.08     \\
+     		   \textsc{Greedy-1+Cplex}  & 3.34   & 0.35    & 8.91      & 4/97      & \textbf{0.08}    & 25/97      & \textbf{0.04}     \\
+     		   \textsc{Greedy-2+Cplex} & \textbf{3.32}   & 0.33    & \textbf{6.81}      & \textbf{6/97}      & \textbf{0.08}    & 25/97      & \textbf{0.04}  \\ \hline   
      	\end{tabular}}
-          \caption{The results on the benchmark set $FAT$ for the type of weight $W0$.} \label{largel_wo}
+          \caption{The results on the benchmark set $FAT$ for the type of weight $W0$.} \label{large_w0}
      \end{table}
  
     \begin{table}[]
     	\centering
     	\scalebox{0.85}{
  	  \begin{tabular}{l|lllllll} \hline
- 		Alg.           & $\bar{|s|}$ & $\bar{t}[s]$ &   $\bar{|g|}$ & optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
+ 		Alg.           & $\overline{|s|}$ & $\overline{t}[s]$ &   $\overline{|g|}$ & optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
  		\textsc{Cplex}            & *6.72   & 0.02    & 6.44      & 97/97     & 0.00    & N/A        & N/A      \\
- 		\textsc{Cp}               & *6.72   & 0.36    & 6.44      & 97/97     & 0.00    & N/A        & N/A      \\
- 		\textsc{Greedy-1}             & 6.77   & 0.31    & 6.49      & 92/97     & 0.02    & 92/97      & 0.04     \\
- 		\textsc{Greedy-2}          & 6.77   & 0.31    & 6.49      & 92/97     & 0.02    & 92/97      & 0.04     \\
- 		\textsc{Greedy-1+Cplex}  & 6.73   & 0.32    & 6.45      & 96/97     & 0.01    & 96/97      & 0.03     \\
- 		\textsc{Greedy-2+Cplex} & 7.42   & 0.31    & 6.46      & 90/97     & 0.33    & 92/97      & 0.33    \\ \hline
+ 		\textsc{Cp}               & *6.72   & 0.36    & 6.44      & 97/97     & 0.00    & N/A        & N/A      \\ \hline
+ 		\textsc{Greedy-1}             & 6.77   & \textbf{0.31}    & 6.49      & 92/97     & 0.02    & 92/97      & 0.04     \\
+ 		\textsc{Greedy-2}          & 6.77   & \textbf{0.31}    & 6.49      & 92/97     & 0.02    & 92/97      & 0.04     \\
+ 		\textsc{Greedy-1+Cplex}  & \textbf{6.73}   & 0.32    & \textbf{6.45}      & \textbf{96/97}     & \textbf{0.01}    & \textbf{96/97}      & \textbf{0.03}     \\
+ 		\textsc{Greedy-2+Cplex} & 7.42   & \textbf{0.31}    & 6.46      & 90/97     & 0.33    & 92/97      & 0.33    \\ \hline
  	\end{tabular}}
     \caption{The results on the benchmark set $FAT$ for the type of weight $W1$.}\label{large_w1}
    \end{table}
@@ -407,10 +407,10 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
      From the numerical results, we observe the following conclusions concerning heuristic solving:
      \begin{itemize}
      	\item  In case of the instances that include small-area polygons ($Minarea$) and weight $W0$ (Table~(\ref{small_wo})): A novel \textsc{Greedy-2} was able to significantly outperform the \textsc{Greedy-1} from literature. In this case, the best performing heuristic algorithms is hybrid \textsc{Greedy-2+Cplex} which needs two times lower avg. runtime to finish than the pure greedy methods. The avg. runtimes of all four greedy methods is an order of magnitude lower than the avg. runtime of \textsc{Cplex}. Pure greedy methods deliver solutions of reasonable quality within 20\% of the quality of optimal solutions but needs time which is 7-8 times lower then the avg. runtime of \textsc{Cplex}. 
-     	\item  In case of the instances that include small-area polygons and weight $W1$ (Table~(\ref{small_w1}): the best heuristic appraoch is \textsc{Greedy-2+Cplex} which is able to deliver solutions which are within 3\% of the optimum ones. 
+     	\item  In case of the instances that include small-area polygons and weight $W1$ (Table~(\ref{small_w1}): the best heuristic appraoch is \textsc{Greedy-2+Cplex} which is able to deliver solutions which are within 3\% of the optimum ones. Note that in 81 instances (out of 91) \textsc{Greedy-2+Cplex} is able to deliver equally good or better results that the other heuristic approaches. 
      	The results of pure greedy method \textsc{Greedy-1} outperform the results of \textsc{Greedy-2}. These two methods are effective since they deliver solutions which are within 10\% of the \textsc{Cplex} results but need 3 times less time. Te result of \textsc{Greedy-1} match just in two cases to the optimum.
      	
-     	\item In case of the instances that include large-area polygons ($FAT$) and weight $W0$ (Table~(\ref{large_w0}): exact approach \textsc{Cplex} is a clear winner concerning avg solutions' quality as well as the avg. runtimes;  the best heuristic algorithm w.r.t. solution quality is \textsc{Greedy-2 +Cplex}. It also match in the most cases (on 6 instances) to the optimum results. Its avg. results are within 22\% of the avg. of  optimal solutions.  The pure \textsc{Greedy-1} slightly outperforms the pure greedy \textsc{Greedy-2}.   The runtimes of our heuristic approaches are an order of magnitude lower than the time of \textsc{Cplex} approach. 
+     	\item In case of the instances that include large-area polygons ($FAT$) and weight $W0$ (Table~(\ref{large_w0}): exact approach \textsc{Cplex} is a clear winner concerning avg solutions' quality as well as the avg. runtimes;  the best heuristic algorithm w.r.t. solution quality is \textsc{Greedy-2 +Cplex}. It also match in the most cases (on 6 instances) to the optimum results. Its avg. results are within 22\% of the avg. of  optimal solutions.  The pure \textsc{Greedy-1} slightly outperforms the pure greedy \textsc{Greedy-2}. It is interesting that \textsc{Greedy-1} chooses in average a  higher number of guards in comparison to the avg. number of guards of \textsc{Greedy-2}. The runtimes of our heuristic approaches are an order of magnitude lower than the time of \textsc{Cplex} approach. 
      	\item  In case of the instances that include large-area polygons ($FAT$) and weight $W1$ (Table~(\ref{large_w1}): the best heuristic algorithms w.r.t. solution quality is \textsc{Greedy-1+Cplex} which is able to match in 96 instances the quality of optimal solutions. Slightly worse results are \textsc{Greedy-1} and \textsc{Greedy-2}. The obtained (heuristic) solutions of the two approaches are within 1\% of optimal solutions and they are
      	able to reach the quality of the optimal solution in 92 instances. Unfortunately, the runtimes in comparison to the runtimes of \textsc{Cplex} are significantly higher for all of our heuristic approaches. However, the avg. runtime for \textsc{Cp} is a bit higher that the runtime of the heuristic approaches. 
      	\item \fxnote{TODO: pokrivenost...}
