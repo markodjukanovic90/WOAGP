@@ -281,7 +281,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
 		\end{itemize}
 		\item Return $f(\bar {s^p})$.
 	\end{enumerate}
-	
+ 
 	\begin{comment}
 	
 	\noindent \textbf{Improvements of the above method.} The above method can serve as a basic iteration
@@ -303,18 +303,18 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
      	 \item \emph{MinArea} instances:\fxnote{TODO:Milan: main characteristics, why they differ from others}
      	 \item \emph{FAT} instances: \fxnote{TODO: Milan: main characteristics, why they differ from others}
      \end{itemize}
-     For \emph{MinArea} and \emph{FAT} instances, one polygon for each $n \in\{8,10,...,200\}$ has been generated, which makes 96 instances per each benchmark set. In overall, we have 192 polygons. 
-	We included two kind of weights into each of (192) polygons:
+     For \emph{MinArea} and \emph{FAT} instances, one polygon for each $n \in\{8,10,...,200\}$ has been generated, which makes 97 instances per each benchmark set. In overall, we have 194 polygons. 
+	We included two kind of weights into each of (194) polygons:
 	\begin{itemize}
-		\item \emph{topologically-based related weights}. For each vertex $i$ of polygon $P$ let us denote by $l_i$ and $l_{i+1}$ the lengths of edges that comes out of vertex $i$. Then, $w_i := \frac{l_i + l_{i+1}}{2}$. This way of assigning weights is augmented by the fact that if the the arithmetic length of both edges that comes out of vertex $i$ is longer, it is expected that vertex is a guard can see a larger pieces of polygon $P$. This implies that the range of camera $i$ has to be larger, which again means that it has a higher price. In case of the second smaller edge, we add the arithmetic mean for the both lengths as a price of the vertex.
-		\item \emph{point-based related weights:} For each vertex $j$, we consider the number of points in $D(P)$ that are visible from the given vertex $(|V(j)|)$. Based on this number, we assign prices to the vertices on the following way:
+		\item \emph{topologically-based related weights} ($W0$): For each vertex $v_i$ of polygon $P$ we denote by $l_i$ and $l_{i+1}$ the lengths of two edges that come out of the vertex $v_i$. Then, we set $w_i := \frac{l_i + l_{i+1}}{2}$. This way of assigning weights is augmented by the fact that if the the arithmetic length of both edges that comes out of vertex $i$ is longer, it is expected that a guard can see a larger pieces of polygon $P$. This implies that the spectrum of camera installed at $v_i$ has to be larger, which implies that it should be of a higher quality, i.e,. a higher price. In case that we have the second edge begin smaller, we consider arithmetic mean of the both lengths as the weight of the vertex.
+		\item \emph{point-based related weights} ($W1$): For each vertex $j$, we consider the number of points in $D(P)$ that are visible from the given vertex $(|V(j)|)$. Based on this, we assign prices to each vertex on the following way:
 		\begin{equation}
-		w_j = n \cdot \frac{|V(j)|}{|D(P)|}, j=1,...,n.
+		w_i = n \cdot \frac{|V(i)|}{|D(P)|}, i=1,...,n.
 		\end{equation}
 	\end{itemize}
     
      \subsection{Settings and the choice of the Parameters}
-      All variants of our algorithms were implemented in C++ with g++~7.4 and the experiments were conducted in single-threaded mode on a machine with an Intel Xeon E5-2640 processor with 2.40 GHz and a memory limit of 8GB. The maximum computation time of each of our algorithms was set to 5 min.
+      All variants of our algorithms were implemented in C++ with g++~7.4 and the experiments were conducted in single-threaded mode on a machine with an Intel Xeon E5-2640 processor with 2.40 GHz and a memory limit of 8GB. The maximum computation time of each of our algorithms was set to $5\ min$.
 
       After conducting preliminary results, for
         \textsc{Greedy + \textsc{Cplex}} we decided to set up $K = \lceil 0.05 \cdot n \rceil$.
@@ -340,7 +340,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
      \begin{table}[]
      	\centering
      	 \scalebox{0.85}{
-     	\begin{tabular}{l|lllllll} \hline
+     	\begin{tabular}{l|lllllll}    \hline
      		Alg.           & $\bar{|s|}$ & $\bar{t}[s]$ &   $\bar{|g|}$ &optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
      		\textsc{Cplex}            & 15.93  & 0.15    & 18.93     & 97/97     & 0.00    & N/A        & N/A      \\
      		\textsc{Cp}               & 16.04  & 98.22   & 18.96     & 67/97     & 0.02    & N/A        & N/A      \\
@@ -349,6 +349,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
      		   \textsc{Greedy-1+Cplex}  & 18.49  & 0.07    & 21.19     & 2/97      & 0.30    & 57/97      & 0.06     \\
      		   \textsc{Greedy-2+Cplex} & 18.39  & 0.00    & 19.59     & 0/97      & 0.26    & 53/97      & 0.04  \\ \hline 
      	\end{tabular}}
+        \caption{The results on the benchmark set $MinArea$ for the type of weight $W0$.}
      \end{table}
  
       \begin{table}[]
@@ -363,6 +364,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
       		   \textsc{Greedy-1+Cplex}  & 37.78  & 0.01    & 19.41     & 4/97      & 0.21    & 19/97      & 0.08     \\
       		   \textsc{Greedy-2+Cplex} & 37.31  & 0.00    & 19.58     & 2/97      & 0.15    & 81/97      & 0.19   \\ \hline  
       	\end{tabular}}
+         \caption{The results on the bemchmark set $MinArea$ for the  type of weight $W1$.}
       \end{table}
   
      \begin{table}[]
@@ -377,6 +379,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
      		   \textsc{Greedy-1+Cplex}  & 3.34   & 0.35    & 8.91      & 4/97      & 0.08    & 25/97      & 0.04     \\
      		   \textsc{Greedy-2+Cplex} & 3.32   & 0.33    & 6.81      & 6/97      & 0.08    & 25/97      & 0.04  \\ \hline   
      	\end{tabular}}
+          \caption{The results on the benchmark set $FAT$ for the type of weight $W0$.}
      \end{table}
  
     \begin{table}[]
@@ -391,6 +394,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
  		   \textsc{Greedy-1+Cplex}  & 6.73   & 0.32    & 6.45      & 96/97     & 0.01    & 96/97      & 0.03     \\
  		   \textsc{Greedy-2+Cplex} & 7.42   & 0.31    & 6.46      & 90/97     & 0.33    & 92/97      & 0.33    \\ \hline
  	\end{tabular}}
+    \caption{The results on the benchmark set $FAT$ for the type of weight $W1$.}
    \end{table}
   
         From the numerical results, we observe the following conclusions:
