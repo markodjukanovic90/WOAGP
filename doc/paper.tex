@@ -300,7 +300,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
 
  We used two different kind of benchmark sets:
      \begin{itemize}
-     	 \item \emph{MinArea} instances:\fxnote{TODO:Milan: main characteristics, why they differ from others}
+     	 \item \emph{MinArea} instances:\fxnote{TODO: Milan: main characteristics, why they differ from others}
      	 \item \emph{FAT} instances: \fxnote{TODO: Milan: main characteristics, why they differ from others}
      \end{itemize}
      For \emph{MinArea} and \emph{FAT} instances, one polygon for each $n \in\{8,10,...,200\}$ has been generated, which makes 97 instances per each benchmark set. In overall, we have 194 polygons. 
@@ -334,8 +334,9 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
     \end{itemize}
             
         
-         Summarized numerical results for all of our algorithm variants are displayed in Table~\ref{tab: t_w0} and Table~\ref{tab: t_w1} for topollogically-based benchmarks and point-based benchmarks, respectively. Each of the tables is additionally  subdivided by a vertical line into two parts, depending on the case if we consider \emph{small} or \emph{large} polygons for a specific weight.
-         For each of the algorithm  we reported average quality and average standard deviation ($\sigma$) over all instances (96 instances) of the considered subgroup. If an asterisk is given, i means taht optimality is proven for all instances of considered subgroup.
+         Summarized numerical results for each of our 6 variants of our algorithm are displayed 
+         in Tables~\ref{small_w0} --\ref{large_w1}. For each table, the average results are reported for each subset of instances grouped w.r.t. a specific kind of instances and a specific weight (97 instances per each group). Each of the tables list the considered algorithms in the first column. Starting with column two,  each of the lines provide detailed statistics for respective algorithm.  The statistics report: the average solution quality ($\bar{|s|}$), the average time ($\bar{t}[s]$), the average number of guards which are included in each of the solutions ( $\bar{|g|}$), the number of solutions which match to the optimum solutions (\#hitsMinH), standard deviation of the obtained solutions w.r.t. optimal solutions ($\sigma(Opt)$), then the number of minimal solutions w.r.t. the four heuristics achieved by the respective algorithm (\#hitsMinH), standard deviation w.r.t. best solutions achieved by the four heuristic algorithms   ($\sigma(MinH)$).       
+         
     
      \begin{table}[]
      	\centering
@@ -349,7 +350,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
      		   \textsc{Greedy-1+Cplex}  & 18.49  & 0.073    & 21.19     & 2/97      & 0.30    & 57/97      & 0.06     \\
      		   \textsc{Greedy-2+Cplex} & 18.39  & 0.004    & 19.59     & 0/97      & 0.26    & 53/97      & 0.04  \\ \hline 
      	\end{tabular}}
-        \caption{The results on the benchmark set $MinArea$ for the type of weight $W0$.}
+        \caption{The results on the benchmark set $MinArea$ for the type of weight $W0$.}\label{small_wo}
      \end{table}
  
       \begin{table}[]
@@ -364,7 +365,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
       		   \textsc{Greedy-1+Cplex}  & 37.78  & 0.006    & 19.41     & 4/97      & 0.21    & 19/97      & 0.08     \\
       		   \textsc{Greedy-2+Cplex} & 37.31  & 0.003    & 19.58     & 2/97      & 0.15    & 81/97      & 0.19   \\ \hline  
       	\end{tabular}}
-         \caption{The results on the bemchmark set $MinArea$ for the  type of weight $W1$.}
+         \caption{The results on the bemchmark set $MinArea$ for the  type of weight $W1$.}\label{small_w1}
       \end{table}
   
      \begin{table}[]
@@ -379,7 +380,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
      		   \textsc{Greedy-1+Cplex}  & 3.34   & 0.35    & 8.91      & 4/97      & 0.08    & 25/97      & 0.04     \\
      		   \textsc{Greedy-2+Cplex} & 3.32   & 0.33    & 6.81      & 6/97      & 0.08    & 25/97      & 0.04  \\ \hline   
      	\end{tabular}}
-          \caption{The results on the benchmark set $FAT$ for the type of weight $W0$.}
+          \caption{The results on the benchmark set $FAT$ for the type of weight $W0$.} \label{largel_wo}
      \end{table}
  
     \begin{table}[]
@@ -394,17 +395,19 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
  		   \textsc{Greedy-1+Cplex}  & 6.73   & 0.32    & 6.45      & 96/97     & 0.01    & 96/97      & 0.03     \\
  		   \textsc{Greedy-2+Cplex} & 7.42   & 0.31    & 6.46      & 90/97     & 0.33    & 92/97      & 0.33    \\ \hline
  	\end{tabular}}
-    \caption{The results on the benchmark set $FAT$ for the type of weight $W1$.}
+    \caption{The results on the benchmark set $FAT$ for the type of weight $W1$.}\label{small_w1}
    \end{table}
   
-        From the numerical results, we observe the following conclusions:
+        From the numerical results, we observe the following conclusions concerning exact solving:
         \begin{itemize}
-        	\item  For the topollogically--based benchmarks and the exact approaches, \textsc{Cplex} achieved best results among other approaches. moreover, \textsc{Cplex} could prove optimallity of all (192) instances, while \textsc{Cp} could not. It is expecially noticed for small polygons, where it seems hard for \textsc{Cp} to prove optimality.
-        	\item For the point--based benchmark set and the exact approaches, \textsc{Cplex} again show its power, since it could prove all instances to optimallity, which is also the case of \textsc{Cp}.
-        	\item  For the topollogically--based benchmarks and the heuristic approaches\fxnote{TODO...}
+        	\item  \textsc{Cplex} could solve all solution to prove optimality within a fraction of a second;
+        	\item   \textsc{Cp} was able to solve all those instances with weight $W1$ but with signifficanlty more time than required from \textsc{Cplex};
+        	\item For the subset of instances $MinArea$ which includes weight $W0$, the performance of Cp degrades signifficantly which can be seen  by the respective avg. runtime and the number of optimal solutions found (67/97).
         \end{itemize}
-          \fxnote{TODO: Milan: generisati plotove za vremena svakog od algoritama, takodje generisati plotove koji pokazuju procenat pokrivenosti optimalnih rjesenja CPLEX-a...}
-
+     From the numerical results, we observe the following conclusions concerning heuristic solving:
+     \begin{itemize}
+     	\item \fxnote{TODO...}
+     \end{itemize}
 	\section{Conclusions and Future Work}
 	
 	
