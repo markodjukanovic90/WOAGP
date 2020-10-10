@@ -335,7 +335,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
             
         
          Summarized numerical results for each of our 6 variants of our algorithm are displayed 
-         in Tables~\ref{small_w0} --\ref{large_w1}. For each table, the average results are reported for each subset of instances grouped w.r.t. a specific kind of instances and a specific weight (97 instances per each group). Each of the tables list the considered algorithms in the first column. Starting with column two,  each of the lines provide detailed statistics for respective algorithm.  The statistics report: the average solution quality ($\bar{|s|}$), the average time ($\bar{t}[s]$), the average number of guards which are included in each of the solutions ( $\bar{|g|}$), the number of solutions which match to the optimum solutions (\#hitsMinH), standard deviation of the obtained solutions w.r.t. optimal solutions ($\sigma(Opt)$), then the number of minimal solutions w.r.t. the four heuristics achieved by the respective algorithm (\#hitsMinH), standard deviation w.r.t. best solutions achieved by the four heuristic algorithms   ($\sigma(MinH)$).       
+         in Tables~\ref{small_w0} --\ref{large_w1}. For each table, the average results are reported for each subset of instances grouped w.r.t. a specific kind of instances and a specific weight (97 instances per each group). Each of the tables list the considered algorithms in the first column. Starting with column two,  each of the lines provide detailed statistics for respective algorithm.  The statistics report: the average solution quality ($\bar{|s|}$), the average time ($\bar{t}[s]$), the average number of guards which are included in each of the solutions ( $\bar{|g|}$), the number of solutions which match to the optimum solutions (\#hitsMinH), standard deviation of the obtained solutions w.r.t. optimal solutions ($\sigma(Opt)$), then the number of minimal solutions w.r.t. the four heuristics achieved by the respective algorithm (\#hitsMinH), standard deviation w.r.t. best solutions achieved by the four heuristic algorithms   ($\sigma(MinH)$).  An asterisk in front of a number means that the exact approach  could prove optimality in all cases.      
          
     
      \begin{table}[]
@@ -402,11 +402,15 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
         \begin{itemize}
         	\item  \textsc{Cplex} could solve all solution to prove optimality within a fraction of a second;
         	\item   \textsc{Cp} was able to solve all those instances with weight $W1$ but with signifficanlty more time than required from \textsc{Cplex};
-        	\item For the subset of instances $MinArea$ which includes weight $W0$, the performance of Cp degrades signifficantly which can be seen  by the respective avg. runtime and the number of optimal solutions found (67/97).
+        	\item For the subset of instances $MinArea$ which includes weight $W0$, the performance of Cp degrades signifficantly which can be seen  by the respective avg. runtime and the number of proven optimal solutions found (67/97).
         \end{itemize}
      From the numerical results, we observe the following conclusions concerning heuristic solving:
      \begin{itemize}
-     	\item \fxnote{TODO...}
+     	\item  In case of the instances that include small-area polygons ($Minarea$) and weight $W0$: A novel \textsc{Greedy-2} was able to significantly outperform the \textsc{Greedy-1} from literature  in this case, the best performing heuristic algorithms is  \textsc{Greedy-2+Cplex} which needs two ties time to finish than the pure greedy methods. The avg. runtimes of all four greedy methods is an order of magnitude lower than the avg. runtime of \textsc{Cplex}. Pure greedy methods deliver solutions of reasonable quality which quality is within 20\% of the quality of optimal solutions for the runtime which is7-8 times that that of \textsc{Cplex}. 
+     	\item  In case of the instances that include small-area polygons and weight $W1$: the best heuristic appraoch is \textsc{Greedy-2+Cplex} which is able to deliver the solutions which are within 3\% of the optimum ones. 
+     	The pure greedy method \textsc{Greedy-1} was able to outperform the results of \textsc{Greedy-2}. These two methods are effective since they deliver solutions which are within 10\% of the \textsc{Cplex} results but with 3 times lower runtime. 
+     	\item In case of the instances that include large-area polygons ($FAT$) and weight $W0$: exact approach \textsc{Cplex} is a clear winner concerning avg solutions' quality as well as the avg. runtimes;  the best heuristic algorithm is \textsc{Greedy-2 +Cplex}. THe pure \textsc{Greedy-1} outperforms the pure greedy \textsc{Greedy-2}. \fxnote{TODO: not finished}
+     	\item abc
      \end{itemize}
 	\section{Conclusions and Future Work}
 	
