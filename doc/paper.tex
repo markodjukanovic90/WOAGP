@@ -317,16 +317,16 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
       All variants of our algorithms were implemented in C++ with g++~7.4 and the experiments were conducted in single-threaded mode on a machine with an Intel Xeon E5-2640 processor with 2.40 GHz and a memory limit of 8GB. The maximum computation time of each of our algorithms was set to 5 min.
 
       After conducting preliminary results, for
-        \textsc{Greedy + \textsc{Cplex}} we decided to set up $K = 0.05 \cdot n$.
+        \textsc{Greedy + \textsc{Cplex}} we decided to set up $K = \lceil 0.05 \cdot n \rceil$.
 
      The benchmark sets and the executable file of our software for this project are provided at \href{link}{link}.
 	\subsection{Results and Discussion}
         The following algorithms are included in our computation:
         \begin{itemize}
         	\item  exact approaches: CP and ILP approach.The later is, henceforth, called \textsc{Cplex};
-            \item and 4 heuristic approaches:
+            \item 4 heuristic approaches:
            \begin{itemize}
-           	\item two pure greedy methods, guided by $g_1$ and $g_2$, labeled as \textsc{Greedy-1}, \textsc{Greedy-2} and \textsc{Greedy-3}, respectively;
+           	\item two pure greedy methods, guided by $g_1$ and $g_2$, labeled as \textsc{Greedy-1}, \textsc{Greedy-2}, respectively;
             %\item three \textsc{Greedy+Shaking} variants, henceforth labeled by \textsc{Greedy}-$i$+Shaking, $i=1,2,3$, where $i$ stands for heuristic $g_i$ involved in the method;
             \item two \textsc{Greedy+Cplex} variants, henceforth labeled by  \textsc{Greedy-1}+\textsc{Cplex} and 
             \textsc{Greedy-2}+\textsc{Cplex}. 
@@ -340,7 +340,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
      \begin{table}[]
      	\centering
      	 \scalebox{0.85}{
-     	\begin{tabular}{l|lllllll}
+     	\begin{tabular}{l|lllllll} \hline
      		Alg.           & $\bar{|s|}$ & $\bar{t}[s]$ &   $\bar{|g|}$ &optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
      		\textsc{Cplex}            & 15.93  & 0.15    & 18.93     & 97/97     & 0.00    & N/A        & N/A      \\
      		\textsc{Cp}               & 16.04  & 98.22   & 18.96     & 67/97     & 0.02    & N/A        & N/A      \\
@@ -354,7 +354,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
       \begin{table}[]
       	\centering
       	\scalebox{0.85}{
-      	\begin{tabular}{l|lllllll}
+      	\begin{tabular}{l|lllllll} \hline
       		Alg.           & $\bar{|s|}$ & $\bar{t}[s]$ &  $ \bar{|g|}$ &optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
       		\textsc{Cplex}            & 36.03  & 0.00    & 18.93     & 97/97     & 0.00    & N/A        & N/A      \\
       		\textsc{Cp}               & 36.03  & 18.95   & 18.93     & 97/97     & 0.00    & N/A        & N/A      \\
@@ -368,7 +368,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
      \begin{table}[]
       \centering
        \scalebox{0.85}{
-     	\begin{tabular}{l|lllllll}
+     	\begin{tabular}{l|lllllll} \hline
      		Alg.           & $\bar{|s|}$ & $\bar{t}[s]$ &   $\bar{|g|}$ &optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
      		\textsc{Cplex}            & 2.62   & 0.02    & 7.32      & 97/97     & 0.00    & N/A        & N/A      \\
      		\textsc{Cp}               & 2.62   & 8.17    & 7.32      & 97/97     & 0.00    & N/A        & N/A      \\
@@ -382,7 +382,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
     \begin{table}[]
     	\centering
     	\scalebox{0.85}{
- 	  \begin{tabular}{l|lllllll}
+ 	  \begin{tabular}{l|lllllll} \hline
  		Alg.           & $\bar{|s|}$ & $\bar{t}[s]$ &   $\bar{|g|}$ & optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
  		\textsc{Cplex}            & 6.72   & 0.02    & 6.44      & 97/97     & 0.00    & N/A        & N/A      \\
  		\textsc{Cp}               & 6.72   & 0.36    & 6.44      & 97/97     & 0.00    & N/A        & N/A      \\
@@ -399,7 +399,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
         	\item For the point--based benchmark set and the exact approaches, \textsc{Cplex} again show its power, since it could prove all instances to optimallity, which is also the case of \textsc{Cp}.
         	\item  For the topollogically--based benchmarks and the heuristic approaches\fxnote{TODO...}
         \end{itemize}
-          \fxnote{TODO: generisati plotove za vremena svakog od algoritama (da se vidi da je greedy brzi -- nadamo se)}
+          \fxnote{TODO: Milan: generisati plotove za vremena svakog od algoritama, takodje generisati plotove koji pokazuju procenat pokrivenosti optimalnih rjesenja CPLEX-a...}
 
 	\section{Conclusions and Future Work}
 	
