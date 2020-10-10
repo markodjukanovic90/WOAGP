@@ -401,17 +401,21 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
         From the numerical results, we observe the following conclusions concerning exact solving:
         \begin{itemize}
         	\item  \textsc{Cplex} could solve all solution to prove optimality within a fraction of a second;
-        	\item   \textsc{Cp} was able to solve all those instances with weight $W1$ but with signifficanlty more time than required from \textsc{Cplex};
-        	\item For the subset of instances $MinArea$ which includes weight $W0$, the performance of Cp degrades signifficantly which can be seen  by the respective avg. runtime and the number of proven optimal solutions found (67/97).
+        	\item   \textsc{Cp} was able to solve all those instances with weight $W1$ but with signifficanlty more time than the time required from \textsc{Cplex};
+        	\item For the subset of instances $MinArea$ which includes weight $W0$, the performance of Cp degrades signifficantlly, which can be seen  by the respective avg. runtime and the number of proven optimal solutions found (67/97).
         \end{itemize}
      From the numerical results, we observe the following conclusions concerning heuristic solving:
      \begin{itemize}
-     	\item  In case of the instances that include small-area polygons ($Minarea$) and weight $W0$: A novel \textsc{Greedy-2} was able to significantly outperform the \textsc{Greedy-1} from literature  in this case, the best performing heuristic algorithms is  \textsc{Greedy-2+Cplex} which needs two ties time to finish than the pure greedy methods. The avg. runtimes of all four greedy methods is an order of magnitude lower than the avg. runtime of \textsc{Cplex}. Pure greedy methods deliver solutions of reasonable quality which quality is within 20\% of the quality of optimal solutions for the runtime which is7-8 times that that of \textsc{Cplex}. 
-     	\item  In case of the instances that include small-area polygons and weight $W1$: the best heuristic appraoch is \textsc{Greedy-2+Cplex} which is able to deliver the solutions which are within 3\% of the optimum ones. 
-     	The pure greedy method \textsc{Greedy-1} was able to outperform the results of \textsc{Greedy-2}. These two methods are effective since they deliver solutions which are within 10\% of the \textsc{Cplex} results but with 3 times lower runtime. 
-     	\item In case of the instances that include large-area polygons ($FAT$) and weight $W0$: exact approach \textsc{Cplex} is a clear winner concerning avg solutions' quality as well as the avg. runtimes;  the best heuristic algorithm is \textsc{Greedy-2 +Cplex}. THe pure \textsc{Greedy-1} outperforms the pure greedy \textsc{Greedy-2}. \fxnote{TODO: not finished}
-     	\item abc
+     	\item  In case of the instances that include small-area polygons ($Minarea$) and weight $W0$: A novel \textsc{Greedy-2} was able to significantly outperform the \textsc{Greedy-1} from literature. In this case, the best performing heuristic algorithms is hybrid \textsc{Greedy-2+Cplex} which needs two times lower avg. runtime to finish than the pure greedy methods. The avg. runtimes of all four greedy methods is an order of magnitude lower than the avg. runtime of \textsc{Cplex}. Pure greedy methods deliver solutions of reasonable quality within 20\% of the quality of optimal solutions but needs time which is 7-8 times lower then the avg. runtime of \textsc{Cplex}. 
+     	\item  In case of the instances that include small-area polygons and weight $W1$: the best heuristic appraoch is \textsc{Greedy-2+Cplex} which is able to deliver solutions which are within 3\% of the optimum ones. 
+     	The results of pure greedy method \textsc{Greedy-1} outperform the results of \textsc{Greedy-2}. These two methods are effective since they deliver solutions which are within 10\% of the \textsc{Cplex} results but need 3 times less time. Te result of \textsc{Greedy-1} match just in two cases to the optimum.
+     	
+     	\item In case of the instances that include large-area polygons ($FAT$) and weight $W0$: exact approach \textsc{Cplex} is a clear winner concerning avg solutions' quality as well as the avg. runtimes;  the best heuristic algorithm w.r.t. solution quality is \textsc{Greedy-2 +Cplex}. It also match in the most cases (on 6 instances) to the optimum results. Its avg. results are within 22\% of the avg. of  optimal solutions.  The pure \textsc{Greedy-1} slightly outperforms the pure greedy \textsc{Greedy-2}.   The runtimes of our heuristic approaches are an order of magnitude lower than the time of \textsc{Cplex} approach. 
+     	\item  In case of the instances that include large-area polygons ($FAT$) and weight $W1$: the best heuristic algorithms w.r.t. solution quality is \textsc{Greedy-1+Cplex} which is able to match in 96 instances the quality of optimal solutions. Slightly worse that it are \textsc{Greedy-1} and \textsc{Greedy-2}. The obtained (heuristic) solutions of the two approaches are within 1\% of optimal solutions and they are
+     	able to reach the quality of the optimal solution in 92 instances. Unfortunately, the runtimes in comparison to the runtimes of \textsc{Cplex} are significantly higher for all of our heuristic approaches. However, the avg. runtime for \textsc{Cp} is a bit higher that the runtime of the heuristic approaches. 
+     	\item \fxnote{TODO: pokrivenost...}
      \end{itemize}
+    
 	\section{Conclusions and Future Work}
 	
 	
