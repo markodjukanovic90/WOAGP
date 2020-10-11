@@ -150,7 +150,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
 	
 	\fxnote{TODO: Milan: Treba prevesti na engleski}
 	
-	Treba primjetiti da iz pokrivenosti diskretizacije D(P) skupom stražara iz Z ne slijedi pokrivenost poligona P istim skupom stražara Z. Na slici 1.1 pod a) prikazan je poligon koji nije pokrivan, dok je njegova diskretizacija pokrivena. Trokut na dnu poligona predstavlja nepokrivenu regiju. Poligon na slici 1.1 pod b) je pokriven kao i njegova diskretizacija.
+	Treba primjetiti da iz pokrivenosti diskretizacije D(P) skupom stražara iz Z ne slijedi pokrivenost poligona P istim skupom stražara Z. Na slici 1.1\fxnote{pogresna referenca 1.1, mislis na 1...} pod a) prikazan je poligon koji nije pokrivan, dok je njegova diskretizacija pokrivena. Trokut na dnu poligona predstavlja nepokrivenu regiju. Poligon na slici 1 pod b) je pokriven kao i njegova diskretizacija. \fxnote{Milane, mislm da ti slika pod a) ne odgovara svrsi. Recimo ovaj poligon se cak moze pokriti sa jednim covrom, jesam u pravu? Treba nam poligon koji se ne moze pokriti bilo kojim odabirom cvorova (cuvara)?}
 	
 	\begin{figure}
     	\centering
@@ -161,7 +161,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
 	
 	Izabrana rezolucija $\bigtriangleup_{x}\times\bigtriangleup_{y}$ predstavlja kompromis izmedju brzine i tacnosti. Odnosno, smanjenjem rezolucije povecava se tacnost rjesenje, ali se sporije pronalazi diskretizacija. Povecanjem rezolucije smanjuje se tacnost rjesenja, ali i vrijeme pronalazenja diskretizacije.
 	
-	Couto et al.~\cite{couto2007exact} koristili su pomenutu diskretizaciju za problem ortogonalne galerije. U njihovom radu broj pologona nad kojim je primjenjena ova diskretizacija je 10282. Za 59.4\% poligona je vazilo da iz pokrivenoosti diskretnog skupa D(P) slidi pokrivensort poligona P za optimalno pronadjen skup strazara koji pokrivaju D(P). Oni su dodavali nove tačke u D(P) iz nepokrivenih regija kako bi iz pokrivenosti diskretizacije slijedila pokrivenost poligona za sve poligone. Nad testiranim uzorkom se pokazalo da se broj novododanih tačaka može opisati regresivnom funkcijom  0.003·n+1.1, gjde je n broj tjemena poligona. Dakle, ili je čitav poligon pokriven ili mali broj regija je nepokriveno optimalnim skupom stražara Z za D(P). U sekciji 4 će biti prikazana površina ovih nepokrivenih regija.
+	Couto et al.~\cite{couto2007exact} koristili su pomenutu diskretizaciju za problem ortogonalne galerije. U njihovom radu broj pologona nad kojim je primjenjena ova diskretizacija je 10282. Za 59.4\% poligona je vazilo da iz pokrivenoosti diskretnog skupa D(P) slidi pokrivenost poligona P za optimalno pronadjen skup strazara koji pokrivaju D(P)\fxnote{Sta je sa ostalim poligonima koji nisu bili pokriveni? Koliki je procenat pokrivenosti bio u tom slucaju? Kako se ovo odnosi na druge diskretizacije, bilo je puno bolje ili?}. Oni su dodavali nove tačke u D(P) iz nepokrivenih regija kako bi iz pokrivenosti diskretizacije slijedila pokrivenost poligona za sve poligone. Nad testiranim uzorkom se pokazalo da se broj novododanih tačaka može opisati regresivnom funkcijom  0.003·n+1.1, gdje je n broj tjemena poligona. Dakle, ili je čitav poligon pokriven ili mali broj regija je nepokriveno optimalnim skupom stražara Z za D(P). U sekciji 4 će biti prikazana površina ovih nepokrivenih regija.
 	
 	\section{Exact methods}
 	In this section we present the exact ILP and \emph{Constraint Programming} (CP) models for solving WMSCP  under regular grid discretization, which are used  in the rest of the paper.
@@ -430,12 +430,12 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
      	able to reach the quality of the optimal solution for 92 instances. Unfortunately, the runtimes in comparison to the runtimes of \textsc{Cplex} are significantly higher for all of our heuristic approaches. However, the average runtime for \textsc{Cp} is a bit higher that the avg. runtimes of the heuristic approaches. Again, average standard deviation for each heuristic method is rather small, indicating the good quality of the proposed algorithms.
      	\item \fxnote{TODO: pokrivenost...}
      \end{itemize}
-    \fxnote{Milan: generisati vrijeme izvrsavanja...--- Kog izvrsavanja?}
+    \fxnote{Milan: generisati vrijeme izvrsavanja svakog od algoritama, dakle, $x$-osa predstavlja sljedece parove: (Smallarea, W0), (Smllarea, W1), (FAT, W0), (FAT, W1), i onda za svaku od ovih kategorija, prikazi box-plotove za 6 nasih algoritama koji prikazuju njihova vremena izvrsavnja na $y$ osi (predstavi ih razlicitim bojama, ubaci i liegendu u gornjem desnom uglu) -- ove brojeve nadji u Tabelama 1-4,  kolona 3 ($t[s]$). U zavisnosti od prikaza, koristiti log skaliranje za y-osu.... }
     
     \begin{figure}
     	\centering
     	\includegraphics[width=\textwidth]{grafikon1.eps}
-    	\caption{Polygon Coverage}
+    	\caption{Polygon Coverage \fxnote{Kako si podlijelio instance sa tezinama W0 i W1? Ovo je za Cplex? Ja bih prikazao ovo ipak sa dva dijagrama, jedan za W0, a drugi za W1)}}
     	\label{fig:cov}
     \end{figure}
     
