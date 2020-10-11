@@ -6,10 +6,46 @@ S.size() ----> 66	66
 CPLEX pokrenut
 CPLEX finds optimal
 
-obj: 3.12862
+obj: 7
 Sets in the solution: {
-S_2, S_34, S_50, S_52, S_54, S_57, S_61, S_65, }
-time:0.00830809 s
-guards:8
-obj:3.12862
-3.128617;8;0.008308
+S_31, S_47, S_51, S_55, S_57, S_61, S_65, }
+time:0.00852882 s
+guards:7
+obj:7
+66 161 762.99
+Run Greedy	with type: 0	algorithm: 2	turn_ls: 0
+Include these partial solution into CPLEX: 
+S.size() ----> 66	66
+#Vars: 66
+CPLEX pokrenut
+CPLEX finds optimal
+
+obj: 7
+Sets in the solution: {
+S_31, S_47, S_51, S_55, S_57, S_61, S_65, }
+time:0.00819067 s
+guards:7
+obj:7
+7.000000;7;0.008191
+66 161 762.99
+Run Greedy	with type: 0	algorithm: 2	turn_ls: 0
+Include these partial solution into CPLEX: 
+S.size() ----> 66	66
+#Vars: 66
+CPLEX pokrenut
+CPLEX finds optimal
+
+obj: 7
+Sets in the solution: {
+S_31, S_47, S_51, S_55, S_57, S_61, S_65, }
+time:0.00382715 s
+guards:7
+el: 31
+el: 47
+el: 51
+el: 55
+el: 57
+el: 61
+el: 65
+obj:7
+7.000000;7;0.003827
