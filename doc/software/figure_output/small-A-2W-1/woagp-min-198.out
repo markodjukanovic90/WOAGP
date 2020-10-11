@@ -1,0 +1,64 @@
+198 5 2.5
+Run Greedy	with type: 0	algorithm: 2	turn_ls: 0
+Include these partial solution into CPLEX: 
+S.size() ----> 198	198
+#Vars: 198
+CPLEX pokrenut
+CPLEX finds optimal
+
+obj: 68
+Sets in the solution: {
+S_2, S_11, S_100, S_104, S_107, S_110, S_113, S_116, S_119, S_122, S_125, S_128, S_131, S_134, S_137, S_140, S_143, S_145, S_148, S_151, S_154, S_157, S_160, S_163, S_166, S_169, S_172, S_175, S_178, S_181, S_184, S_187, S_191, S_194, S_196, }
+time:0.00476552 s
+guards:35
+obj:68
+198 5 2.5
+Run Greedy	with type: 0	algorithm: 2	turn_ls: 0
+Include these partial solution into CPLEX: 
+S.size() ----> 198	198
+#Vars: 198
+CPLEX pokrenut
+CPLEX finds optimal
+
+obj: 68
+Sets in the solution: {
+S_2, S_11, S_100, S_104, S_107, S_110, S_113, S_116, S_119, S_122, S_125, S_128, S_131, S_134, S_137, S_140, S_143, S_145, S_148, S_151, S_154, S_157, S_160, S_163, S_166, S_169, S_172, S_175, S_178, S_181, S_184, S_187, S_191, S_194, S_196, }
+time:0.00482819 s
+guards:35
+el: 2
+el: 11
+el: 100
+el: 104
+el: 107
+el: 110
+el: 113
+el: 116
+el: 119
+el: 122
+el: 125
+el: 128
+el: 131
+el: 134
+el: 137
+el: 140
+el: 143
+el: 145
+el: 148
+el: 151
+el: 154
+el: 157
+el: 160
+el: 163
+el: 166
+el: 169
+el: 172
+el: 175
+el: 178
+el: 181
+el: 184
+el: 187
+el: 191
+el: 194
+el: 196
+obj:68
+68.000000;35;0.004828

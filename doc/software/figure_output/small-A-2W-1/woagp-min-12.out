@@ -1,0 +1,31 @@
+12 5 2.5
+Run Greedy	with type: 0	algorithm: 2	turn_ls: 0
+Include these partial solution into CPLEX: 
+S.size() ----> 12	12
+#Vars: 12
+CPLEX pokrenut
+CPLEX finds optimal
+
+obj: 3
+Sets in the solution: {
+S_3, S_9, }
+time:0.00138379 s
+guards:2
+obj:3
+12 5 2.5
+Run Greedy	with type: 0	algorithm: 2	turn_ls: 0
+Include these partial solution into CPLEX: 
+S.size() ----> 12	12
+#Vars: 12
+CPLEX pokrenut
+CPLEX finds optimal
+
+obj: 3
+Sets in the solution: {
+S_3, S_9, }
+time:0.493437 s
+guards:2
+el: 3
+el: 9
+obj:3
+3.000000;2;0.493437
