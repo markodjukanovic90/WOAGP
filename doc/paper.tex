@@ -33,6 +33,7 @@
 %\bibliographystyle{plainnat}
 \usepackage{siunitx}
 \usepackage{color}
+\usepackage{epsfig}
 
 \usepackage[draft,nomargin,inline]{fixme}
 \fxsetface{inline}{\itshape}
@@ -147,7 +148,20 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
 
 	All intersection points of this regular grid with polygon $P$ and all vertices of $P$ are added into the discrete set $D(P)$. The pseudocode which presents the building steps of the discretizations $D(P)$ is given in Algorithm~\ref{alg:discret}.
 	
-	\fxnote{TODO: zasto uzimamo ovakav tip diskretizacije, objasniti zasto id pokrivenosti diskretizacije ne slijedu pokrivenost poligona -- dvije slike dodaj gdje optimalan izbor cvorova pokriva poligon, i gdje optimalni izbor cvorova ne pokriva poligon...}
+	\fxnote{TODO: Milan: Treba prevesti na engleski}
+	
+	Treba primjetiti da iz pokrivenosti diskretizacije D(P) skupom stražara iz Z ne slijedi pokrivenost poligona P istim skupom stražara Z. Na slici 1.1 pod a) prikazan je poligon koji nije pokrivan, dok je njegova diskretizacija pokrivena. Trokut na dnu poligona predstavlja nepokrivenu regiju. Poligon na slici 1.1 pod b) je pokriven kao i njegova diskretizacija.
+	
+	\begin{figure}
+    	\centering
+    	\includegraphics[width=.7\linewidth]{slika1.eps}
+    	\caption{Polygon ...}
+    	\label{fig:covPncovDP}
+    \end{figure}	
+	
+	Izabrana rezolucija $\bigtriangleup_{x}\times\bigtriangleup_{y}$ predstavlja kompromis izmedju brzine i tacnosti. Odnosno, smanjenjem rezolucije povecava se tacnost rjesenje, ali se sporije pronalazi diskretizacija. Povecanjem rezolucije smanjuje se tacnost rjesenja, ali i vrijeme pronalazenja diskretizacije.
+	
+	Couto et al.~\cite{couto2007exact} koristili su pomenutu diskretizaciju za problem ortogonalne galerije. U njihovom radu broj pologona nad kojim je primjenjena ova diskretizacija je 10282. Za 59.4\% poligona je vazilo da iz pokrivenoosti diskretnog skupa D(P) slidi pokrivensort poligona P za optimalno pronadjen skup strazara koji pokrivaju D(P). Oni su dodavali nove tačke u D(P) iz nepokrivenih regija kako bi iz pokrivenosti diskretizacije slijedila pokrivenost poligona za sve poligone. Nad testiranim uzorkom se pokazalo da se broj novododanih tačaka može opisati regresivnom funkcijom  0.003·n+1.1, gjde je n broj tjemena poligona. Dakle, ili je čitav poligon pokriven ili mali broj regija je nepokriveno optimalnim skupom stražara Z za D(P). U sekciji 4 će biti prikazana površina ovih nepokrivenih regija.
 	
 	\section{Exact methods}
 	In this section we present the exact ILP and \emph{Constraint Programming} (CP) models for solving WMSCP  under regular grid discretization, which are used  in the rest of the paper.
@@ -300,8 +314,8 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
 
  We used two different kind of benchmark sets from~\cite{tomas2006visibility}:
      \begin{itemize}
-     	 \item \emph{MinArea} instances:\fxnote{TODO: Milan: main characteristics, why they differ from others}
-     	 \item \emph{FAT} instances: \fxnote{TODO: Milan: main characteristics, why they differ from others}
+     	 \item \emph{MinArea} instances:\fxnote{TODO: Milan: Prevesti na engleski} MinArea poligoni malih povrsina su specificni po tome sto imaju "skucenu/usku" unutrasnjost. Ovi poligoni predstavljaju granicni slučaj kardinalnosti diskretizacije. Odnosno, mali broj tačaka regularne mreže će biti dodan u D(P) za MinArea poligon P.
+     	 \item \emph{FAT} instances: \fxnote{TODO: Milan: Prevesti na engleski} Poligoni velikih povrsina su specificni po tome sto imaju "prostranu" unutrasnjost. Takodje, i ovi poligoni predstavljaju granicni slučaj kardinalnosti diskretizacije. Odnosno, veliki broj tačaka regularne mreže će biti dodan u D(P) za FAT poligon P.
      \end{itemize}
      For each benchmark set -- \emph{MinArea} and \emph{FAT} instances -- one polygon for each $n \in\{8,10,...,200\}$ has been generated, which makes 97 instances per each benchmark set. In overall, we have 194 polygons.
 	We included two kind of weights into each of (194) instances:
@@ -416,7 +430,16 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
      	able to reach the quality of the optimal solution for 92 instances. Unfortunately, the runtimes in comparison to the runtimes of \textsc{Cplex} are significantly higher for all of our heuristic approaches. However, the average runtime for \textsc{Cp} is a bit higher that the avg. runtimes of the heuristic approaches. Again, average standard deviation for each heuristic method is rather small, indicating the good quality of the proposed algorithms.
      	\item \fxnote{TODO: pokrivenost...}
      \end{itemize}
-    \fxnote{Milan: generisati dijagrame za pokrivenst i vrijeme izvrsavanja...}
+    \fxnote{Milan: generisati vrijeme izvrsavanja...--- Kog izvrsavanja?}
+    
+    \begin{figure}
+    	\centering
+    	\includegraphics[width=\textwidth]{grafikon1.eps}
+    	\caption{Polygon Coverage}
+    	\label{fig:cov}
+    \end{figure}
+    
+    
 	\section{Conclusions and Future Work}
 	  In this work we have considered the Weighted Orthogonal Art Gallery Problem under regular grid discretization.
 	  We have developed a novel greedy rule which provide a trade-off between the number of guards and the cost of  guards. Moreover, a hybrid of a greedy method and \textsc{Cplex} was proposed to make a maximal completion of the greedy solution obtained by the greedy method supplemented by solving respective subproblem via \textsc{Cplex}. The performances of the heuristic approaches are compared to the exact ILP and CP approaches. From the computational experiments, the heuristic approaches were highly efficient in terms of obtaining solutions of reasonable quality in an order of magnitude lower runtime than the exact approaches for the small-area polygons. For the large--area polygons, heuristic approaches were able to reach the quality of optimal solutions in almost all cases but in cost of larger times than the ILP approach.
