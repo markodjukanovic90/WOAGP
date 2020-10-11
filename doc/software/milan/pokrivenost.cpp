@@ -319,8 +319,8 @@ int main(int argc, char const *argv[])
   {
     auto start = high_resolution_clock::now();
     // ----------------------------read polygon---------------------------------
-    const string category = "small";
-    string filename = "min-" + std::to_string(file_number) + "-" + std::to_string(file_order);
+    const string category = "large";
+    string filename = "fat-" + std::to_string(file_number) + "-" + std::to_string(file_order);
     string location = "instance/" + category + "/" + filename + + ".pol";
 
     int n;
@@ -330,8 +330,8 @@ int main(int argc, char const *argv[])
     //print_polygon(p);
     
     //------------------------------read solution--------------------------------
-    const string category_s = "small-A-2-W0G0";
-    string filename_s = "woagp-min-" + std::to_string(file_number); //+ "-" + std::to_string(file_order)
+    const string category_s = "large-A-2-W1";
+    string filename_s = "woagp-fat-" + std::to_string(file_number); //+ "-" + std::to_string(file_order)
     
     string location_s = "../figure_output/" + category_s + "/" + filename_s + + ".out";
     string output = "cover/" + category_s + ".txt";
