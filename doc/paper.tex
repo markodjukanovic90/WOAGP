@@ -350,11 +350,11 @@ The ILP  model for the WSCP is already known from the literature~\cite{vazirani2
 	We included two kind of weights into each of (194) instances:
 	\begin{itemize}
 		\item \emph{topologically-based related weights} ($W0$): For each vertex $v_i$ of polygon $P$ we denote by $l_i$ and $l_{i+1}$ the lengths of two edges that come out of the vertex $v_i$. Then, we set $w_i := \frac{l_i + l_{i+1}}{2}$. This way of assigning weights is augmented by the fact that if the arithmetic length of both edges that comes out of vertex $i$ is longer, it is expected that a guard can see a larger pieces of polygon $P$. This implies that the spectrum of camera installed at $v_i$ has to be larger, which again implies that it should be of a higher quality, i.e,. a higher price.
-		\item \emph{point-based related weights} ($W1$): For each vertex $j$, we consider the number of points in $D(P)$ that are visible from the given vertex $(|V(j)|)$. Based on this, we assign prices to each vertex on the following way:
+		\item \emph{point-based related weights} ($W1$): For each vertex $v_j$, based on the number of points in $D(P)$ that are visible from $v_j$, we assign prices to each vertex on the following way:
 		\begin{equation}
-		w_i = n \cdot \frac{|V(i)|}{|D(P)|},\ i=1,...,n.
+		w_i = n \cdot \frac{|S_i|}{|D(P)|},\ i=1,...,n.
 		\end{equation}
-    Similarly as in case of $W0$, cameras which cover larger range of points are considered be of a higher quality and thus of a higher price.
+    Similarly as in case of $W0$, cameras which cover larger range of points are considered be of a higher spectrum and quality, and thus are more expensive. 
 	\end{itemize}
 
      \subsection{Settings and the choice of the Parameters}
@@ -464,14 +464,14 @@ The ILP  model for the WSCP is already known from the literature~\cite{vazirani2
      \end{itemize}
 
 
-    \begin{figure}
+    \begin{figure}[!ht]
     	\centering\scalebox{0.9}{
     	\includegraphics[width=\textwidth]{grafikon1.eps}}
     	\caption{Polygon coverage for the type of weight W0.}
     	\label{fig:covw0}
     \end{figure}
 
-    \begin{figure}
+    \begin{figure}[!ht]
     	\centering
     	\centering\scalebox{0.9}{
     	\includegraphics[width=\textwidth]{grafikon2.eps}}
@@ -479,7 +479,7 @@ The ILP  model for the WSCP is already known from the literature~\cite{vazirani2
     	\label{fig:covw1}
     \end{figure}
 
-    \begin{figure}
+    \begin{figure}[!ht]
     	\centering
     	\includegraphics[width=\textwidth]{grafikon3.eps}
     	\caption{Avg. execution time of the compared algorithms.}
