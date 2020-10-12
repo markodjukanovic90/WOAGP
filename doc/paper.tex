@@ -262,7 +262,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
 	\begin{itemize}
 		%\item structure \texttt{map<Point,list<Point>> Visibility} -- for each point of $D(P)$, we provide the list of guards which are visible from that point;
 		\item structure \texttt{numberOfGuards} -- which is a map structure, where each point from $D(P)$ is mapped to the number of guards in solution which cover that point;
-		\item structure \texttt{CoveredPoints} -- which is a set structure which keeps the points from $D(P)$ that are covered by the partial solution;
+		\item structure \texttt{CoveredPoints} -- as a set structure which keeps the points from $D(P)$ that are covered by the partial solution;
 		%\item function \texttt{updateCoveredPointsAdd (vertex v)} -- does the update of  structures %\texttt{CoveredPoints} and \texttt{numberOfGuards} by considering only new points from $D(P)$ covered by vertex $v$, when $v$  is being added to partial solution; %pseudocode of the procedure is shown in Algorithm \ref{alg:updateCoveredPointsAdd}.
 		%\item function \texttt{updateCoveredPointsRemove(vertex v)} -- does the update of structures \texttt{CoveredPoints} and \texttt{numberOfGuards} by removing all points which are covered only by $v$ , when $v$ is removed from partial solution; %pseudocode  is shown in Algorithm \ref{alg:updateCoveredPointsRemove}.
 	\end{itemize}
