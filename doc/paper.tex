@@ -167,7 +167,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
         	\includegraphics[height=1.7in]{slika1b.eps}
         	\caption{Optimal coverage of polygon $P$}
     	\end{subfigure}
-    	\caption{Optimal coverage of discretization $D(P)$ is not comparable to optimal coverage of polygon $P$.}
+    	\caption{Optimal coverage of discretization $D(P)$ does not imply a coverage of polygon $P$.}
 	\end{figure}
 	
 	Izabrana rezolucija $\bigtriangleup_{x}\times\bigtriangleup_{y}$ predstavlja kompromis izmedju brzine i tacnosti. Odnosno, smanjenjem rezolucije povecava se tacnost rjesenje, ali se sporije pronalazi diskretizacija. Povecanjem rezolucije smanjuje se tacnost rjesenja, ali i vrijeme pronalazenja diskretizacije.
@@ -241,7 +241,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
 	This heuristic  also ensures an approximation with $O(\log(n))$ approximation factor.
 	
 	\subsubsection{A Novel Greedy Heuristic}
-	In this subsection we present a novel greedy criterion. First, we introduce a term  ``incorrect point''. For a point from $D(P)$ we say that it is \textit{incorrect} if it is not covered by any guard from the current partial solution $s^{ps}$. Let us denote by $incorrect_{total}(s^{sp})$ the total number of incorrect points from discretization $D(P)$ w.r.t. $s^{ps}$. Note that  $incorrect_{total}(s^{ps}) = |D(P)|-f(s^{ps})$, where $f(s^{ps})$ is defined in (\ref{eq:sp}) and $|D(P)|$ is the cardinality of discretization set . Let $w_{total}$ be the total sum of all weights among all vertices. The greedy function w.r.t. partial solution $s^{ps}$ and  guard $v$ is defined as follows.
+	In this subsection we present a novel greedy criterion. First, we introduce a term  ``incorrect point''. For a point from $D(P)$ we say that it is \textit{incorrect} if it is not covered by any guard from the current partial solution $s^{ps}$. Let us denote by $incorrect_{total}(s^{ps})$ the total number of incorrect points from discretization $D(P)$ w.r.t. $s^{ps}$. Note that  $incorrect_{total}(s^{ps}) = |D(P)|-f(s^{ps})$, where $f(s^{ps})$ is defined in (\ref{eq:sp}) and $|D(P)|$ is the cardinality of discretization set . Let $w_{total}$ be the total sum of all weights among all vertices. The greedy function w.r.t. partial solution $s^{ps}$ and  guard $v$ is defined as follows.
 	\begin{equation}\label{eq:greedyfun2}
     g_2(s^{ps}, v)  =    \frac{\sum_{i \in s^{ps} \cup \{v\}} w_i}{w_{total}}+ \frac{incorrect_{total}(s^{ps}\cup v)}{|D(P)|}.
 	\end{equation}
@@ -270,7 +270,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
 	\begin{algorithm}[!t]
           	\caption{Function \texttt{updateCoveredPointsAdd}}\label{alg:updateCoveredPointsAdd}
           	\begin{algorithmic}[1]
-          		\State \textbf{Input:} vertex $v$, $s[v]$:  list of points covered by $v$
+          		\State \textbf{Input:} vertex $v$, $S[v]$:  list of points covered by $v$
           		\State \textbf{Output:} updated structures: coveredPoints and numberOfGuards
           		\For{$p$ in $S[v]$}
           		\State coveredPoints.insert($p$)
@@ -284,7 +284,7 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
             \begin{algorithm}[!t]
           	\caption{Function \texttt{updateCoveredPointsRemove}}\label{alg:updateCoveredPointsRemove}
           	\begin{algorithmic}[1]
-          		\State \textbf{Input:} vertex $v$, $s[v]$:  list of points covered by $v$
+          		\State \textbf{Input:} vertex $v$, $S[v]$:  list of points covered by $v$
           		\State \textbf{Output:} updated structures coveredPoints and numberOfGuards
           		\For{$p \in S[v]$}
           		\State numberOfGuards.find($p$).second-- --
@@ -325,8 +325,8 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
 
  We used two different kind of benchmark sets from~\cite{tomas2006visibility}:
      \begin{itemize}
-     	 \item \emph{MinArea} instances:\fxnote{TODO: Milan: Prevesti na engleski} MinArea poligoni malih povrsina su specificni po tome sto imaju "skucenu/usku" unutrasnjost. Ovi poligoni predstavljaju granicni slučaj kardinalnosti diskretizacije. Odnosno, mali broj tačaka regularne mreže će biti dodan u D(P) za MinArea poligon P.
-     	 \item \emph{FAT} instances: \fxnote{TODO: Milan: Prevesti na engleski} Poligoni velikih povrsina su specificni po tome sto imaju "prostranu" unutrasnjost. Takodje, i ovi poligoni predstavljaju granicni slučaj kardinalnosti diskretizacije. Odnosno, veliki broj tačaka regularne mreže će biti dodan u D(P) za FAT poligon P.
+     	 \item \emph{MinArea} instances: MinArea includes polygons with a small areas. They are specific because they have tiny interior. They presents a boundary case for the caardinality of set $D(P)$ which means that a very few points will be added in $D(P)$. 
+     	 \item \emph{FAT} instances:  includes polygons of large areas. They are specific because their interior is wide. In this case, a large number of points of relgular grid will be included into $D(P)$. 
      \end{itemize}
      For each benchmark set -- \emph{MinArea} and \emph{FAT} instances -- one polygon for each $n \in\{8,10,...,200\}$ has been generated, which makes 97 instances per each benchmark set. In overall, we have 194 polygons.
 	We included two kind of weights into each of (194) instances:
@@ -439,10 +439,13 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
      	\item In case of the instances that include large-area polygons ($FAT$) and weight $W0$ (Table~(\ref{large_w0}): the exact \textsc{Cplex} approach is a clear winner concerning average solutions' quality as well as the average runtimes;  the best heuristic algorithm w.r.t. solution quality is \textsc{Greedy-2 +Cplex}. It also matches in the most cases (on 6 instances) to the optimum results w.r.t. other heuristic approaches. Its average results are within 22\% of the average of  optimal solutions.  The pure \textsc{Greedy-1} slightly outperforms the pure greedy \textsc{Greedy-2}. It is interesting that \textsc{Greedy-1} assigns in average a  higher number of guards in comparison to the average number of guards of \textsc{Greedy-2}. The runtimes of our heuristic approaches are an order of magnitude lower than the time of \textsc{Cplex} approach. Reason for that can be seen in the used regular discretization of the polygon. For the polygons with a larger area, more points are involved in the discrete set $D(P)$ and, therefore, iterations of greedy methods take a longer time than in case when $D(P)$ is smaller (which was the case of \emph{Minarea} polygons).
      	\item  In case of the instances that include large-area polygons ($FAT$) and weight $W1$ (Table~(\ref{large_w1}): the best heuristic algorithms w.r.t. solution quality is \textsc{Greedy-1+Cplex} which is able to match in 96 instances the quality of optimal solutions. Slightly worse results are delivered by \textsc{Greedy-1} and \textsc{Greedy-2}. The obtained (heuristic) solutions of these two approaches are within 1\% of optimal solutions and they are
      	able to reach the quality of the optimal solution for 92 instances. Unfortunately, the runtimes in comparison to the runtimes of \textsc{Cplex} are significantly higher for all of our heuristic approaches. However, the average runtime for \textsc{Cp} is a bit higher that the avg. runtimes of the heuristic approaches. Again, average standard deviation for each heuristic method is rather small w.r.t. optimal solutions, indicating the good quality of the proposed algorithms.
-     	\item \fxnote{TODO: pokrivenost...}
+     	\item  Concerning the percentage of covering of polygons for the best solutions (found by \textsc{Cplex}) we
+     	noticed that  \textsc{FAT} instances are covered in almost all cases (see Fig.\ref{fig:covw0} and \ref{fig:covw1} and the blue curve). Concerning the \textit{Smallarea} instances, it gets harder to cover all polygon and in allmost all cases the whole area of polygon $P$ cannot be covered. For these instances, we see that the solutions cover more regions of small--area polygons when weight $W1$ is involved then when $W0$ is considered ($\approx 93 \%$ vs. $\approx 85\%$). It can be argued by the fact that in weight $W0$ there exists many ties for weights of guards, and, therefore, more solutions with the minimum weight exist. 
+     	Notice that this is not so often the case of the weight $W1$. 
+     	
      \end{itemize}
     
-    \fxnote{TODO: Da li na dijagramima treba nešto dodatno napisati, smanjiti ih...}
+    \fxnote{TODO: Da li na dijagramima treba nešto dodatno napisati, smanjiti ih: Ucini da Fig. 2,3 i 4 stanu na jednu stranu. Fig 4 je pogresna, obrnuio si kategorije. Treba da grupises rezultate izvrsavanja po tipu instance, a da u legendi stoje algoritmi... }
     \begin{figure}
     	\centering
     	\includegraphics[width=\textwidth]{grafikon1.eps}
