@@ -106,13 +106,12 @@
 	
 	Given a polygon $P$, the \emph{Art Gallery Problem} (AGP) asks for a set of points $G$ of minimal cardinality,  such that for each point $y \in P$ there is $x \in G$ such that $xy \subset P$. We say that the point $y$ is covered by the point $x$, or $y$ is visible from $x$. Set $G$ is called \emph{guard set} of $P$ and the points from $G$ as \emph{guards}. In the \emph{Orthogonal Art Gallery Problem} (OAGP) we suppose that edges of the polygon are only horizontal and vertical w.r.t. the axes, i.e.  the angles allowed between adjacent edges are  $90^{\circ}$ or $270^{\circ}$. The original AGP was initially stated by Victor  Klee in 1973.~\cite{o1987art}.  The problem is motivated from installing the cameras inside a building (or gallery) such that the whole area of the building is covered. Orthogonality constraint naturally comes out from the orthogonality of the walls in buildings. Kahn et al.~\cite{kahn1983traditional} formulated and proofed that 	$\lfloor \frac{n}{4} \rfloor$ guards are  sufficient to cover an orthogonal polygon with $n$ vertices.      In the course of this study, we are interested in the variant of the OAGP which allows only that guards are positioned at the vertices of polygon $P$. This restricted problem is known to be $\mathcal{NP}$--hard~\cite{schuchardt1995two,katz2008guarding}.  When it comes to the real situations (like installing the cameras in a building), it is justified to assume that the prices of cameras are not equal and may depends on several factors, like the quality of a camera   (respecting its range of spectrum of view)  or installation price at some specific parts of the building (like corners or tight places).  In the \emph{Weighted Orthogonal Art Gallery Problem} (WOAGP) the task is to place guards on some vertices of the orthogonal polygon which cover all points from $P$, such that the total sum of prices assigned to the chosen vertices is minimal. In this paper we consider WOAGP problem under the regular grid discretization of $P$, described in Subsection~\ref{sec:regulardiscretization}.
 	
-	It is well known that AGP can be reduced to \emph{the Minimum Set Cover Problem} (MSCP) by a discretization of the set of all points of the polygon $P$. The appropriate discretization should be performed in such a way that if each point from the discretized set $D(P)$ is covered, then the whole polygon $P$ is covered. After the discretization is made, for each vertex of polygon $P$, a set of visible points from $D(P)$ is determined. In that way, the problem of determining the minimum number of guards covering the entire polygon is reduced to determining the minimum number of subsets of points, such that each point from $D(P)$ is included in at least one of the chosen subsets, which is MSCP. Analogously, WOAGP can be reduced to the \emph{Minimum Weighted  Set Cover Problem} (MWSCP).
+	It is well known that AGP can be reduced to \emph{the Minimum Set Cover Problem} (MSCP) by a discretization of the set of all points of the polygon $P$. The appropriate discretization should be performed in such a way that if each point from the discretized set $D(P)$ is covered, then the whole polygon $P$ is covered. After the discretization is made, for each vertex of polygon $P$, a set of visible points from $D(P)$ is determined. In that way, the problem of determining the minimum number of guards covering the entire polygon is reduced to determining the minimum number of subsets of points, such that each point from $D(P)$ is included in at least one of the chosen subsets, which is MSCP. Analogously, WOAGP can be reduced to the \emph{Minimum Weighted  Set Cover Problem} (MWSCP). 
 	
-	Concerning the exact and heuristic techniques to solve OAGP, Couto et al.~\cite{couto2007exact} presented an exact and efficient exact algorithm for the OAGP based on preprocessing and refinement phases of the the discretized instance. In ~\cite{ghosh2010approximation} an approximate solution of the minimum vertex guard problem, which can be computed in $O(n^4)$ time and the size of the solution is at most $O(\log n)$ times the optimal\fxnote{ovo je malo cudno receno... Mozda bolje da se kaze da je to aproksimacioni faktor}. After that, on these constructed sets Johnson’s approximation algorithm ~\cite{johnson1974approximation} for the MSCP is applied. An anytime algorithm to compute successively better approximations of the optimum to Minimum Vertex Guard is proposed in~\cite{tomas2003approximation}.  A major idea of this approach is exploring dominance of visibility regions to first detect pieces that are
+	Concerning the exact and heuristic techniques to solve OAGP, Couto et al.~\cite{couto2007exact} presented an exact and efficient exact algorithm for the OAGP based on preprocessing and refinement phases of the the discretized instance. In ~\cite{ghosh2010approximation} an approximate solution of the minimum vertex guard problem, which can be computed in $O(n^4)$ time and the the solution is at most $O(\log n)$ times the optimal one. After that, on these constructed sets Johnson’s approximation algorithm ~\cite{johnson1974approximation} for the MSCP is applied. An anytime algorithm to compute successively better approximations of the optimum to Minimum Vertex Guard is proposed in~\cite{tomas2003approximation}.  A major idea of this approach is exploring dominance of visibility regions to first detect pieces that are
 	more difficult to guard. The same problem is solved in~\cite{tomas2006visibility} by applying successive approximations from  ~\cite{tomas2003approximation}.
-	Tozoni et al.~\cite{tozoni2013practical,tozoni2016algorithm}  presented an exact \emph{Integer Linear Programming}  (ILP)-based  algorithm, which iteratively generates upper and lower bounds through the resolution of discretized space of the AGP. Although many variants AGP are present in literature, WOAGP has not been so intensively studied, which motivated us to consider this problem.
-	A comprehensive analysis of various greedy-like heuristics for the MWSCP  was presented in \cite{vasko2016best}.
-	More detailed overview of the extensive literature regarding SCP \fxnote{nema skracenice za ovo nigdje uvedene prije} and AGP is out of the scope of this paper and for further reading we suggest review papers ~\cite{caprara2000algorithms,ren2010new,ghosh2010approximation2}.
+	Tozoni et al.~\cite{tozoni2013practical,tozoni2016algorithm}  presented an exact \emph{Integer Linear Programming}  (ILP)-based  algorithm, which iteratively generates upper and lower bounds through the resolution of discretized space of the AGP. Although many variants AGP are present in literature, WOAGP has not been so intensively studied, which motivated us to consider this problem.  A comprehensive analysis of various greedy-like heuristics for the MWSCP  was presented in \cite{vasko2016best}.
+	More detailed overview of the extensive literature regarding MSCP and AGP is out of the scope of this paper and for further reading we suggest review papers ~\cite{caprara2000algorithms,ren2010new,ghosh2010approximation2}.
 
 	
 	\subsection{Main contributions}
@@ -126,7 +125,7 @@
 
 	
 	\subsection{The Regular Grid Discretization of Polygon}\label{sec:regulardiscretization}
-	The discretization $D(P)$ of the polygon $P$ is built as follows. Consider the regular grid with resolution $\bigtriangleup_{x}\times\bigtriangleup_{y}$ starting at the lower left corner of the bounding box of polygon $P$ which height and weight are defined as follow:
+	Building of the regular grid discretization $D(P)$ of the polygon $P$ is shown in Algorithm \ref{alg:discret}.  At the beginning, the minimum bounding rectangle (usually called \textit{bounding box}) of $P$ is created. Then, the  regular grid, with resolution $\bigtriangleup_{x}\times\bigtriangleup_{y}$ and starting at the lower left corner of the bounding box of polygon $P$, is defined as follows:
 
 	\begin{equation}
          \bigtriangleup_{x}=\min\{ |u_{x}-v_{x}|\mid u_{x}\neq v_{x}\} \mbox{ and }
@@ -146,12 +145,9 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
 			\State $D(P) \gets D(P) \cup V;$
 		\end{algorithmic}
 	\end{algorithm}
-
-	All intersection points of this regular grid with polygon $P$ and all vertices of $P$ are added into the discrete set $D(P)$. The pseudocode which presents the building steps of the discretizations $D(P)$ is given in Algorithm~\ref{alg:discret}.\fxnote{Bolji opis Alg. 1 potreban...}
+The algorithm further forms the whole regular grid of the bounding box (line 5. of the pseudocode) and finally, all points of the regular grid also belonging to $P$ and all vertices of $P$ are added into the discrete set $D(P)$.
 	
-	\fxnote{TODO: Milan: Treba prevesti na engleski}
-	
-	Treba primjetiti da iz pokrivenosti diskretizacije D(P) optimalnim skupom stražara iz Z ne mora da slijedi pokrivenost poligona P istim skupom stražara Z. Na slici 1 pod a) prikazano je optimalno pokrivanje crvenim tačkam diskretizacije D(P). Crvene i bjele tačke na poligonu su tačke iz diskretnog skupa D(P). Ovo optimalno rješenje ne pokriva poligon sa slike. Poligon na slici 1 pod b) je optimalno pokriven, ali ovo pokrivanje nije optimalno pokrivanje njegove diskretizacije D(P).
+	It should be noticed that the optimal solution of WOAGP on $D(P)$ (i.e. an optimal covering of $D(P)$) is not necessarily  an optimal covering of $P$. In the simple example shown in Figure \ref{fig:example}, one can see that the guards placed on top left and top right vertices (shown in red color) cover all points from $D(P)$ (Figure \ref{fig:example} (a)), but not the whole polygon, since the gray triangle is not visible from any of these two points. The optimal solution value in this case is 1.2. Two red vertices in Figure \ref{fig:example} (b) optimally cover the whole polygon, but this covering is not optimal for $D(P)$, since the total sum of weights is larger (1.6).
 	
 	\begin{figure}[t!]
     	\centering
@@ -166,27 +162,27 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
         	\includegraphics[height=1.7in]{slika1b.eps}
         	\caption{Optimal coverage of polygon $P$}
     	\end{subfigure}
-    	\caption{Optimal coverage of discretization $D(P)$ does not imply a coverage of polygon $P$.}
+    	\caption{Optimal coverage of discretization $D(P)$ does not imply a coverage of polygon $P$.}\label{fig:example}
 	\end{figure}
 	
-	Izabrana rezolucija $\bigtriangleup_{x}\times\bigtriangleup_{y}$ predstavlja kompromis izmedju brzine i tacnosti. Odnosno, smanjenjem rezolucije povecava se tacnost rjesenje, ali se sporije pronalazi diskretizacija. Povecanjem rezolucije smanjuje se tacnost rjesenja, ali i vrijeme pronalazenja diskretizacije.
+	The chosen resolution  $\bigtriangleup_{x}\times\bigtriangleup_{y}$ is a compromise between the algorithm speed and accuracy. More precisely,  higher resolution increases the accuracy, but also the execution time and vice versa, lower resolution decreases the algorithm accuracy, but discretization is  made faster.
 	
 	%Couto et al.~\cite{couto2007exact} koristili su pomenutu diskretizaciju za problem ortogonalne galerije. U njihovom radu broj pologona nad kojim je primjenjena ova diskretizacija je 10282. Za 59.4\% poligona je vazilo da iz pokrivenoosti diskretnog skupa D(P) slidi pokrivenost poligona P za optimalno pronadjen skup strazara koji pokrivaju D(P)\fxnote{Sta je sa ostalim poligonima koji nisu bili pokriveni?} Za ostale poligone je bilo potrebno dodati prosječno 0.003·n+1.1 dodatnih tačaka u diskretizaciju kako bi iz pokrivenosti diskretizacije slijedila pokrivenost poligona. Dakle nad testiranim uzorkom poligona, ili je citav poligon pokriven ili je mali broj regija nepokriveno optimalnim skupom stražara Z za D(P). U sekciji 4 će biti prikazane vrijednosti površina ovih nepokrivenih regija. \fxnote{Koliki je procenat pokrivenosti bio u tom slucaju?} \fxerror{Do ove info ne mogu da dodjem} \fxnote{Kako se ovo odnosi na druge diskretizacije, bilo je puno bolje ili?} \fxnote{Treba pregledati literaturu. Pitanje je koliko je ljudi pokusavalo ovom metodologijom dopunjavati diskretiyaciju kako bi dosli do optimalnog rjesenja - ja bih izbjegao o ovom pricati/pisati}.
 	
 	\section{Exact methods}
-	In this section we present the exact ILP and \emph{Constraint Programming} (CP) models for solving MWSCP  under regular grid discretization, which are used  in the rest of the paper.
+	In this section we present the exact ILP  initially developed for MWSCP from ~\cite{vazirani2013approximation} and \emph{Constraint Programming} (CP) models for solving WOAGP  under regular grid discretization, which are used  in the rest of the paper.
 	\subsection{Integer linear programming model}
 	Let us suppose we are given a polygon $P$ and the discretization $D(P)$ of $P$.  The task we consider is covering all points from $D(P)$ by some vertices $V=\{v_1,...,v_n\}$ of $P$ such that the sum of their weights is minimized.
-	The problem is related to the known MWSC problem as follows.
+	The problem is related to the known MWSCP  as follows.
 	Family $\mathcal{F}$ of nonempty sets consists of the sets
-	$S_i \in \mathcal{F}$ which include points $p \in D(P)$ that are visible from guard $v_i\in V$, i.e., $pv_i \subset P$.  For each set $S_i$, the cost $c(S_i) = w_i$ is assigned.  In this way, our starting task is equivalent of finding a minimum cardinalty covering $\mathcal{C}\subseteq\{S_1,...,S_n\}$ of the set of points $D(P)$, that is
-	$$ \bigcup_{C \in \mathcal{C}} C = D(P),$$ such that 
+	$S_i \in \mathcal{F}$ which include points $p \in D(P)$ that are visible from guard $v_i\in V$, i.e., $pv_i \subset P$.  For each set $S_i$, the cost $c(S_i) = w_i$ is assigned.  In this way, our starting task is equivalent of finding a  covering $\mathcal{C}\subseteq\{S_1,...,S_n\}$ of the set of points $D(P)$ of minimum weight, that is
+	$$ \bigcup_{C \in \mathcal{C}} C = D(P),$$ such that
 
-$$f(\mathcal{C}) = \sum_{S_i \in \mathcal{C}} c(S_i)$$ 
+$$f(\mathcal{C}) = \sum_{S_i \in \mathcal{C}} c(S_i)$$
 
-is minimized.  
+is minimized.
 
-The ILP  model for the WSCP is already known from the literature~\cite{vazirani2013approximation}, where  here adapted to WOAGP  as follows:
+The ILP  model for the MWSCP ~\cite{vazirani2013approximation}   is  adapted to WOAGP  as follows:
 
 	\begin{align}
 	&\sum_{i=1}^n w_ix_i \longrightarrow \min  \label{eq:woagp-min}\\
@@ -210,12 +206,12 @@ The ILP  model for the WSCP is already known from the literature~\cite{vazirani2
 	\bigvee_{ j \in V } (a_{ij} \wedge x_j) = 1,
 	\end{equation}
 	whereas the other constraints and the objective function are the same as in the above ILP model. Note that CP approach works in a branch-and-bound manner employing a constraint propagation and variable domain filtering~\cite{rossi2006handbook}.
-	\section{Algorithmic Approaches for WOAGP}
-	\fxnote{Izbjegavati naslov do naslova a bez teksta izmedju...}
+	\section{Algorithmic Approaches for solving WOAGP}
+	In this section we present the heuristic greedy approaches for solving WOAGP and their hybridization with the exact ILP method. 
 	\subsection{Greedy approaches for solving WOAGP}
- Greedy algorithms produce a solution of reasonable quality within a short interval of time and are, in essence, easy to implement. Efficiency of such  heuristic is related to a greedy criterion utilized to expand current (non-complete, i.e., partial) solution to complete one. Among all candidates (solution components for expansion, that is not-yet-considered guards) to extend current partial solution,  we choose one with the smallest greedy value and add it to the current solution until it becomes complete (i.e., it covers all  points from $D(P)$). A general pseudocode of Greedy heuristics is given in Algorithm~\ref{alg:greedy}.
-	
-	In the case of our problem, set Extend($s^{ps}$) includes those guards from set $V \setminus$ $s^{ps}$ that cover some points from $D(P)$ that are not yet covered by $s^{ps}$. Solution component of the problem is a guard. Extension of partial solution $s^{ps}$ by a vertex $v$ corresponds to adding $v$ into set $s^{ps}$. 
+ Greedy algorithms produce a solution of reasonable quality within a short interval of time and are, in essence, easy to implement. Efficiency of such  heuristic is related to a greedy criterion utilized to expand current (non-complete, i.e., partial) solution to complete one. In order to extend current partial solution, among all candidates (solution components for expansion, that is not-yet-considered guards),  we choose one with the smallest greedy value and add it to the current solution. This procedure is repeating until the current solution becomes complete (i.e., all points from $D(P)$ are covered). 
+ 
+ A general pseudocode of Greedy heuristics is given in Algorithm~\ref{alg:greedy}. 	The set Extend($s^{ps}$) includes those guards from set $V \setminus$ $s^{ps}$ that cover some points from $D(P)$ that are not yet covered by $s^{ps}$. Solution component of the problem is a guard. Extension of partial solution $s^{ps}$ by a vertex $v$ corresponds to adding $v$ into set $s^{ps}$.
 	
 	\begin{algorithm}[!t]
 		\caption{Greedy Heuristic}\label{alg:greedy}
@@ -232,22 +228,22 @@ The ILP  model for the WSCP is already known from the literature~\cite{vazirani2
 	\subsubsection{An existing greedy method}
 	
 	%  \subsection{Greedy Criterion based on Price-per-Unit}
-	Concerning the greedy heuristic for the literature for solving WMSC problem~\cite{chvatal1979greedy, lovasz1975ratio}, one of the most efficient greedy heuristic was based on the following criterion:
+	Concerning the greedy heuristic for the literature for solving MWSCP ~\cite{chvatal1979greedy, lovasz1975ratio}, one of the most efficient greedy heuristic was based on the following criterion:
 	\begin{align}\label{eq:Lovasz}
 	g_1(s^{ps}, v_i) = \frac{w_{i}}{ f(s^{ps} \cup \{v_i\})  - f(s^{ps})},
 	\end{align}
 	where
 \begin{equation}\label{eq:sp}
-    f(s^{ps}) = \left|\bigcup_{i \in s^{ps}} S_i \right|.
+    f(s^{ps}) = \left|\bigcup_{v_i \in s^{ps}} S_i \right|.
     \end{equation}
 	This heuristic  also ensures an approximation with $O(\log(n))$ approximation factor.
 	
 	\subsubsection{A Novel Greedy Heuristic}
-	In this subsection we present a novel greedy criterion. First, we introduce a term  ``incorrect point''. For a point from $D(P)$ we say that it is \textit{incorrect} if it is not covered by any guard from the current partial solution $s^{ps}$. Let us denote by $incorrect_{total}(s^{ps})$ the total number of incorrect points from discretization $D(P)$ w.r.t. $s^{ps}$. Note that 
+	In this subsection we present a novel greedy criterion. First, we introduce a term  ``incorrect point''. For a point from $D(P)$ we say that it is \textit{incorrect} if it is not covered by any guard from the current partial solution $s^{ps}$. Let us denote by $incorrect_{total}(s^{ps})$ the total number of incorrect points from discretization $D(P)$ w.r.t. $s^{ps}$. Note that
  \begin{equation}\label{eq:incorrect}
  incorrect_{total}(s^{ps}) = |D(P)|-f(s^{ps}),
  \end{equation}
- 
+
  where $f(s^{ps})$ is defined in (\ref{eq:sp}) and $|D(P)|$ is the cardinality of discretization set. Let $w_{total}$ be the total sum of all weights among all vertices. The greedy function w.r.t. partial solution $s^{ps}$ and  guard $v$ is defined as follows.
 	\begin{equation}\label{eq:greedyfun2}
     g_2(s^{ps}, v)  =    \frac{\sum_{i \in s^{ps} \cup \{v\}} w_i}{w_{total}}+ \frac{incorrect_{total}(s^{ps}\cup v)}{|D(P)|}.
@@ -261,7 +257,7 @@ The ILP  model for the WSCP is already known from the literature~\cite{vazirani2
 	\begin{align}
 	g'(s^{ps}, v_i) = \frac{w_{i}}{|\emph{Surf}({v_i})|},
 	\end{align}
-    where $|\emph{Surf}({v_i})|$ represents the area of surface $\emph{Surf}({v_i})$. 
+    where $|\emph{Surf}({v_i})|$ represents the area of surface $\emph{Surf}({v_i})$.
 	In our experimental studies, we found out that this heuristic does not perform well on its own, but it represents a reasonable tie-breaking mechanism which boosts quality of the aforementioned greedy heuristics.
 	\subsubsection{Partial calculation of greedy functions}
 	
@@ -312,7 +308,7 @@ The ILP  model for the WSCP is already known from the literature~\cite{vazirani2
           \end{algorithm}
 	  \end{comment}
  	
-\subsubsection{A Hybrid of the \textsc{Greedy} and \textsc{Cplex}}
+\subsection{A Hybrid of the \textsc{Greedy} and \textsc{Cplex}}
 	The performance of \textsc{Cplex}  sooner or later degrades w.r.t. instance size due to the complexity of the problem. On the other hand, in the later stage, there is an increased chance for Greedy to worsen the obtained greedy solution. So, it makes sense to combine  partial solutions generated with a Greedy procedure over a few iterations  and only then to make use the \textsc{Cplex} to do the completion of the partial solution. In details, our approach consists of the following steps:
 	\begin{enumerate}
 		\item Run a Greedy method up to $K$ iterations  to obtain a partial solution $s^{ps}$, where $K$ is a parameter of the algorithm.
@@ -340,20 +336,26 @@ The ILP  model for the WSCP is already known from the literature~\cite{vazirani2
 	
 	\section{Computational Results}
 
- We used two different kind of benchmark sets from~\cite{tomas2006visibility}:
+ We used two different kind of benchmark sets from~\cite{tomas2006visibility}\fxnote{ima jos jedna referenca Partitioning Orthogonal Polygons by Extension
+of All Edges Incident to Reflex Vertices}:
      \begin{itemize}
-     	 \item \emph{MinArea} instances: MinArea includes polygons with a small areas. They are specific because they have tiny interior. They presents a boundary case for the caardinality of set $D(P)$ which means that a very few points will be added in $D(P)$.
-     	 \item \emph{FAT} instances:  includes polygons of large areas. They are specific because their interior is wide. In this case, a large number of points of relgular grid will be included into $D(P)$.
+     	 \item \emph{MinArea} instances: MinArea includes polygons with a small areas and tiny interior. They present a lower boundary case for the cardinality of set $D(P)$ which means that, beside the polygon vertices,  $D(P)$ contains few additional points.
+     	 \item \emph{FAT} instances:  includes polygons of large areas and wide interior. In this case,  a large number of points of regular grid is included into $D(P)$.
      \end{itemize}
-     For each benchmark set -- \emph{MinArea} and \emph{FAT} instances -- one polygon for each $n \in\{8,10,...,200\}$ has been generated, which makes 97 instances per each benchmark set. In overall, we have 194 polygons.
-	We included two kind of weights into each of (194) instances:
+     For each benchmark set -- \emph{MinArea} and \emph{FAT} instances -- one $n$-ogon for each $n \in\{8,10,...,200\}$ has been considered and the appropriate discretization is made, which makes 97 instances per each benchmark set. In overall, we have 194 instances. Discretization is performed by using \fxnote{nismo nigdje ubacili, a ovdje bi trebalo CGAL}.
+     
+	We included two kind of weights into each of 194  instances:
 	\begin{itemize}
-		\item \emph{topologically-based related weights} ($W0$): For each vertex $v_i$ of polygon $P$ we denote by $l_i$ and $l_{i+1}$ the lengths of two edges that come out of the vertex $v_i$. Then, we set $w_i := \frac{l_i + l_{i+1}}{2}$. This way of assigning weights is augmented by the fact that if the arithmetic length of both edges that comes out of vertex $i$ is longer, it is expected that a guard can see a larger pieces of polygon $P$. This implies that the spectrum of camera installed at $v_i$ has to be larger, which again implies that it should be of a higher quality, i.e,. a higher price.
+		\item \emph{topologically-based related weights} ($W0$): For each vertex $v_i$ of polygon $P$ we denote by $l_i$ and $l_{i+1}$ the lengths of two edges that come out of the vertex $v_i$. Then, we set 
+\begin{equation}
+w_i := \frac{l_i + l_{i+1}}{2}.
+ \end{equation}
+ This way of assigning weights is augmented by the fact that if the arithmetic length of both edges that comes out of vertex $i$ is longer, it is expected that a guard can see a larger pieces of polygon $P$. This implies that the spectrum of camera installed at $v_i$ has to be larger, which again implies that it should be of a higher quality, i.e,. a higher price.
 		\item \emph{point-based related weights} ($W1$): For each vertex $v_j$, based on the number of points in $D(P)$ that are visible from $v_j$, we assign prices to each vertex on the following way:
 		\begin{equation}
 		w_i = n \cdot \frac{|S_i|}{|D(P)|},\ i=1,...,n.
 		\end{equation}
-    Similarly as in case of $W0$, cameras which cover larger range of points are considered be of a higher spectrum and quality, and thus are more expensive. 
+    Similarly as in case of $W0$, cameras which cover larger range of points are considered be of a higher spectrum and quality, and thus are more expensive.
 	\end{itemize}
 
      \subsection{Settings and the choice of the Parameters}
@@ -453,7 +455,7 @@ The ILP  model for the WSCP is already known from the literature~\cite{vazirani2
      	\item  In case of the instances that include small-area polygons and weight $W1$ (Table~\ref{small_w1}): the best heuristic approach is \textsc{Greedy-2+Cplex} which is able to deliver solutions which are within 3\% of the optimum ones. Note that in 81 instances (out of 91) \textsc{Greedy-2+Cplex} is able to deliver equally good or better results that the other heuristic approaches. As it was the case  of the weight $W0$, heuristic methods could not achieve many optimal solutions, but average standard deviation w.r.t. optimal solutions is rather small.
      	The results of pure greedy method \textsc{Greedy-1} outperform the results of \textsc{Greedy-2}. These two methods are effective since they deliver solutions which are within 10\% of the \textsc{Cplex} results but need 3 times less runtime. The result of \textsc{Greedy-1} match just in two cases to the optimum.
      	
-     	\item In case of the instances that include large-area polygons ($FAT$) and weight $W0$ (Table~(\ref{large_w0}): the exact \textsc{Cplex} approach is a clear winner concerning average solutions' quality as well as the average runtimes;  the best heuristic algorithm w.r.t. solution quality is \textsc{Greedy-2 +Cplex}. It also matches in the most cases (on 6 instances) to the optimum results w.r.t. other heuristic approaches. Its average results are within 22\% of the average of  optimal solutions.  The pure \textsc{Greedy-1} slightly outperforms the pure greedy \textsc{Greedy-2}. It is interesting that \textsc{Greedy-1} assigns in average a  higher number of guards in comparison to the average number of guards of \textsc{Greedy-2}. The runtimes of our heuristic approaches are an order of magnitude lower than the time of \textsc{Cplex} approach. Reason for that can be seen in the used regular discretization of the polygon. For the polygons with a larger area, more points are involved in the discrete set $D(P)$ and, therefore, iterations of greedy methods take a longer time than in case when $D(P)$ is smaller (which was the case of \emph{Minarea} polygons).
+     	\item In case of the instances that include large-area polygons ($FAT$) and weight $W0$ (Table~ \ref{large_w0}): the exact \textsc{Cplex} approach is a clear winner concerning average solutions' quality as well as the average runtimes;  the best heuristic algorithm w.r.t. solution quality is \textsc{Greedy-2 +Cplex}. It also matches in the most cases (on 6 instances) to the optimum results w.r.t. other heuristic approaches. Its average results are within 22\% of the average of  optimal solutions.  The pure \textsc{Greedy-1} slightly outperforms the pure greedy \textsc{Greedy-2}. It is interesting that \textsc{Greedy-1} assigns in average a  higher number of guards in comparison to the average number of guards of \textsc{Greedy-2}. The runtimes of our heuristic approaches are an order of magnitude lower than the time of \textsc{Cplex} approach. Reason for that can be seen in the used regular discretization of the polygon. For the polygons with a larger area, more points are involved in the discrete set $D(P)$ and, therefore, iterations of greedy methods take a longer time than in case when $D(P)$ is smaller (which was the case of \emph{Minarea} polygons).
      	\item  In case of the instances that include large-area polygons ($FAT$) and weight $W1$ (Table~(\ref{large_w1}): the best heuristic algorithms w.r.t. solution quality is \textsc{Greedy-1+Cplex} which is able to match in 96 instances the quality of optimal solutions. Slightly worse results are delivered by \textsc{Greedy-1} and \textsc{Greedy-2}. The obtained (heuristic) solutions of these two approaches are within 1\% of optimal solutions and they are
      	able to reach the quality of the optimal solution for 92 instances. Unfortunately, the runtimes in comparison to the runtimes of \textsc{Cplex} are significantly higher for all of our heuristic approaches. However, the average runtime for \textsc{Cp} is a bit higher that the avg. runtimes of the heuristic approaches. Again, average standard deviation for each heuristic method is rather small w.r.t. optimal solutions, indicating the good quality of the proposed algorithms.
      	\item  Concerning the percentage of covering of polygons for the best solutions (found by \textsc{Cplex}) we
@@ -495,9 +497,13 @@ The ILP  model for the WSCP is already known from the literature~\cite{vazirani2
 	
 	
 	
+	\section*{Acknowledgements}
+This research is partially supported by Ministry for Scientific and Technological
+Development, Higher Education and Information Society, Government
+of Republic of Srpska, B\&H under the Project \fxnote{ime projekta}.
+
 	
-	
-	
+	\section*{References}
 	\bibliographystyle{abbrv}
 	\bibliography{bib}
 	
