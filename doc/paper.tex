@@ -258,16 +258,21 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
 	In our experimental studies, we found out that this heuristic does not perform well on its own, but it represents a reasonable tie-breaking mechanism which boosts quality of the aforementioned greedy heuristics.
 	\subsubsection{Partial calculation of greedy functions}
 	
-	In order to enable fast calculation of greedy functions described in previous subsections, we noticed that it could be useful to allow fast updating of the number of uncovered vertices. Therefore, we introduced two useful structures and two auxiliary functions:
+	In order to enable fast calculation of greedy functions described in previous subsections, we noticed that it could be useful to allow fast updating of the number of uncovered vertices. Therefore, we introduced two useful structures: %and two auxiliary functions:
 	\begin{itemize}
 		%\item structure \texttt{map<Point,list<Point>> Visibility} -- for each point of $D(P)$, we provide the list of guards which are visible from that point;
 		\item structure \texttt{numberOfGuards} -- which is a map structure, where each point from $D(P)$ is mapped to the number of guards in solution which cover that point;
-		\item structure \texttt{CoveredPoints} -- which keeps a set of points from $D(P)$ that are covered by the partial solution;
-		\item function \texttt{updateCoveredPointsAdd (vertex v)} -- does the update of  structures \texttt{CoveredPoints} and \texttt{numberOfGuards} by considering all new points from $D(P)$ covered by vertex $v$, when $v$  is added to partial solution; %pseudocode of the procedure is shown in Algorithm \ref{alg:updateCoveredPointsAdd}.
-		\item function \texttt{updateCoveredPointsRemove(vertex v)} -- does the update of structures \texttt{CoveredPoints} and \texttt{numberOfGuards} by removing all points which are covered only by $v$ , when $v$ is removed from partial solution; %pseudocode  is shown in Algorithm \ref{alg:updateCoveredPointsRemove}.
+		\item structure \texttt{CoveredPoints} -- which is a set structure which keeps the points from $D(P)$ that are covered by the partial solution;
+		%\item function \texttt{updateCoveredPointsAdd (vertex v)} -- does the update of  structures %\texttt{CoveredPoints} and \texttt{numberOfGuards} by considering only new points from $D(P)$ covered by vertex $v$, when $v$  is being added to partial solution; %pseudocode of the procedure is shown in Algorithm \ref{alg:updateCoveredPointsAdd}.
+		%\item function \texttt{updateCoveredPointsRemove(vertex v)} -- does the update of structures \texttt{CoveredPoints} and \texttt{numberOfGuards} by removing all points which are covered only by $v$ , when $v$ is removed from partial solution; %pseudocode  is shown in Algorithm \ref{alg:updateCoveredPointsRemove}.
 	\end{itemize}
- Although the time complexity of both functions is $O(|D(P)|)$, % from Algorithms \ref{alg:updateCoveredPointsAdd} and \ref{alg:updateCoveredPointsRemove}
-  it is easy to notice that they only depends on the number of points covered by the current vertex, which is expected to be significantly lower than $|D(P)|$. These two functions allow also a fast calculation of the functions $f$ and  $incorrect_{total}$: a candidate vertex $v$ is temporary added to the partial solution, new status is checked and then being removed from the solution.
+  When vertex $v$ is being added to partial solution, we update current \texttt{CoveredPoints} and \texttt{numberOfGuards} by considering only new points from $D(P)$ covered by $v$. 
+  When $v$ is removed from partial solution, we update current \texttt{CoveredPoints} and \texttt{numberOfGuards} by removing all points which are covered only by $v$.  These two functions allow also a fast calculation of the functions $f$ and  $incorrect_{total}$: a candidate vertex $v$ is temporary added to the partial solution, new status is checked and then being removed from the solution.
+
+
+% Although the time complexity of both functions is $O(|D(P)|)$, % from Algorithms \ref{alg:updateCoveredPointsAdd} and \ref{alg:updateCoveredPointsRemove}
+ % it is easy to notice that they only depends on the number of points covered by the current vertex, which is expected to be significantly lower than $|D(P)|$.
+ 
  
  \begin{comment}
 
