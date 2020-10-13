@@ -338,10 +338,10 @@ The ILP  model for the MWSCP ~\cite{vazirani2013approximation}   is  adapted to 
 
  We used two different kind of benchmark sets from~\cite{tomas2006visibility,bajuelos2004partitioning}:
      \begin{itemize}
-     	 \item \emph{MinArea} instances: MinArea includes polygons with a small areas and tiny interior. They present a lower boundary case for the cardinality of set $D(P)$ which means that, beside the polygon vertices,  $D(P)$ contains few additional points.
-     	 \item \emph{FAT} instances:  includes polygons of large areas and wide interior. In this case,  a large number of points of regular grid is included into $D(P)$.
+     	 \item \emph{MinArea} instances: include polygons with a small areas and tiny interior. They present a lower boundary case for the cardinality of set $D(P)$ which means that, beside the polygon vertices,  $D(P)$ contains few additional points.
+     	 \item \emph{FAT} instances:  include polygons of large areas and wide interior. In this case,  a large number of points of regular grid is included into $D(P)$.
      \end{itemize}
-     For each benchmark set -- \emph{MinArea} and \emph{FAT} instances -- one $n$-ogon for each $n \in\{8,10,...,200\}$ has been considered and the appropriate discretization is made, which makes 97 instances per each benchmark set. In overall, we have 194 instances. Discretization is performed by using CGAL \cite{cgal:eb-20b}. 
+     For each benchmark set -- \emph{MinArea} and \emph{FAT} instances -- one $n$-ogon for each $n \in\{8,10,...,200\}$ has been considered and the appropriate discretization is made, which makes 97 instances per each benchmark set. In overall, we have 194 instances. Discretization is performed by using CGAL \cite{cgal:eb-20b} \fxnote{verzija CGAL-a dodati}. 
 
 	We included two kind of weights into each of 194  instances:
 	\begin{itemize}
@@ -386,7 +386,7 @@ w_i := \frac{l_i + l_{i+1}}{2}.
      	\centering
      	 \scalebox{0.83}{
      	\begin{tabular}{l|lllllll}    \hline
-     		Alg.           & $\overline{obj}$ & $\overline{t}[s]$ &   $\overline{|g|}$ &\#optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
+     		\textit{Algorithm}           & $\overline{obj}$ & $\overline{t}[s]$ &   $\overline{|g|}$ &\#optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
      		\textsc{Cplex}            & *15.93  & 0.152    & 18.93     & 97/97     & 0.00    & N/A        & N/A      \\
      		\textsc{Cp}               & 16.04  & 98.215   & 18.96     & 67/97     & 0.02    & N/A        & N/A      \\ \hline
      		\textsc{Greedy-1}             & 22.63  & \textbf{0.002}    & 26.28     & 0/97      & 0.79    & 3/97       & 7.61     \\
@@ -401,7 +401,7 @@ w_i := \frac{l_i + l_{i+1}}{2}.
       	\centering
       	\scalebox{0.83}{
       	\begin{tabular}{l|lllllll} \hline
-      		Alg.           & $\overline{obj}$ & $\overline{t}[s]$ &  $ \overline{|g|}$ &\#optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
+      		\textit{Algorithm}           & $\overline{obj}$ & $\overline{t}[s]$ &  $ \overline{|g|}$ &\#optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
       		\textsc{Cplex}            & *36.03  & 0.003   & 18.93     & 97/97     & 0.00    & N/A        & N/A      \\
       		\textsc{Cp}               & *36.03  & 18.953   & 18.93     & 97/97     & 0.00    & N/A        & N/A      \\ \hline
       		\textsc{Greedy-1}             & 39.28  & \textbf{0.001}    & 20.15     & 2/97      & 0.35    & 4/97       & 0.24     \\
@@ -409,14 +409,14 @@ w_i := \frac{l_i + l_{i+1}}{2}.
       		   \textsc{Greedy-1+Cplex}  & 37.78  & 0.006    & 19.41     & \textbf{4/97}      & 0.21    & 19/97      & \textbf{0.08}     \\
       		   \textsc{Greedy-2+Cplex} & \textbf{37.31}  & 0.003    & \textbf{19.58}     & 2/97      & \textbf{0.15}    & \textbf{81/97}     & {0.19}   \\ \hline
       	\end{tabular}}
-         \caption{The results on the bemchmark set $MinArea$ for the  type of weight $W1$.}\label{small_w1}
+         \caption{The results on the benchmark set $MinArea$ for the  type of weight $W1$.}\label{small_w1}
       \end{table}
 
      \begin{table}[]
       \centering
        \scalebox{0.85}{
      	\begin{tabular}{l|lllllll} \hline
-     		Alg.           & $\overline{obj}$ & $\overline{t}[s]$ &   $\overline{|g|}$ &\#optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
+     		\textit{Algorithm}           & $\overline{obj}$ & $\overline{t}[s]$ &   $\overline{|g|}$ &\#optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
      		\textsc{Cplex}            & *2.62   & 0.02    & 7.32      & 97/97     & 0.00    & N/A        & N/A      \\
      		\textsc{Cp}               & *2.62   & 8.17    & 7.32      & 97/97     & 0.00    & N/A        & N/A      \\ \hline
      		\textsc{Greedy-1}             & 3.39   & 0.35    & 7.81      & 0/97      & 0.09    & 23/97      & 0.05     \\
@@ -431,7 +431,7 @@ w_i := \frac{l_i + l_{i+1}}{2}.
     	\centering
     	\scalebox{0.85}{
  	  \begin{tabular}{l|lllllll} \hline
- 		Alg.           & $\overline{obj}$ & $\overline{t}[s]$ &   $\overline{|g|}$ & \#optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
+ 		\textit{Algorithm}           & $\overline{obj}$ & $\overline{t}[s]$ &   $\overline{|g|}$ & \#optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
  		\textsc{Cplex}            & *6.72   & 0.02    & 6.44      & 97/97     & 0.00    & N/A        & N/A      \\
  		\textsc{Cp}               & *6.72   & 0.36    & 6.44      & 97/97     & 0.00    & N/A        & N/A      \\ \hline
  		\textsc{Greedy-1}             & 6.77   & \textbf{0.31}    & 6.49      & 92/97     & 0.02    & 92/97      & 0.04     \\
@@ -483,7 +483,7 @@ w_i := \frac{l_i + l_{i+1}}{2}.
     	\centering
     	 \scalebox{0.9}{
     	\includegraphics[width=\textwidth]{grafikon3.eps}}
-    	\caption{Avg. execution time of the compared algorithms.}
+    	\caption{Avg. execution time of the compared algorithms. \fxnote{ujednacinit font teksta u legendi sa fontom u tekstu, dodati $[s]$ na $y$ osi, nigdje ne referenciramo ovu sliku...}}
     	\label{fig:timealg}
     \end{figure}
 
