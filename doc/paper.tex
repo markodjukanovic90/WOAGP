@@ -106,7 +106,7 @@
 	
 	Given a polygon $P$, the \emph{Art Gallery Problem} (AGP) asks for a set of points $G$ of minimal cardinality,  such that for each point $y \in P$ there is $x \in G$ such that $xy \subset P$. We say that the point $y$ is covered by the point $x$, or $y$ is visible from $x$. Set $G$ is called \emph{guard set} of $P$ and the points from $G$ as \emph{guards}. In the \emph{Orthogonal Art Gallery Problem} (OAGP) we suppose that edges of the polygon are only horizontal and vertical w.r.t. the axes, i.e.  the angles allowed between adjacent edges are  $90^{\circ}$ or $270^{\circ}$. The original AGP was initially stated by Victor  Klee in 1973.~\cite{o1987art}.  The problem is motivated from installing the cameras inside a building (or gallery) such that the whole area of the building is covered. Orthogonality constraint naturally comes out from the orthogonality of the walls in buildings. Kahn et al.~\cite{kahn1983traditional} formulated and proofed that 	$\lfloor \frac{n}{4} \rfloor$ guards are  sufficient to cover an orthogonal polygon with $n$ vertices.      In the course of this study, we are interested in the variant of the OAGP which allows only that guards are positioned at the vertices of polygon $P$. This restricted problem is known to be $\mathcal{NP}$--hard~\cite{schuchardt1995two,katz2008guarding}.  When it comes to the real situations (like installing the cameras in a building), it is justified to assume that the prices of cameras are not equal and may depends on several factors, like the quality of a camera   (respecting its range of spectrum of view)  or installation price at some specific parts of the building (like corners or tight places).  In the \emph{Weighted Orthogonal Art Gallery Problem} (WOAGP) the task is to place guards on some vertices of the orthogonal polygon which cover all points from $P$, such that the total sum of prices assigned to the chosen vertices is minimal. In this paper we consider WOAGP problem under the regular grid discretization of $P$, described in Subsection~\ref{sec:regulardiscretization}.
 	
-	It is well known that AGP can be reduced to \emph{the Minimum Set Cover Problem} (MSCP) by a discretization of the set of all points of the polygon $P$. The appropriate discretization should be performed in such a way that if each point from the discretized set $D(P)$ is covered, then the whole polygon $P$ is covered. After the discretization is made, for each vertex of polygon $P$, a set of visible points from $D(P)$ is determined. In that way, the problem of determining the minimum number of guards covering the entire polygon is reduced to determining the minimum number of subsets of points, such that each point from $D(P)$ is included in at least one of the chosen subsets, which is MSCP. Analogously, WOAGP can be reduced to the \emph{Minimum Weighted  Set Cover Problem} (MWSCP). 
+	It is well known that AGP can be reduced to \emph{the Minimum Set Cover Problem} (MSCP) by a discretization of the set of all points of the polygon $P$. The appropriate discretization should be performed in such a way that if each point from the discretized set $D(P)$ is covered, then the whole polygon $P$ is covered. After the discretization is made, for each vertex of polygon $P$, a set of visible points from $D(P)$ is determined. In that way, the problem of determining the minimum number of guards covering the entire polygon is reduced to determining the minimum number of subsets of points, such that each point from $D(P)$ is included in at least one of the chosen subsets, which is MSCP. Analogously, WOAGP can be reduced to the \emph{Minimum Weighted  Set Cover Problem} (MWSCP).
 	
 	Concerning the exact and heuristic techniques to solve OAGP, Couto et al.~\cite{couto2007exact} presented an exact and efficient exact algorithm for the OAGP based on preprocessing and refinement phases of the the discretized instance. In ~\cite{ghosh2010approximation} an approximate solution of the minimum vertex guard problem, which can be computed in $O(n^4)$ time and the the solution is at most $O(\log n)$ times the optimal one. After that, on these constructed sets Johnson’s approximation algorithm ~\cite{johnson1974approximation} for the MSCP is applied. An anytime algorithm to compute successively better approximations of the optimum to Minimum Vertex Guard is proposed in~\cite{tomas2003approximation}.  A major idea of this approach is exploring dominance of visibility regions to first detect pieces that are
 	more difficult to guard. The same problem is solved in~\cite{tomas2006visibility} by applying successive approximations from  ~\cite{tomas2003approximation}.
@@ -207,10 +207,10 @@ The ILP  model for the MWSCP ~\cite{vazirani2013approximation}   is  adapted to 
 	\end{equation}
 	whereas the other constraints and the objective function are the same as in the above ILP model. Note that CP approach works in a branch-and-bound manner employing a constraint propagation and variable domain filtering~\cite{rossi2006handbook}.
 	\section{Algorithmic Approaches for solving WOAGP}
-	In this section we present the heuristic greedy approaches for solving WOAGP\fxnote{treba li ovdej w.r.t. regulagrid discrtization?} and their hybridization with the exact ILP method. 
+	In this section we present the heuristic greedy approaches for solving the considered problem and their hybridization with the exact ILP method.
 	\subsection{Greedy approaches for solving WOAGP}
- Greedy algorithms produce a solution of reasonable quality within a short interval of time and are, in essence, easy to implement. Efficiency of such  heuristic is related to a greedy criterion utilized to expand current (non-complete, i.e., partial) solution to complete one. In order to extend current partial solution, among all candidates (solution components for expansion, that is not-yet-considered guards),  we choose one with the smallest greedy value and add it to the current solution. This procedure is repeating until the current solution becomes complete (i.e., all points from $D(P)$ are covered). 
- 
+ Greedy algorithms produce a solution of reasonable quality within a short interval of time and are, in essence, easy to implement. Efficiency of such  heuristic is related to a greedy criterion utilized to expand current (non-complete, i.e., partial) solution to complete one. In order to extend current partial solution, among all candidates (solution components for expansion, that is not-yet-considered guards),  we choose one with the smallest greedy value and add it to the current solution. This procedure is repeating until the current solution becomes complete (i.e., all points from $D(P)$ are covered).
+
  A general pseudocode of Greedy heuristics is given in Algorithm~\ref{alg:greedy}. 	The set Extend($s^{ps}$) includes those guards from set $V \setminus$ $s^{ps}$ that cover some points from $D(P)$ that are not yet covered by $s^{ps}$. Solution component of the problem is a guard. Extension of partial solution $s^{ps}$ by a vertex $v$ corresponds to adding $v$ into set $s^{ps}$.
 	
 	\begin{algorithm}[!t]
@@ -228,23 +228,23 @@ The ILP  model for the MWSCP ~\cite{vazirani2013approximation}   is  adapted to 
 	\subsubsection{An existing greedy method}
 	
 	%  \subsection{Greedy Criterion based on Price-per-Unit}
-	Concerning the greedy heuristic for the literature for solving MWSCP ~\cite{chvatal1979greedy, lovasz1975ratio}, one of the most efficient greedy heuristic was based on the following criterion:
+	Concerning the greedy heuristic for the literature for solving MWSCP ~\cite{chvatal1979greedy, lovasz1975ratio}, one of the most efficient greedy heuristics was based on the following criterion:
 	\begin{align}\label{eq:Lovasz}
-	g_1(s^{ps}, v_i) = \frac{w_{i}}{ f(s^{ps} \cup \{v_i\})  - f(s^{ps})},
+	g_1(s^{ps}, v_i) = \frac{w_{i}}{ h(s^{ps} \cup \{v_i\})  -h(s^{ps})},
 	\end{align}
 	where
 \begin{equation}\label{eq:sp}
-    f(s^{ps}) = \left|\bigcup_{v_i \in s^{ps}} S_i \right|.
+    h(s^{ps}) = \left|\bigcup_{v_i \in s^{ps}} S_i \right|.
     \end{equation}
 	This heuristic  also ensures an approximation with $O(\log(n))$ approximation factor.
 	
 	\subsubsection{A Novel Greedy Heuristic}
 	In this subsection we present a novel greedy criterion. First, we introduce a term  ``incorrect point''. For a point from $D(P)$ we say that it is \textit{incorrect} if it is not covered by any guard from the current partial solution $s^{ps}$. Let us denote by $incorrect_{total}(s^{ps})$ the total number of incorrect points from discretization $D(P)$ w.r.t. $s^{ps}$. Note that
  \begin{equation}\label{eq:incorrect}
- incorrect_{total}(s^{ps}) = |D(P)|-f(s^{ps}),
+ incorrect_{total}(s^{ps}) = |D(P)|-h(s^{ps}),
  \end{equation}
 
- where $f(s^{ps})$ is defined in (\ref{eq:sp}) and $|D(P)|$ is the cardinality of discretization set. Let $w_{total}$ be the total sum of all weights among all vertices. The greedy function w.r.t. partial solution $s^{ps}$ and candidate guard $v$ is defined as follows.
+ where $h(s^{ps})$ is defined in (\ref{eq:sp}) and $|D(P)|$ is the cardinality of discretization set. Let $w_{total}$ be the total sum of all weights among all vertices. The greedy function w.r.t. partial solution $s^{ps}$ and candidate guard $v$ is defined as follows.
 	\begin{equation}\label{eq:greedyfun2}
     g_2(s^{ps}, v)  =    \frac{\sum_{i \in s^{ps} \cup \{v\}} w_i}{w_{total}}+ \frac{incorrect_{total}(s^{ps}\cup v)}{|D(P)|}.
 	\end{equation}
@@ -317,7 +317,7 @@ The ILP  model for the MWSCP ~\cite{vazirani2013approximation}   is  adapted to 
 			\item \textsc{Cplex} solves corresponding sub-model which is formed by adding constraints $x_{i} = 1$, for all $v_i \in s^{ps}$ into the existing ILP  model~(\ref{eq:woagp-min})--(\ref{eq:const-4});
 			\item a complete solution $\overline s$ is obtained;
 		\end{itemize}
-		\item Return $f(\overline s)$.
+		\item Return $obj(\overline s)$.
 	\end{enumerate}
     This method is, therefore, called \textsc{Greedy}+\textsc{Cplex}.
 	\begin{comment}
@@ -336,21 +336,21 @@ The ILP  model for the MWSCP ~\cite{vazirani2013approximation}   is  adapted to 
 	
 	\section{Computational Results}
 
- We used two different kind of benchmark sets from~\cite{tomas2006visibility,bajuelos2004partitioning}: 
+ We used two different kind of benchmark sets from~\cite{tomas2006visibility,bajuelos2004partitioning}:
      \begin{itemize}
      	 \item \emph{MinArea} instances: MinArea includes polygons with a small areas and tiny interior. They present a lower boundary case for the cardinality of set $D(P)$ which means that, beside the polygon vertices,  $D(P)$ contains few additional points.
      	 \item \emph{FAT} instances:  includes polygons of large areas and wide interior. In this case,  a large number of points of regular grid is included into $D(P)$.
      \end{itemize}
-     For each benchmark set -- \emph{MinArea} and \emph{FAT} instances -- one $n$-ogon for each $n \in\{8,10,...,200\}$ has been considered and the appropriate discretization is made, which makes 97 instances per each benchmark set. In overall, we have 194 instances. Discretization is performed by using \fxnote{nismo nigdje ubacili, a ovdje bi trebalo CGAL}.
-     
+     For each benchmark set -- \emph{MinArea} and \emph{FAT} instances -- one $n$-ogon for each $n \in\{8,10,...,200\}$ has been considered and the appropriate discretization is made, which makes 97 instances per each benchmark set. In overall, we have 194 instances. Discretization is performed by using CGAL \cite{cgal:eb-20b}. 
+
 	We included two kind of weights into each of 194  instances:
 	\begin{itemize}
-		\item \emph{topologically-based related weights} ($W0$): For each vertex $v_i$ of polygon $P$ we denote by $l_i$ and $l_{i+1}$ the lengths of two edges that come out of the vertex $v_i$. Then, we set 
+		\item \emph{topologically-based related weights} ($W0$): For each vertex $v_i$ of polygon $P$ we denote by $l_i$ and $l_{i+1}$ the lengths of two edges that come out of the vertex $v_i$. Then, we set
 \begin{equation}
 w_i := \frac{l_i + l_{i+1}}{2}.
  \end{equation}
  This way of assigning weights is augmented by the fact that if the arithmetic length of both edges that comes out of vertex $i$ is longer, it is expected that a guard can see a larger pieces of polygon $P$. This implies that the spectrum of camera installed at $v_i$ has to be larger, which again implies that it should be of a higher quality, i.e,. a higher price.
-		\item \emph{point-based related weights} ($W1$): For each vertex $v_j$, based on the number of points in $D(P)$ that are visible from $v_j$, we assign prices to each vertex on the following way:
+		\item \emph{point-based related weights} ($W1$): For each vertex $v_i$, based on the number of points in $D(P)$ that are visible from $v_i$, we assign prices to each vertex on the following way:
 		\begin{equation}
 		w_i = n \cdot \frac{|S_i|}{|D(P)|},\ i=1,...,n.
 		\end{equation}
@@ -367,7 +367,7 @@ w_i := \frac{l_i + l_{i+1}}{2}.
 	\subsection{Results and Discussion}
         The following algorithms are included in our computation:
         \begin{itemize}
-        	\item  exact approaches: CP and ILP approach. The later is, henceforth, called \textsc{Cplex};
+        	\item  exact approaches: CP and ILP approach. The latter is, henceforth, called \textsc{Cplex};
             \item 4 heuristic approaches:
            \begin{itemize}
            	\item two pure greedy methods, guided by $g_1$ and $g_2$, labeled as \textsc{Greedy-1}, \textsc{Greedy-2}, respectively;
@@ -379,14 +379,14 @@ w_i := \frac{l_i + l_{i+1}}{2}.
 
 
          Summarized numerical results for each of our 6 variants of our algorithm are displayed
-         in Tables~\ref{small_wo} -- \ref{large_w1}. For each table, the average results are reported for each subset of instances grouped w.r.t. a specific kind of instances and a specific weight (97 instances per each group). Each of the tables list the tested algorithms in the first column. Starting with column two,  each of the lines provide detailed statistics for respective algorithm.  The statistics report: the average solution quality ($\overline{|s|}$), the average time ($\overline{t}[s]$) in seconds, the average number of guards which are included in each of the solutions ( $\overline{|g|}$), the number of solutions which match to the optimum solutions (\#optHit), average standard deviation of the obtained solutions w.r.t. optimal solutions ($\sigma(Opt)$), then the number of minimal solutions the algorithm obtained w.r.t. the four heuristics achieved by the respective algorithm (\#hitsMinH) and average standard deviation w.r.t. best (minimal) solutions achieved by the four heuristic algorithms   ($\sigma(MinH)$).  An asterisk in front of a number means that the exact approach  could prove optimality in all cases. Best values among heuristic approaches in each column are bolded.
+         in Tables~\ref{small_wo} -- \ref{large_w1}. For each table, the average results are reported for each subset of instances grouped w.r.t. a specific kind of instances and a specific weight (97 instances per each group). Each of the tables list the tested algorithms in the first column. Starting with column two,  each of the lines provide detailed statistics for respective algorithm.  The statistics report: the average solution quality ($\overline{obj}$), the average time ($\overline{t}[s]$) in seconds, the average number of guards which are included in each of the solutions ( $\overline{|g|}$), the number of solutions which match to the optimum solutions (\#optHit), average standard deviation of the obtained solutions w.r.t. optimal solutions ($\sigma(Opt)$), then the number of minimal solutions the algorithm obtained w.r.t. the four heuristics achieved by the respective algorithm (\#hitsMinH) and average standard deviation w.r.t. best (minimal) solutions achieved by the four heuristic algorithms   ($\sigma(MinH)$).  An asterisk in front of a number means that the exact approach  could prove optimality in all cases. Best values among heuristic approaches in each column are bolded.
 
 
      \begin{table}[]
      	\centering
      	 \scalebox{0.83}{
      	\begin{tabular}{l|lllllll}    \hline
-     		Alg.           & $\overline{|s|}$ & $\overline{t}[s]$ &   $\overline{|g|}$ &optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
+     		Alg.           & $\overline{obj}$ & $\overline{t}[s]$ &   $\overline{|g|}$ &\#optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
      		\textsc{Cplex}            & *15.93  & 0.152    & 18.93     & 97/97     & 0.00    & N/A        & N/A      \\
      		\textsc{Cp}               & 16.04  & 98.215   & 18.96     & 67/97     & 0.02    & N/A        & N/A      \\ \hline
      		\textsc{Greedy-1}             & 22.63  & \textbf{0.002}    & 26.28     & 0/97      & 0.79    & 3/97       & 7.61     \\
@@ -401,7 +401,7 @@ w_i := \frac{l_i + l_{i+1}}{2}.
       	\centering
       	\scalebox{0.83}{
       	\begin{tabular}{l|lllllll} \hline
-      		Alg.           & $\overline{|s|}$ & $\overline{t}[s]$ &  $ \overline{|g|}$ &optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
+      		Alg.           & $\overline{obj}$ & $\overline{t}[s]$ &  $ \overline{|g|}$ &\#optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
       		\textsc{Cplex}            & *36.03  & 0.003   & 18.93     & 97/97     & 0.00    & N/A        & N/A      \\
       		\textsc{Cp}               & *36.03  & 18.953   & 18.93     & 97/97     & 0.00    & N/A        & N/A      \\ \hline
       		\textsc{Greedy-1}             & 39.28  & \textbf{0.001}    & 20.15     & 2/97      & 0.35    & 4/97       & 0.24     \\
@@ -416,7 +416,7 @@ w_i := \frac{l_i + l_{i+1}}{2}.
       \centering
        \scalebox{0.85}{
      	\begin{tabular}{l|lllllll} \hline
-     		Alg.           & $\overline{|s|}$ & $\overline{t}[s]$ &   $\overline{|g|}$ &optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
+     		Alg.           & $\overline{obj}$ & $\overline{t}[s]$ &   $\overline{|g|}$ &\#optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
      		\textsc{Cplex}            & *2.62   & 0.02    & 7.32      & 97/97     & 0.00    & N/A        & N/A      \\
      		\textsc{Cp}               & *2.62   & 8.17    & 7.32      & 97/97     & 0.00    & N/A        & N/A      \\ \hline
      		\textsc{Greedy-1}             & 3.39   & 0.35    & 7.81      & 0/97      & 0.09    & 23/97      & 0.05     \\
@@ -431,7 +431,7 @@ w_i := \frac{l_i + l_{i+1}}{2}.
     	\centering
     	\scalebox{0.85}{
  	  \begin{tabular}{l|lllllll} \hline
- 		Alg.           & $\overline{|s|}$ & $\overline{t}[s]$ &   $\overline{|g|}$ & optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
+ 		Alg.           & $\overline{obj}$ & $\overline{t}[s]$ &   $\overline{|g|}$ & \#optHit & $\sigma(Opt)$ & \#hitsMinH & $\sigma(MinH)$ \\ \hline
  		\textsc{Cplex}            & *6.72   & 0.02    & 6.44      & 97/97     & 0.00    & N/A        & N/A      \\
  		\textsc{Cp}               & *6.72   & 0.36    & 6.44      & 97/97     & 0.00    & N/A        & N/A      \\ \hline
  		\textsc{Greedy-1}             & 6.77   & \textbf{0.31}    & 6.49      & 92/97     & 0.02    & 92/97      & 0.04     \\
@@ -446,12 +446,12 @@ w_i := \frac{l_i + l_{i+1}}{2}.
         \begin{itemize}
         	\item  \textsc{Cplex} could solve all solution to prove optimality within a fraction of a second;
         	\item   \textsc{Cp} was able to solve all those instances with weight $W1$ but with significantly more time than the time required from \textsc{Cplex};
-        	\item For the subset of instances $MinArea$ which includes weight $W0$, the performance of Cp degrades significantly, which can be seen  by the respective average runtime and the number of proven optimal solutions found (67/97).
+        	\item For the subset of instances $MinArea$ which includes weight $W0$, the performance of \textsc{Cp} degrades significantly, which can be seen  by the respective average runtime and the number of proven optimal solutions found (67/97).
         \end{itemize}
      From the numerical results, we observe the following conclusions concerning heuristic solving:
      \begin{itemize}
      	\item  In case of the instances that include small--area polygons ($MinArea$) and weight $W0$ (Table~(\ref{small_wo})): A novel \textsc{Greedy-2} was able to significantly outperform the \textsc{Greedy-1} from literature. In this case, the best performing heuristic algorithms is hybrid \textsc{Greedy-2+Cplex} which needs the two order of magnitude lower average runtime to finish than the pure greedy methods. The average runtimes of all four heuristic methods are an order of magnitude lower than the average runtime of \textsc{Cplex}. Pure greedy methods deliver solutions of reasonable quality within 20\% of the quality of optimal solutions but needs the time which is 7-8 times lower then the average runtime of \textsc{Cplex}. Although all heuristic methods could not achieve optimal solutions (with the exception of two cases for \textsc{Greedy-1+Cplex} heuristics), the average standard deviation w.r.t. optimal solution is rather small. From last two columns, it is evident that both hybrid variants are more successful, hitting more than a half best solution each, with very small average standard deviation w.r.t. optimal solutions.
-     	\item  In case of the instances that include small-area polygons and weight $W1$ (Table~\ref{small_w1}): the best heuristic approach is \textsc{Greedy-2+Cplex} which is able to deliver solutions which are within 3\% of the optimum ones. Note that in 81 cases (out of 91) \textsc{Greedy-2+Cplex} is able to deliver equally good or better results that the other heuristic approaches. As it was the case  of the weight $W0$, heuristic methods could not achieve many optimal solutions, but the obtained  average standard deviation w.r.t. optimal solutions is rather small.
+     	\item  In case of the instances that include small-area polygons and weight $W1$ (Table~\ref{small_w1}): the best heuristic approach is \textsc{Greedy-2+Cplex} which is able to deliver solutions which are within 3\% of the optimum ones. Note that in 81 cases (out of 97) \textsc{Greedy-2+Cplex} is able to deliver equally good or better results that the other heuristic approaches. As it was the case  of the weight $W0$, heuristic methods could not achieve many optimal solutions, but the obtained  average standard deviation w.r.t. optimal solutions is rather small.
      	The results of pure greedy method \textsc{Greedy-1} outperform the results of \textsc{Greedy-2}. These two methods are effective since they deliver solutions which are within 10\% of the \textsc{Cplex} results but need 3 times less runtime. The results of \textsc{Greedy-1} match just in two cases to the optimum.
      	
      	\item In case of the instances that include large-area polygons ($FAT$) and weight $W0$ (Table~ \ref{large_w0}): the exact \textsc{Cplex} approach is a clear winner concerning average solutions' quality as well as the average runtimes;  the best heuristic algorithm w.r.t. solution quality is \textsc{Greedy-2 +Cplex}. It also matches in more cases (on 6 instances) to the optimum result then the other heuristic approaches. The obtained average results are within 22\% of the average of  optimal solutions.  The pure \textsc{Greedy-1} slightly outperforms the pure greedy \textsc{Greedy-2}. It is interesting that \textsc{Greedy-1} assigns in average a  higher number of guards in solutions when compared to the average number of guards of \textsc{Greedy-2}. The runtimes of our heuristic approaches are an order of magnitude lower than the time of \textsc{Cplex} approach. Reason for that can be seen in the used regular discretization of the polygon. For the polygons with a larger area, more points are involved in the discrete set $D(P)$ and, therefore, iterations of greedy methods take a longer time than in case when $D(P)$ is smaller (which was the case of \emph{MinArea} polygons).
@@ -499,7 +499,7 @@ w_i := \frac{l_i + l_{i+1}}{2}.
 	\section*{Acknowledgements}
 This research is partially supported by Ministry for Scientific and Technological
 Development, Higher Education and Information Society, Government
-of Republic of Srpska, B\&H under the Project \fxnote{ime projekta}.
+of Republic of Srpska, B\&H under the Project ``Development of artificial intelligence methods for solving computer biology problems".
 
 	
 	\section*{References}
