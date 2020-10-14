@@ -165,12 +165,12 @@ The algorithm further forms the whole regular grid of the bounding box (line 5 o
     	\caption{Optimal coverage of discretization $D(P)$ does not imply a coverage of polygon $P$.}\label{fig:example}
 	\end{figure}
 	
-	The chosen resolution  $\bigtriangleup_{x}\times\bigtriangleup_{y}$ is a compromise between the algorithm speed and accuracy. More precisely,  higher resolution increases the accuracy, but also the execution time and vice versa, lower resolution decreases the algorithm accuracy, but discretization is  generated faster.
+	The chosen resolution  $\bigtriangleup_{x}\times\bigtriangleup_{y}$ is a compromise between the algorithm speed and accuracy. More precisely,  higher resolution increases the accuracy, but also increases the execution time of Algorithm~\ref{alg:discret} and vice versa, lower resolution decreases the accuracy, but discretization is  generated faster.
 	
 	%Couto et al.~\cite{couto2007exact} koristili su pomenutu diskretizaciju za problem ortogonalne galerije. U njihovom radu broj pologona nad kojim je primjenjena ova diskretizacija je 10282. Za 59.4\% poligona je vazilo da iz pokrivenoosti diskretnog skupa D(P) slidi pokrivenost poligona P za optimalno pronadjen skup strazara koji pokrivaju D(P)\fxnote{Sta je sa ostalim poligonima koji nisu bili pokriveni?} Za ostale poligone je bilo potrebno dodati prosječno 0.003·n+1.1 dodatnih tačaka u diskretizaciju kako bi iz pokrivenosti diskretizacije slijedila pokrivenost poligona. Dakle nad testiranim uzorkom poligona, ili je citav poligon pokriven ili je mali broj regija nepokriveno optimalnim skupom stražara Z za D(P). U sekciji 4 će biti prikazane vrijednosti površina ovih nepokrivenih regija. \fxnote{Koliki je procenat pokrivenosti bio u tom slucaju?} \fxerror{Do ove info ne mogu da dodjem} \fxnote{Kako se ovo odnosi na druge diskretizacije, bilo je puno bolje ili?} \fxnote{Treba pregledati literaturu. Pitanje je koliko je ljudi pokusavalo ovom metodologijom dopunjavati diskretiyaciju kako bi dosli do optimalnog rjesenja - ja bih izbjegao o ovom pricati/pisati}.
 	
 	\section{Exact methods}
-	In this section we present the exact ILP  initially developed for MWSCP from ~\cite{vazirani2013approximation} and \emph{Constraint Programming} (CP) models for solving WOAGP  under regular grid discretization, which are used  in the rest of the paper.
+	In this section we present the exact ILP,  initially developed for MWSCP from ~\cite{vazirani2013approximation} and \emph{Constraint Programming} (CP) models for solving WOAGP  under regular grid discretization, which are used  in the rest of the paper.
 	\subsection{Integer linear programming model}
 	Let us suppose we are given a polygon $P$ and the discretization $D(P)$ of $P$.  The task we consider is covering all points from $D(P)$ by some vertices $V=\{v_1,...,v_n\}$ of $P$ such that the sum of their weights is minimized.
 	The problem is related to the known MWSCP  as follows.
@@ -336,39 +336,40 @@ The ILP  model for the MWSCP ~\cite{vazirani2013approximation}   is  adapted to 
 	
 	\section{Computational Results}
 
- We used two different kind of benchmark sets from~\cite{tomas2006visibility,bajuelos2004partitioning}:
+ We used two different kind of benchmark sets from~\cite{bajuelos2004partitioning,tomas2006visibility}:
      \begin{itemize}
-     	 \item \emph{MinArea} instances: include polygons with a small areas and tiny interior. They present a lower boundary case for the cardinality of set $D(P)$ which means that, beside the polygon vertices,  $D(P)$ contains few additional points.
+     	 \item \emph{MinArea} instances: include polygons with small areas and tiny interior. They present a lower boundary case for the cardinality of set $D(P)$ which means that, beside the polygon vertices,  $D(P)$ contains few additional points.
      	 \item \emph{FAT} instances:  include polygons of large areas and wide interior. In this case,  a large number of points of regular grid is included into $D(P)$.
      \end{itemize}
-     For each benchmark set -- \emph{MinArea} and \emph{FAT} instances -- one $n$-ogon for each $n \in\{8,10,...,200\}$ has been considered and the appropriate discretization is made, which makes 97 instances per each benchmark set. In overall, we have 194 instances. Discretization is performed by using CGAL \cite{cgal:eb-20b} \fxnote{verzija CGAL-a dodati}. 
+     For each benchmark set -- \emph{MinArea} and \emph{FAT} instances -- one $n$-ogon for each $n \in\{8,10,...,200\}$ has been considered and the appropriate discretization is made, which makes 97 instances per each benchmark set. In overall, we have 194 instances. Discretization is performed by using CGAL library, version 5.0.2~\cite{cgal:eb-20b}.
 
-	We included two kind of weights into each of 194  instances:
+	We included two kinds of weights into each of 194  instances:
 	\begin{itemize}
-		\item \emph{topologically-based related weights} ($W0$): For each vertex $v_i$ of polygon $P$ we denote by $l_i$ and $l_{i+1}$ the lengths of two edges that come out of the vertex $v_i$. Then, we set
-\begin{equation}
-w_i := \frac{l_i + l_{i+1}}{2}.
- \end{equation}
- This way of assigning weights is augmented by the fact that if the arithmetic length of both edges that comes out of vertex $i$ is longer, it is expected that a guard can see a larger pieces of polygon $P$. This implies that the spectrum of camera installed at $v_i$ has to be larger, which again implies that it should be of a higher quality, i.e,. a higher price.
-		\item \emph{point-based related weights} ($W1$): For each vertex $v_i$, based on the number of points in $D(P)$ that are visible from $v_i$, we assign prices to each vertex on the following way:
+		\item \emph{point-based related weights} ($W0$): For each vertex $v_i$,  the assignment of prices is based on the number of points in $D(P)$ that are visible from $v_i$, as follows:
 		\begin{equation}
 		w_i = n \cdot \frac{|S_i|}{|D(P)|},\ i=1,...,n.
 		\end{equation}
-    Similarly as in case of $W0$, cameras which cover larger range of points are considered be of a higher spectrum and quality, and thus are more expensive.
+    This approach can be justified by the assumption that cameras which cover larger range of points should be of a higher spectrum and quality, and thus more expensive.
+		\item \emph{topologically-based related weights} ($W1$): For each vertex $v_i$ of polygon $P$ we denote by $l_i$ and $l_{i+1}$ the lengths of two edges that come out of the vertex $v_i$ (note that indices are taken modulo $n$). Then, we set
+\begin{equation}
+w_i = \frac{l_i + l_{i+1}}{2}.
+ \end{equation}
+ Similarly as in the case of $W0$, if the arithmetic length of both edges that comes out of vertex $v_i$ is longer, it is expected that a guard can see a larger pieces of polygon $P$. This implies that the spectrum of camera installed at $v_i$ has to be larger, which again implies that it should be of a higher quality, i.e,. a higher price.
+
 	\end{itemize}
 
      \subsection{Settings and the choice of the Parameters}
-      All variants of our algorithms were implemented in C++ with g++~7.4 and the experiments were conducted in single-threaded mode on a machine with an Intel Xeon E5-2640 processor with 2.40 GHz and a memory limit of 8GB. The maximum computation time of each of our algorithms was set to $5\ min$.
+      All variants of our algorithms were implemented in C++ with g++~7.4 compiler and the experiments were conducted in single-threaded mode on a machine with an Intel Xeon E5-2640 processor with 2.40 GHz and a memory limit of 8GB. The maximum computation time of each of our algorithms was set to $5\ min$. For solving ILP and CP models, \textsc{Cplex} version 12.7 was used.
 
       After conducting preliminary results, for
         \textsc{Greedy + \textsc{Cplex}} we decided to set up $K = \lceil 0.05 \cdot n \rceil$.
 
-     The benchmark sets and the executable file of our software for this project are provided at \href{link}{link}. \fxnote{dodati link}
+     The benchmark sets and the executable file of our software for this project are provided at public git repository, available on \href{https://github.com/milanagrbic/WOAGP}{https://github.com/milanagrbic/WOAGP}
 	\subsection{Results and Discussion}
         The following algorithms are included in our computation:
         \begin{itemize}
         	\item  exact approaches: CP and ILP approach. The latter is, henceforth, called \textsc{Cplex};
-            \item 4 heuristic approaches:
+            \item four heuristic approaches:
            \begin{itemize}
            	\item two pure greedy methods, guided by $g_1$ and $g_2$, labeled as \textsc{Greedy-1}, \textsc{Greedy-2}, respectively;
             %\item three \textsc{Greedy+Shaking} variants, henceforth labeled by \textsc{Greedy}-$i$+Shaking, $i=1,2,3$, where $i$ stands for heuristic $g_i$ involved in the method;
@@ -450,7 +451,7 @@ w_i := \frac{l_i + l_{i+1}}{2}.
         \end{itemize}
      From the numerical results, we observe the following conclusions concerning heuristic solving:
      \begin{itemize}
-     	\item  In case of the instances that include small--area polygons ($MinArea$) and weight $W0$ (Table~(\ref{small_wo})): A novel \textsc{Greedy-2} was able to significantly outperform the \textsc{Greedy-1} from literature. In this case, the best performing heuristic algorithms is hybrid \textsc{Greedy-2+Cplex} which needs the two order of magnitude lower average runtime to finish than the pure greedy methods. The average runtimes of all four heuristic methods are an order of magnitude lower than the average runtime of \textsc{Cplex}. Pure greedy methods deliver solutions of reasonable quality within 20\% of the quality of optimal solutions but needs the time which is 7-8 times lower then the average runtime of \textsc{Cplex}. Although all heuristic methods could not achieve optimal solutions (with the exception of two cases for \textsc{Greedy-1+Cplex} heuristics), the average standard deviation w.r.t. optimal solution is rather small. From last two columns, it is evident that both hybrid variants are more successful, hitting more than a half best solution each, with very small average standard deviation w.r.t. optimal solutions.
+     	\item  In case of the instances that include small--area polygons ($MinArea$) and weight $W0$ (Table~\ref{small_wo}): A novel \textsc{Greedy-2} was able to  outperform the \textsc{Greedy-1} from literature. In this case, the best performing heuristic algorithms is hybrid \textsc{Greedy-2+Cplex} which needs the two order of magnitude lower average runtime to finish than the pure greedy methods. The average runtimes of all four heuristic methods are an order of magnitude lower than the average runtime of \textsc{Cplex}. Pure greedy methods deliver solutions of reasonable quality within 20\% of the quality of optimal solutions but needs the time which is 7-8 times lower then the average runtime of \textsc{Cplex}. The overall average execution times of all tested algorithms are displayed in Figure \ref{fig:timealg}. Note that vertical axis is scaled logarithmically. Although all heuristic methods could not achieve optimal solutions (with the exception of two cases for \textsc{Greedy-1+Cplex} heuristics), the average standard deviation w.r.t. optimal solution is rather small. From last two columns, it is evident that both hybrid variants are more successful, hitting more than a half best solution each, with very small average standard deviation w.r.t. optimal solutions.
      	\item  In case of the instances that include small-area polygons and weight $W1$ (Table~\ref{small_w1}): the best heuristic approach is \textsc{Greedy-2+Cplex} which is able to deliver solutions which are within 3\% of the optimum ones. Note that in 81 cases (out of 97) \textsc{Greedy-2+Cplex} is able to deliver equally good or better results that the other heuristic approaches. As it was the case  of the weight $W0$, heuristic methods could not achieve many optimal solutions, but the obtained  average standard deviation w.r.t. optimal solutions is rather small.
      	The results of pure greedy method \textsc{Greedy-1} outperform the results of \textsc{Greedy-2}. These two methods are effective since they deliver solutions which are within 10\% of the \textsc{Cplex} results but need 3 times less runtime. The results of \textsc{Greedy-1} match just in two cases to the optimum.
      	
@@ -483,7 +484,7 @@ w_i := \frac{l_i + l_{i+1}}{2}.
     	\centering
     	 \scalebox{0.9}{
     	\includegraphics[width=\textwidth]{grafikon3.eps}}
-    	\caption{Avg. execution time of the compared algorithms. \fxnote{ujednacinit font teksta u legendi sa fontom u tekstu, dodati $[s]$ na $y$ osi, nigdje ne referenciramo ovu sliku...}}
+    	\caption{Avg. execution time of the compared algorithms.}
     	\label{fig:timealg}
     \end{figure}
 
@@ -492,7 +493,7 @@ w_i := \frac{l_i + l_{i+1}}{2}.
 	  In this work we have considered the Weighted Orthogonal Art Gallery Problem under regular grid discretization.
 	  We have developed a novel greedy criterion which provide a trade-off between the number of guards and the cost of  guards. Moreover, a hybrid of a greedy method and \textsc{Cplex} was proposed to make a maximal completion of the greedy solution obtained by the greedy method supplemented by solving respective subproblem via \textsc{Cplex}. The performances of the heuristic approaches are compared to the exact ILP and CP approaches. From the computational experiments, the heuristic approaches were highly efficient in terms of obtaining solutions of reasonable quality in an order of magnitude lower runtime than the exact approaches for the small-area polygons. For the large--area polygons, heuristic approaches were able to reach the quality of optimal solutions in almost all cases but in cost of larger times than the times of the ILP approach.
 	
-	  For the future work, we tend to improve the results of our greedy method as well as runtimes on the $FAT$ benchmark sets by considering different discretizations of polygons, for example, the Delaunay triangulation~\cite{lee1980two}.
+	  For the future work, we tend to improve the results of our greedy method as well as runtimes on the $FAT$ benchmark sets by considering other types of polygon discretisations.
 	
 	
 	
