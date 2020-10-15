@@ -141,11 +141,11 @@ where $ (u_{x},u_{y}),(v_{x},v_{y})$ are adjacent vertices of polygon $P$.
 			\State $BB \gets bounding\_box(P);$
 			\State $\bigtriangleup_{x},\bigtriangleup_{y} \gets resolution(P);$
 			\State $D(BB) \gets regular\_grid(BB,\bigtriangleup_{x},\bigtriangleup_{y});$
-			\State $D(P) \gets D(BB) \cap P;$
+			\State $D(P) \gets D(BB) \cap interior(P);$
 			\State $D(P) \gets D(P) \cup V;$
 		\end{algorithmic}
 	\end{algorithm}
-The algorithm further forms the whole regular grid of the bounding box (line 5 of the pseudocode) and finally, all points of the regular grid that belong to $P$ and all vertices of $P$ are added into the discrete set $D(P)$.
+The algorithm further forms the whole regular grid of the bounding box (line 5 of the pseudocode) and finally, all points of the regular grid that belong to interior of $P$ and all vertices of $P$ are added into the discrete set $D(P)$.
 	
 	It should be noticed that the optimal solution of WOAGP on $D(P)$ (i.e. an optimal covering of $D(P)$) is not necessarily  an optimal covering of $P$. In the simple example shown in Figure \ref{fig:example}, one can see that the guards placed on top left and top right vertices (shown in red color) cover all points from $D(P)$ (Figure \ref{fig:example} (a)), but not the whole polygon, since the gray triangle is not visible from any of these two vertices. The optimal solution value in this case is 1.2. Two red vertices in Figure \ref{fig:example} (b) optimally cover the whole polygon, but this covering is not optimal w.r.t. discrete set $D(P)$, since the total sum of weights is larger (1.6).
 	
@@ -176,11 +176,11 @@ The algorithm further forms the whole regular grid of the bounding box (line 5 o
 	The problem is related to the known MWSCP  as follows.
 	Family $\mathcal{F}$ of nonempty sets consists of the sets
 	$S_i \in \mathcal{F}$ which include points $p \in D(P)$ that are visible from guard $v_i\in V$.  For each set $S_i$, the cost $c(S_i) = w_i$ is assigned.  In this way, our starting task is equivalent of finding a  covering $\mathcal{C}\subseteq\{S_1,...,S_n\}$ of the set of points $D(P)$ of minimum weight, that is
-	$$ \bigcup_{C \in \mathcal{C}} C = D(P),$$ such that
+	$$ \bigcup_{S \in \mathcal{C}} S = D(P),$$ such that
 
-$$f(\mathcal{C}) = \sum_{S_i \in \mathcal{C}} c(S_i)$$
+$$f(\mathcal{C}) = \sum_{S \in \mathcal{C}} c(S)$$
 
-is minimized.
+ is minimized.
 
 The ILP  model for the MWSCP~\cite{vazirani2013approximation}   is  adapted to WOAGP  as follows:
 
@@ -362,7 +362,7 @@ w_i = \frac{l_i + l_{i+1}}{2} ,\ i=1,...,n.
       All variants of our algorithms were implemented in C++ with g++~7.4 compiler and the experiments were conducted in single-threaded mode on a machine with an Intel Xeon E5-2640 processor with 2.40 GHz and a memory limit of 8GB. The maximum computation time of each of our algorithms was set to $5\ min$. For solving ILP and CP models, \textsc{Cplex} version 12.7 was used.
 
       After conducting preliminary results, for
-        \textsc{Greedy + \textsc{Cplex}} we decided to set up $K = \lceil 0.05 \cdot n \rceil$.
+        \textsc{Greedy + \textsc{Cplex}} we decided to set up $K = \lceil 0.05 \cdot n \rceil$ in order to allow less computational time of the hybrid than the average runtime of the pure greedy method.
 
      The benchmark sets and the executable file of our software for this project are provided at a public git repository, available on \href{https://github.com/milanagrbic/WOAGP}{https://github.com/milanagrbic/WOAGP}
 	\subsection{Results and Discussion}
