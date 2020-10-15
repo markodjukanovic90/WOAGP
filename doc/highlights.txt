@@ -1,0 +1,6 @@
+Highlights
+
+ We developed a novel greedy approach which is based on balancing the trade off between the total sum of guards' costs and the total number of not yet covered points from the discretization.
+ The  greedy algorithm from literature and the novel greedy algorithm are hybridized with the ILP.
+ We considered different types of weights for benchmarks, based on an approximation of the costs in real situations.
+In a comprehensive computational experiment,  we tested, analysed and checked the efficiency of the developed algorithms. The methods are then compared to the exact approaches ILP and Constraint Programming regarding both the quality of obtained heuristic solutions as well as runtimes.
