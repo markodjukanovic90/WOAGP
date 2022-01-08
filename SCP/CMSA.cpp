@@ -68,11 +68,13 @@ inline double stof(string &s) {
 
  
 
-// begin CPLEX model
+//CPLEX model: returns a solution
 
-float run_cplex(vector<set<int>>&  Sets, int m, int n,  vector<int>&  V)
+vector<int> run_cplex(vector<int>&  V)
 {
 
+
+  vector<int> solution;
   IloEnv env;  // cout << "run_cplex " << endl;
   env.setOut(env.getNullStream());
   try
@@ -149,23 +151,24 @@ float run_cplex(vector<set<int>>&  Sets, int m, int n,  vector<int>&  V)
        cout << "\n CPLEX sol: " << lastVal << endl;
        // print the objective point
        cout << "Sets in the solution: {" <<endl;
-       bool first = true;  
+       bool first = true;
+         
        for(int i = 0; i < X.size(); ++i){
            IloNum xval = cplex.getValue(X[i]);
    
            if (xval > 0.9) {
                cout << "S_" << ( i + 1 ) << ", ";
+               solution.push_back( i );
                //myfileOut << (*it).first;
            }
-
        }
        cout << "}" << endl;
        //myfileOut << "value: " << lastVal << endl;
-       return lastVal;
+       return solution; //lastVal;
    }
    else{
        cout << "Nema rjesenja" << endl;
-       return -1;
+       return solution;//-1;
    }  
 }
 catch(IloException& e) {
@@ -329,16 +332,58 @@ vector<int> greedy_procedure_random(double d_rate, double prob)
     return partial; //Cover.size();
 } 
 
-void CMSA(int na, float drate, float prob)
+void CMSA(int agemax, int na, float drate, float prob)
 {
     //TODO:
-    float s = 10000000;
-    vector<int> partial(greedy_procedure(drate, prob));
- 
-    for(int i: partial)
-       cout << "  " << i << endl;
-    run_cplex( Sets, m, n, partial); // solve subinstance via CPLEX
-    //
+    float sbest = 10000000;
+    set<int> Vprime;
+    vector<int> age(m, 0);
+    
+    auto start = high_resolution_clock::now();
+    auto stop = high_resolution_clock::now();
+    
+    auto duration = duration_cast<std::chrono::duration<float>>(stop - start); 
+    while(duration.count() < t_lim)
+    {
+    
+          for(int i=1; i <= na; ++i)
+          {
+              vector<int> S(greedy_procedure(drate, prob));
+              for(int v : S)
+              {
+                  if( Vprime.count(v) == 0 )
+                  {      
+                     age[v] = 0;
+                     Vprime.insert( v );
+                  }
+              }         
+          }
+          // Apply Exact solver:
+          vector<int> partial(Vprime.begin(), Vprime.end());
+          
+          vector<int> SprimeOpt(run_cplex(partial)); // solve subinstance via CPLEX
+          
+          if(SprimeOpt.size() < sbest)
+             sbest = SprimeOpt.size();
+          // ADAPT mechanism depends on: Vprime, SprimeOpt, agemax
+          for(int v: Vprime)
+              age[v]++;
+          
+          for(int v: SprimeOpt)
+              age[v] = 0;
+          // discard sol. components > agemax
+          int index = 0;
+          for(int v: age)
+          { 
+              if( v > agemax ) // remove index from Vprime
+              {    auto it = Vprime.find ( index);
+                   Vprime.erase (it, Vprime.end());
+              }
+              index++;
+          }
+          auto stop = high_resolution_clock::now();
+          duration = duration_cast<std::chrono::duration<float>>(stop - start); 
+    }
 
 }
 void write_test(string tekst)
@@ -367,7 +412,7 @@ int main( int argc, char **argv )
     
     auto start = high_resolution_clock::now();
     
-    CMSA(10, 1.0, 0.9);
+    CMSA(3, 0, 1.0, 0.9);
     
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<std::chrono::duration<float>>(stop - start); 
