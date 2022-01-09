@@ -22,37 +22,19 @@ ILOSTLBEGIN
 
 /** pomocne strukture za CMSA metod **/
 vector<set<int>> Sets;
-int alg = 0; // if alg = 1: we execute a Greedy+LS procedure
 
 #define INFEASIBLE 1000000
  
 int t_lim = 0; // time limit intersection-based;
 std::string path ;
 std::string output = "";
-
+int alg = 0; // 0: CPLEX, 1: CMSA
 int n = 0;  
 int m = 0;  
 
 /** another try to spped up operations over CoveredPoints structure **/
 vector<bool>covered;
- /**
-struct hashFunc{
-    size_t operator()(const Point_2 &k) const{
-    size_t h1 = std::hash<double>()(k.first);
-    size_t h2 = std::hash<double>()(k.second);
-    return (h1 ^ (h2 << 1));
-    }
-};
-
-struct equalsFunc{
-  bool operator()( const Point_2& lhs, const Point_2& rhs ) const{
-    return (lhs.first == rhs.first) && (lhs.second == rhs.second);
-  }
-};
-
-unordered_map<Point_2, bool, hashFunc, equalsFunc> pointDPMapping;
-
-**/
+  
 
 /** end of the structure **/
  
@@ -66,16 +48,14 @@ inline double stof(string &s) {
      return atof(s.c_str());
 }
 
- 
-
 //CPLEX model: returns a solution
 
 vector<int> run_cplex(vector<int>&  V)
 {
 
-
   vector<int> solution;
-  IloEnv env;  // cout << "run_cplex " << endl;
+  IloEnv env;  
+  cout << "run_cplex " << n << " " << m << endl;
   env.setOut(env.getNullStream());
   try
   {
@@ -98,22 +78,27 @@ vector<int> run_cplex(vector<int>&  V)
    
    for(int i = 0; i < n; ++i) 
    {
-       IloExpr expr_i(env); bool add = false;
+       IloExpr expr_i(env); 
+       bool add = false;
        for(int j = 0; j < m; ++j)   
        {
-           if( Sets[j].count( i ) ){ // item i se nalazi u skupu j
+           if( Sets[j].count( i+1) ){ // item i se nalazi u skupu j
                expr_i += X[j];
                add = true;
            }
        }
        if(add)
+       {   
           model.add(expr_i >= 1);      
-       
-       index++ ;
+          index++ ;
+           
+       } 
    }  
+ 
    // add constraints to solve SUBINSTNACE in CMSA
    if(V.size() > 0)
    {
+       cout << "Add subproblem constraints " << endl;
        for(int i = 0; i < m; ++i)
        {
             if(count(V.begin(), V.end(), i ) == 0)
@@ -121,7 +106,7 @@ vector<int> run_cplex(vector<int>&  V)
        }  
     
    }  
-   
+   cout <<"Number of constr " << index << endl;
    //solve the modelIloLinearNumExpr objective = cplex.linearNumExpr();
    model.add(obj);
    // add model to CPLEX
@@ -201,10 +186,11 @@ void read_parameters(int argc, char **argv) {
      int iarg=1;
      cout << "Reding params..." << endl;
      while (iarg < argc) {
-     if (strcmp(argv[iarg],"-f") == 0) path = (argv[++iarg]);
-     else if(strcmp(argv[iarg],"-t") == 0) t_lim = atoi(argv[++iarg]);
-     else ++iarg;
-   }
+        if (strcmp(argv[iarg],"-f") == 0)          path = (argv[++iarg]);
+        else if(strcmp(argv[iarg],"-t") == 0)      t_lim = atoi(argv[++iarg]);
+        else if(strcmp(argv[iarg], "-alg") == 0)  alg = atoi(argv[++iarg]);
+        else ++iarg;
+     }
 }
 
 void read_from_file(std:: string path)
@@ -236,9 +222,9 @@ void read_from_file(std:: string path)
 
 int f(set<int> &  Cover, int index , vector<set<int>>&  Sets)
 {   
-    std::set<int> result = Cover;
-    result.insert(Sets[index].begin(), Sets[index].end());
-    return result.size() - Cover.size();
+     std::set<int> result = Cover;
+     result.insert(Sets[index].begin(), Sets[index].end());
+     return result.size() - Cover.size();
 
 }   
 
@@ -310,7 +296,7 @@ vector<int> greedy_procedure(float drate, float prob)
         // update Cover
        Cover.insert(Sets[index].begin(), Sets[index].end()); 
     }
-    cout << "Objective: " << Cover.size() << endl;
+    //cout << "Objective: " << Cover.size() << endl;
     return partial; //Cover.size();
 } 
 // RANDOM GREEDY PROCEDURE:
@@ -319,7 +305,7 @@ vector<int> greedy_procedure_random(double d_rate, double prob)
 {   
     //TODO best cover among others 
     set<int> Cover;
-    vector<int> partial; cout << "n " << n << endl;
+    vector<int> partial; // cout << "n " << n << endl;
     while( Cover.size() < n )
     {   
         
@@ -334,7 +320,7 @@ vector<int> greedy_procedure_random(double d_rate, double prob)
 
 void CMSA(int agemax, int na, float drate, float prob)
 {
-    //TODO:
+    cout << " RUN CMSA " << endl;
     float sbest = 10000000;
     set<int> Vprime;
     vector<int> age(m, 0);
@@ -408,19 +394,18 @@ int main( int argc, char **argv )
            std::cout << *it << " ";
         std::cout << std::endl;
     }
-
+    vector<int>  Vx;
     
     auto start = high_resolution_clock::now();
-    
-    CMSA(3, 0, 1.0, 0.9);
+    cout << "alg: " << alg << endl;
+    if(alg == 0)
+       run_cplex(Vx);
+    else
+       CMSA(2, 3, 0.6, 0.9);
     
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<std::chrono::duration<float>>(stop - start); 
    cout << "Time Execution: " << duration.count() << "seconds" << endl;
-    
-    // if(output.compare("") != 0){
-      //   string name_polygon = split(split(path, "/")[4], "_")[0];
-       //  write_test("Solution");
-    // }
+  
     return EXIT_SUCCESS;
 }
