@@ -25,7 +25,8 @@ vector<set<int>> Sets;
 
 #define INFEASIBLE 1000000
  
-int t_lim = 0; // time limit intersection-based;
+int t_lim = 0; // time limit 
+int t_solver = 100;
 std::string path ;
 std::string output = "";
 int alg = 0; // 0: CPLEX, 1: CMSA
@@ -50,7 +51,7 @@ inline double stof(string &s) {
 
 //CPLEX model: returns a solution
 
-vector<int> run_cplex(vector<int>&  V)
+vector<int> run_cplex(vector<int>&  V, int t_solver = 0)
 {
 
   vector<int> solution;
@@ -114,7 +115,10 @@ vector<int> run_cplex(vector<int>&  V)
    
    //int time_limit = 900;
    // pass the time limit to CPLEX
-   cplex.setParam(IloCplex::TiLim, t_lim);
+   if(t_solver == 0)
+      cplex.setParam(IloCplex::TiLim, t_lim);
+   else
+      cplex.setParam(IloCplex::TiLim, t_solver);
    // the following two parameters should always be set in the way as shown
    cplex.setParam(IloCplex::NodeFileInd, 2);
    cplex.setParam(IloCplex::Threads, 1);
@@ -188,6 +192,7 @@ void read_parameters(int argc, char **argv) {
      while (iarg < argc) {
         if (strcmp(argv[iarg],"-f") == 0)          path = (argv[++iarg]);
         else if(strcmp(argv[iarg],"-t") == 0)      t_lim = atoi(argv[++iarg]);
+        else if(strcmp(argv[iarg],"-t_solve") == 0)      t_solver = atoi(argv[++iarg]);
         else if(strcmp(argv[iarg], "-alg") == 0)  alg = atoi(argv[++iarg]);
         else ++iarg;
      }
@@ -318,7 +323,7 @@ vector<int> greedy_procedure_random(double d_rate, double prob)
     return partial; //Cover.size();
 } 
 
-void CMSA(int agemax, int na, float drate, float prob)
+void CMSA(int agemax, int na, float drate, float prob, int t_solver = 0)
 {
     cout << " RUN CMSA " << endl;
     float sbest = 10000000;
@@ -347,7 +352,7 @@ void CMSA(int agemax, int na, float drate, float prob)
           // Apply Exact solver:
           vector<int> partial(Vprime.begin(), Vprime.end());
           
-          vector<int> SprimeOpt(run_cplex(partial)); // solve subinstance via CPLEX
+          vector<int> SprimeOpt(run_cplex(partial, t_solver)); // solve subinstance via CPLEX
           
           if(SprimeOpt.size() < sbest)
              sbest = SprimeOpt.size();
@@ -401,7 +406,7 @@ int main( int argc, char **argv )
     if(alg == 0)
        run_cplex(Vx);
     else
-       CMSA(2, 3, 0.6, 0.9);
+       CMSA(2, 10, 0.3, 0.5, t_solver);
     
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<std::chrono::duration<float>>(stop - start); 
