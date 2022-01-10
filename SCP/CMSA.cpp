@@ -12,6 +12,7 @@
 #include <math.h>       /* sqrt */
 #include <unordered_map> 
 #include <unordered_set> 
+#include<string>
 
 // the following "include" is necessary for the correct working/compilation of CPLEX. You should adapt this path to your installation of CPLEX
 #include "/home/marko/Desktop/CPLEX_Studio127/cplex/include/ilcplex/ilocplex.h"
@@ -28,7 +29,7 @@ vector<set<int>> Sets;
 int t_lim = 0; // time limit 
 int t_solver = 100;
 std::string path ;
-std::string output = "";
+std::string out_path = "/home/marko/Desktop/kod/";
 int alg = 0; // 0: CPLEX, 1: CMSA
 int n = 0;  
 int m = 0;  
@@ -54,10 +55,11 @@ inline double stof(string &s) {
 vector<int> run_cplex(vector<int>&  V, int t_solver = 0)
 {
 
-  vector<int> solution;
-  IloEnv env;  
+  vector<int> solution; // save solution here 
+  IloEnv env;  env.setOut(env.getNullStream());
   cout << "run_cplex " << n << " " << m << endl;
-  env.setOut(env.getNullStream());
+  auto startTime = high_resolution_clock::now(); // time measurement
+  
   try
   {
    IloModel model(env);
@@ -152,8 +154,22 @@ vector<int> run_cplex(vector<int>&  V, int t_solver = 0)
            }
        }
        cout << "}" << endl;
-       //myfileOut << "value: " << lastVal << endl;
-       return solution; //lastVal;
+       
+       
+       if(alg == 0) // if a CPLEX is called 
+       {// write the results in a file 
+       	string outname = "" ;
+       	outname = out_path + "scp_" + std::to_string(n) + "_" + std::to_string(m) + ".txt.out";
+       	std::ofstream outfile; // stream
+       
+       	outfile.open(outname);
+       	auto stopTime = high_resolution_clock::now();
+       	auto duration = duration_cast<std::chrono::duration<float>>(stopTime - startTime); 
+       	outfile << "obj: " << lastVal << " time: " << duration.count() ;
+       	
+       
+      }   
+      return solution; //lastVal;
    }
    else{
        cout << "Nema rjesenja" << endl;
@@ -292,7 +308,7 @@ vector<int> greedy_procedure(float drate, float prob)
 {   
     //TODO best cover among others 
     set<int> Cover;
-    vector<int> partial; cout << "n " << n << endl;
+    vector<int> partial;   
     while( Cover.size() < n )
     {   
         
@@ -319,7 +335,7 @@ vector<int> greedy_procedure_random(double d_rate, double prob)
         // update Cover
        Cover.insert(Sets[index].begin(), Sets[index].end()); 
     }
-    cout << "Objective: " << Cover.size() << endl;
+    //cout << "Objective: " << Cover.size() << endl;
     return partial; //Cover.size();
 } 
 
@@ -375,9 +391,16 @@ void CMSA(int agemax, int na, float drate, float prob, int t_solver = 0)
           auto stop = high_resolution_clock::now();
           duration = duration_cast<std::chrono::duration<float>>(stop - start); 
     }
+    
+    // write the results in a file 
+    string outname = "" ;
+    outname = out_path + "scp_" + std::to_string(n) + "_" + std::to_string(m) + ".txt.out";
+    std::ofstream outfile; // stream
+    outfile.open(outname);
+    outfile << "obj: " << sbest << " time: " << duration.count() ;
 
 }
-void write_test(string tekst)
+void write_test(string output, string tekst)
 {
   std::ofstream outfile;
 
@@ -401,16 +424,16 @@ int main( int argc, char **argv )
     }
     vector<int>  Vx;
     
-    auto start = high_resolution_clock::now();
     cout << "alg: " << alg << endl;
     if(alg == 0)
        run_cplex(Vx);
     else
        CMSA(2, 10, 0.3, 0.5, t_solver);
-    
+   /* 
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<std::chrono::duration<float>>(stop - start); 
    cout << "Time Execution: " << duration.count() << "seconds" << endl;
-  
+   
+ */   
     return EXIT_SUCCESS;
 }
