@@ -1,0 +1,60 @@
+CMSA:
+
+file    obj     time
+output/cmsa/scp_1000_10000.txt.out      15      482.96
+output/cmsa/scp_1000_1000.txt.out       15      341.51
+output/cmsa/scp_1000_2000.txt.out       15      386.774
+output/cmsa/scp_1000_30000.txt.out      16      522.65
+output/cmsa/scp_1000_5000.txt.out       15      340.718
+output/cmsa/scp_100_1000.txt.out        9       300.703
+output/cmsa/scp_100_100.txt.out 9       300.022
+output/cmsa/scp_100_200.txt.out 9       300.031
+output/cmsa/scp_100_3000.txt.out        7       301.226
+output/cmsa/scp_100_500.txt.out 8       300.078
+output/cmsa/scp_10_100.txt.out  4       300
+output/cmsa/scp_10_10.txt.out   4       0.0311753
+output/cmsa/scp_10_20.txt.out   5       0.459946
+output/cmsa/scp_10_300.txt.out  5       300.006
+output/cmsa/scp_10_50.txt.out   4       300.001
+output/cmsa/scp_500_1000.txt.out        13      318.735
+output/cmsa/scp_500_15000.txt.out       13      384.507
+output/cmsa/scp_500_2500.txt.out        12      348.738
+output/cmsa/scp_500_5000.txt.out        12      395.58
+output/cmsa/scp_500_500.txt.out 13      309.764
+output/cmsa/scp_50_100.txt.out  7       300.003
+output/cmsa/scp_50_1500.txt.out 7       300.143
+output/cmsa/scp_50_250.txt.out  7       300.013
+output/cmsa/scp_50_500.txt.out  7       300.04
+output/cmsa/scp_50_50.txt.out   8       0.516142
+
+
+CPLEX:
+
+file    obj     time
+output/cplex/scp_1000_10000.txt.out     16      302.031
+output/cplex/scp_1000_1000.txt.out      15      300.373
+output/cplex/scp_1000_2000.txt.out      14      300.743
+output/cplex/scp_1000_30000.txt.out     17      314.237
+output/cplex/scp_1000_5000.txt.out      15      300.925
+output/cplex/scp_100_1000.txt.out       8       300.145
+output/cplex/scp_100_100.txt.out        9       1.1477
+output/cplex/scp_100_200.txt.out        9       6.24554
+output/cplex/scp_100_3000.txt.out       7       300.537
+output/cplex/scp_100_500.txt.out        8       49.3006
+output/cplex/scp_10_100.txt.out 4       0.696668
+output/cplex/scp_10_10.txt.out  4       0.66596
+output/cplex/scp_10_20.txt.out  5       0.868212
+output/cplex/scp_10_300.txt.out 5       0.937787
+output/cplex/scp_10_50.txt.out  4       0.699837
+output/cplex/scp_500_1000.txt.out       13      300.712
+output/cplex/scp_500_15000.txt.out      11      302.604
+output/cplex/scp_500_2500.txt.out       12      300.407
+output/cplex/scp_500_5000.txt.out       12      300.581
+output/cplex/scp_500_500.txt.out        13      300.52
+output/cplex/scp_50_100.txt.out 7       0.961574
+output/cplex/scp_50_1500.txt.out        6       1.9775
+output/cplex/scp_50_250.txt.out 7       0.804326
+output/cplex/scp_50_500.txt.out 6       1.87262
+output/cplex/scp_50_50.txt.out  8       0.763233
+~                                                       
+
